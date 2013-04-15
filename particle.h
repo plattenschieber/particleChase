@@ -12,12 +12,12 @@ typedef struct {
 } PARTICLE;
 
 typedef struct NODE {
-	void * data;
-	struct NODE * next;
+	void *data;
+	struct NODE *next;
 } NODE;
 
 typedef struct {
-	NODE * first;
+	NODE *first;
 } LIST;
 
 /* delete a node from the list */
