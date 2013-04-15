@@ -6,6 +6,8 @@ int main() {
 	int i;
 	PARTICLE particle;
 	LIST *L;
+	NODE *it;
+
 	particle.x[0] = 1.3; particle.x[1] = 2.3;
 	particle.ID = 2;
 	L->first = list_create(L, &particle);
@@ -14,6 +16,13 @@ int main() {
 	particle.ID = 1;
 	list_insert(L, L->first, &particle);
 
+	/* loop through the list L */
+	for (it = L->first; it; it = it->next) {
+		PARTICLE tmp;
+	   	//tmp = &(it->data);
+		printf("%i\t",tmp.ID);
+		for (i = 0; i < DIM; i++) 
+			printf("%f\t",tmp.x[i]);
 	}
 	return 0;
 }
