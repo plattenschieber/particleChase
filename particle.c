@@ -4,6 +4,7 @@ LIST * list_create() {
         L->first = NULL;
     return L;
 }
+#include "particle.h"
 
 /* insert data right behind cursor. If cursor equals NULL, insert at the beginning. Return inserted node or NULL if an errror occurs */
 NODE * list_insert(LIST * L, NODE * cursor, double data) {
