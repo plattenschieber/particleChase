@@ -20,8 +20,8 @@ typedef struct {
 	NODE *first;
 } LIST;
 
-/* delete a node from the list */
-void list_delete(LIST * L, NODE * del);
 void list_free(LIST * L);
+/* delete the 'cursor' from the list and leave everything clean */
+void list_delete(LIST *L, NODE *cursor);
 
 #endif
