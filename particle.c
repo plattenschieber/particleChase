@@ -21,4 +21,19 @@ NODE *list_insert(LIST *L, NODE *cursor, void *data) {
 	}
 }
 
+void list_delete(LIST *L, NODE *cursor) {
+	NODE *it = L->first;
+	while(it->next && it->next!=cursor) it=it->next;
+	/* ToDo */
 }
+
+void list_free(LIST *L) {
+	NODE *it, *tmp;
+    for (it = L->first; it != NULL; it = tmp) {
+        tmp = it->next;
+        free(it->data);
+        free(it);
+    }
+    free(L);
+}
+
