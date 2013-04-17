@@ -27,6 +27,12 @@ void list_delete(LIST *L, NODE *cursor) {
 	/* ToDo */
 }
 
+void list_pop_first(LIST *L) {
+	NODE *tmp = L->first->next;
+	free(L->first);
+	L->first = tmp;
+} 
+
 void list_free(LIST *L) {
 	NODE *it, *tmp;
     for (it = L->first; it != NULL; it = tmp) {
