@@ -9,7 +9,7 @@
 MAIN = ParticleChase
 
 # define the C source files 
-SRCS = main.c particle.c
+SRCS = main.c particle.c world.c
 
 # define the C compiler to use
 CC = gcc

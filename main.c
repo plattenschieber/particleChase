@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "particle.h"
+#include "world.h"
 
 int main() {
 	int i;
@@ -24,5 +25,6 @@ int main() {
 		for (i = 0; i < DIM; i++) 
 			printf("%f\t",tmp.x[i]);
 	}
+	simulate(L);
 	return 0;
 }
