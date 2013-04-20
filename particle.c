@@ -32,13 +32,29 @@ NODE *list_insert(LIST *L, NODE *cursor, void *data) {
 }
 
 void list_delete(LIST *L, NODE *cursor) {
-	NODE *it = L->first;
+	/* find the cursor in the list */
+	NODE *it = L->first, *tmp;
 	while(it->next && it->next!=cursor) it=it->next;
-	/* ToDo */
+
+	/* if cursor was 'L->last', reset it */
+	if (cursor == L->last) 
+	   	L->last = it;
+
+	/* it wasn't 'L->last' so we need to free something */
+	else {
+		/* save 'cursor->next' and free 'cursor' */
+		tmp = it->next->next;
+		free(it->next->data);
+		free(it->next);
+		/* reset pointer accordingly */	
+		it->next = tmp;
+	}
 }
 
 void list_pop_first(LIST *L) {
+	/* save second item and delete the first */
 	NODE *tmp = L->first->next;
+	free(L->first->data);
 	free(L->first);
 	L->first = tmp;
 } 

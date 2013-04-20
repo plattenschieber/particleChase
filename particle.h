@@ -24,7 +24,9 @@ NODE *list_create(LIST *L, void *data);
 NODE *list_insert(LIST *L, NODE *cursor, void *data);
 /* delete the 'cursor' from the list and leave everything clean */
 void list_delete(LIST *L, NODE *cursor);
-/* delete every element of the list  */
+/* remove the first element of the list and leave everything clean */
+void list_pop_first(LIST *L);
+/* delete every element of the list and free it */
 void list_free(LIST *L);
 
 #endif
