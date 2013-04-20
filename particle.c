@@ -13,11 +13,18 @@ NODE *list_create(LIST *L, void *data) {
 
 NODE *list_insert(LIST *L, NODE *cursor, void *data) {
 	NODE *newnode;
+	/* create 'newnode' only if there is enough space */ 
 	if( (newnode=list_create(L, data)) ) {
-        newnode->next = cursor->next;
-        cursor->next = newnode;
+			/* when 'cursor' isn't NULL, we can append 'newnode' to it */
+			if (cursor) {
+				newnode->next = cursor->next;
+				cursor->next = newnode;
+				/* if it was the last element of the list, reset list 'L->last' */
+				if (cursor == L->last)	L->last = newnode;
+			}
 		return newnode;
 	}
+	/* we can't continue */
 	else {
 		fprintf(stderr, "Could not allocate memory for new node\n");
         exit(EXIT_FAILURE); 

@@ -15,6 +15,7 @@ typedef struct NODE {
 
 typedef struct {
 	NODE *first;
+	NODE *last;
 } LIST;
 
 /* create a new node with 'data' and return its adress */
