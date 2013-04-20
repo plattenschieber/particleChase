@@ -1,5 +1,7 @@
 #include "particle.h"
 #include "world.h"
+#include <stdlib.h>
+#include <stdio.h>
 
 NODE *list_create(LIST *L, void *data) {
 	NODE *node;

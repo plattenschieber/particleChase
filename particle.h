@@ -1,9 +1,6 @@
 #ifndef PARTICLE_H
 #define PARTICLE_H
-#include <stdlib.h>
-#include <stdio.h>
 #define DIM 2
-
 
 typedef struct {
 	int ID;
