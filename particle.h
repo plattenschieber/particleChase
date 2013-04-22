@@ -19,7 +19,7 @@ typedef struct {
 } LIST;
 
 /* create a new node with 'data' and return its adress */
-NODE *list_create(LIST *L, PARTICLE *data);
+NODE *list_create(LIST *L, PARTICLE *particle);
 /* insert a new node with 'data' behind 'cursor' and reset 'L->first' if 'cursor==NULL' */
 NODE *list_insert(LIST *L, NODE *cursor, PARTICLE *particle);
 /* delete the 'cursor' from the list and leave everything clean */
