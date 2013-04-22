@@ -15,13 +15,16 @@ NODE *list_insert(LIST *L, NODE *cursor, PARTICLE *particle) {
 	NODE *newnode;
 	/* create 'newnode' only if there is enough space */ 
 	if( (newnode=list_create(L, particle)) ) {
-		/* when 'cursor' isn't NULL, we can append 'newnode' to it */
-		if (cursor) {
+		/* when 'cursor' appears in the list */
+		if (cursor != L->last) {
 			newnode->next = cursor->next;
 			cursor->next = newnode;
-			/* if it was the last element of the list, reset list 'L->last' */
-			if (cursor == L->last)	L->last = newnode;
 		}
+		/* 'cursor' is either NULL or 'L->last', so append it to the end */
+		else {
+			newnode->next = NULL;
+			/* newnode is firstly new 'next' of 'L->last' and than it's 'L->last' (we're reading from right to left) */
+			L->last = L->last->next = newnode;
 		return newnode;
 	}
 	/* we can't continue */
