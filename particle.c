@@ -25,6 +25,7 @@ NODE *list_insert(LIST *L, NODE *cursor, PARTICLE *particle) {
 			newnode->next = NULL;
 			/* newnode is firstly new 'next' of 'L->last' and than it's 'L->last' (we're reading from right to left) */
 			L->last = L->last->next = newnode;
+		}
 		return newnode;
 	}
 	/* we can't continue */
@@ -52,7 +53,7 @@ void list_delete(LIST *L, NODE *cursor) {
 		else {
 			/* save 'cursor->next' and free 'cursor' */
 			tmp = it->next->next;
-			free(it->next->data);
+			free(it->next->particle);
 			free(it->next);
 			/* reset pointer accordingly */	
 			it->next = tmp;
@@ -63,7 +64,7 @@ void list_delete(LIST *L, NODE *cursor) {
 void list_pop_first(LIST *L) {
 	/* save second item and delete the first */
 	NODE *tmp = L->first->next;
-	free(L->first->data);
+	free(L->first->particle);
 	free(L->first);
 	L->first = tmp;
 } 
