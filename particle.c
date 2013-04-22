@@ -35,22 +35,28 @@ NODE *list_insert(LIST *L, NODE *cursor, PARTICLE *particle) {
 }
 
 void list_delete(LIST *L, NODE *cursor) {
-	/* find the cursor in the list */
 	NODE *it = L->first, *tmp;
-	while(it->next && it->next!=cursor) it=it->next;
-
-	/* if cursor was 'L->last', reset it */
-	if (cursor == L->last) 
-	   	L->last = it;
-
-	/* it wasn't 'L->last' so we need to free something */
+	/* error handling */
+	if (cursor == L->first) 
+		list_pop_first(L);
+	/* actual delete function */
 	else {
-		/* save 'cursor->next' and free 'cursor' */
-		tmp = it->next->next;
-		free(it->next->data);
-		free(it->next);
-		/* reset pointer accordingly */	
-		it->next = tmp;
+		/* find the cursor in the list */
+		while(it->next && it->next!=cursor) it=it->next;
+
+		/* if cursor was 'L->last', reset it */
+		if (cursor == L->last) 
+			L->last = it;
+
+		/* it wasn't 'L->last' so we need to free something */
+		else {
+			/* save 'cursor->next' and free 'cursor' */
+			tmp = it->next->next;
+			free(it->next->data);
+			free(it->next);
+			/* reset pointer accordingly */	
+			it->next = tmp;
+		}
 	}
 }
 
