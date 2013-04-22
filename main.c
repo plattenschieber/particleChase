@@ -7,7 +7,7 @@ int main() {
 	int i;
 	PARTICLE p1;
    	PARTICLE p2;
-	LIST *L;
+	LIST *L = list_init();		
 	NODE *it;
 
 	p1.x[0] = 1.3; p1.x[1] = 2.3;

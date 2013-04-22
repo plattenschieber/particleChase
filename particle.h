@@ -18,6 +18,8 @@ typedef struct {
 	NODE *last;
 } LIST;
 
+/* get some space for a new 'LIST' */
+LIST *list_init();
 /* create a new node with 'data' and return its adress */
 NODE *list_create(LIST *L, PARTICLE *particle);
 /* insert a new node with 'data' behind 'cursor' and reset 'L->first' if 'cursor==NULL' */

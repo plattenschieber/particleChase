@@ -3,6 +3,15 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+LIST *list_init() {
+	LIST *L;
+	if( !(L=malloc(sizeof(LIST))) ) {
+	   fprintf(stderr, "Could not allocate memory for the List\n");
+       exit(EXIT_FAILURE); 
+	}
+	return L; 
+}
+
 NODE *list_create(LIST *L, PARTICLE *particle) {
 	NODE *node;
 	if( !(node=malloc(sizeof(NODE))) ) return NULL;
