@@ -9,7 +9,7 @@ typedef struct {
 } PARTICLE;
 
 typedef struct NODE {
-	void *data;
+	PARTICLE *particle;
 	struct NODE *next;
 } NODE;
 
@@ -19,9 +19,9 @@ typedef struct {
 } LIST;
 
 /* create a new node with 'data' and return its adress */
-NODE *list_create(LIST *L, void *data);
+NODE *list_create(LIST *L, PARTICLE *data);
 /* insert a new node with 'data' behind 'cursor' and reset 'L->first' if 'cursor==NULL' */
-NODE *list_insert(LIST *L, NODE *cursor, void *data);
+NODE *list_insert(LIST *L, NODE *cursor, PARTICLE *particle);
 /* delete the 'cursor' from the list and leave everything clean */
 void list_delete(LIST *L, NODE *cursor);
 /* remove the first element of the list and leave everything clean */
