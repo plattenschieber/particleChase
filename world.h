@@ -12,6 +12,8 @@ double world_delta_t;
 double world_t_end;
 // number of overall particles */
 unsigned int n_particles;
+/* actual step */
+unsigned int world_step;
 /* start the simulation */
 void simulate(LIST *L);
 /* update the positions */

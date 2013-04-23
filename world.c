@@ -7,6 +7,7 @@ void simulate(LIST *L) {
 	while(world_t < world_t_end) {
 		update_x(L);
 		world_t+=world_delta_t;
+		world_step++;
 	}
 }
 void update_x(LIST *L) {
