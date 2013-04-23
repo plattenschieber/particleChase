@@ -10,6 +10,12 @@ void simulate(LIST *L) {
 		world_step++;
 	}
 }
+void world_init(FILE *file) {
+	/* read from File instead */
+	world_t_end = 2.0;
+	world_delta_t = 0.1;
+}
+
 void update_x(LIST *L) {
 	/* do some stuff */
 	NODE *it;

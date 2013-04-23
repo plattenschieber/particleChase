@@ -1,6 +1,7 @@
 #ifndef WORLD_H
 #define WORLD_H
 #include "particle.h"
+#include <stdio.h> 
 
 /* a list of cells with particle lists */
 LIST *cells;
@@ -18,5 +19,7 @@ unsigned int world_step;
 void simulate(LIST *L);
 /* update the positions */
 void update_x(LIST *L);
+/* initialize the world's parameters */
+void world_init(FILE *file);
 
 #endif
