@@ -15,6 +15,6 @@ unsigned int n_particles;
 /* start the simulation */
 void simulate(LIST *L);
 /* update the positions */
-void update_x();
+void update_x(LIST *L);
 
 #endif
