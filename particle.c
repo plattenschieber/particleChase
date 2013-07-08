@@ -93,6 +93,7 @@ void list_free(LIST *L) {
 }
 
 void print_particles(LIST *L) {
+	int i;
 	NODE *it;
 	for (it = L->first; it; it = it->next) {
 		printf("%i\t",it->particle->ID);

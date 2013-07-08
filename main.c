@@ -4,7 +4,6 @@
 #include "world.h"
 
 int main() {
-	int i;
 	PARTICLE p1;
    	PARTICLE p2;
 	LIST *L = list_init();		
