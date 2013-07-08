@@ -9,6 +9,8 @@ LIST *list_init() {
 	   fprintf(stderr, "Could not allocate memory for the List\n");
        exit(EXIT_FAILURE); 
 	}
+	L->first = NULL;
+	L->last = NULL;
 	return L; 
 }
 
