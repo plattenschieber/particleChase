@@ -11,7 +11,7 @@ void simulate(LIST *L) {
 		world_step++;
 	}
 }
-void world_init(FILE *file) {
+void world_init(FILE *F) {
 	/* read from File instead */
 	world_t = 0.0;
 	world_t_end = 2.0;

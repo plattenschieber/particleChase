@@ -20,6 +20,6 @@ void simulate(LIST *L);
 /* update the positions */
 void update_x(LIST *L);
 /* initialize the world's parameters */
-void world_init(FILE *file);
+void world_init(FILE *F);
 
 #endif

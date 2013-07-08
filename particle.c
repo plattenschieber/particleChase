@@ -6,8 +6,8 @@
 LIST *list_init() {
 	LIST *L;
 	if( !(L=malloc(sizeof(LIST))) ) {
-	   fprintf(stderr, "Could not allocate memory for the List\n");
-       exit(EXIT_FAILURE); 
+		fprintf(stderr, "Could not allocate memory for the List\n");
+		exit(EXIT_FAILURE); 
 	}
 	L->first = NULL;
 	L->last = NULL;
@@ -44,7 +44,7 @@ NODE *list_insert(LIST *L, NODE *cursor, PARTICLE *particle) {
 	/* there is not enough space -> we can't continue */
 	else {
 		fprintf(stderr, "Could not allocate memory for new node\n");
-        exit(EXIT_FAILURE); 
+		exit(EXIT_FAILURE); 
 	}
 }
 
@@ -84,12 +84,12 @@ void list_pop_first(LIST *L) {
 
 void list_free(LIST *L) {
 	NODE *it, *tmp;
-    for (it = L->first; it != NULL; it = tmp) {
-        tmp = it->next;
-        free(it->particle);
-        free(it);
-    }
-    free(L);
+	for (it = L->first; it != NULL; it = tmp) {
+		tmp = it->next;
+		free(it->particle);
+		free(it);
+	}
+	free(L);
 }
 
 void print_particles(LIST *L) {
@@ -102,3 +102,4 @@ void print_particles(LIST *L) {
 		printf("\n");
 	}
 }
+
