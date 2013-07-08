@@ -31,11 +31,12 @@ NODE *list_insert(LIST *L, NODE *cursor, PARTICLE *particle) {
 			newnode->next = cursor->next;
 			cursor->next = newnode;
 		}
-		/* 'cursor' is either NULL or 'L->last', so append it to the end */
+		/* 'cursor' is not specified (== NULL) */
 		else {
-			newnode->next = NULL;
-			/* newnode is firstly new 'next' of 'L->last' and than it's 'L->last' (we're reading from right to left) */
-			L->last = L->last->next = newnode;
+			/* 'L' is nonempty -> append 'newnode' */
+			if (L->last) L->last = L->last->next = newnode;
+			/* 'L' is empty */
+			else L->first = L->last = newnode;
 		}
 		return newnode;
 	}
