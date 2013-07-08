@@ -30,6 +30,7 @@ NODE *list_insert(LIST *L, NODE *cursor, PARTICLE *particle) {
 		if (cursor != L->last) {
 			newnode->next = cursor->next;
 			cursor->next = newnode;
+			if (cursor == L->last) L->last = newnode;
 		}
 		/* 'cursor' is not specified (== NULL) */
 		else {
