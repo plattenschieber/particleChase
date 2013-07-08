@@ -30,5 +30,6 @@ void list_delete(LIST *L, NODE *cursor);
 void list_pop_first(LIST *L);
 /* delete every element of the list and free it */
 void list_free(LIST *L);
-
+/* print every particle */
+void print_particles(LIST *L);
 #endif

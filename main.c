@@ -17,13 +17,10 @@ int main() {
 	p2.ID = 1;
 	list_insert(L, L->first, &p2);
 
-	/* loop through the list L */
-	for (it = L->first; it; it = it->next) {
-		printf("%i\t",it->particle->ID);
-		for (i = 0; i < DIM; i++) 
-			printf("%f\t",it->particle->x[i]);
-		printf("\n");
-	}
+	/* print particles before and after the simulation */ 
+	print_particles(L);
 	simulate(L);
+	print_particles(L);
+
 	return 0;
 }

@@ -92,3 +92,12 @@ void list_free(LIST *L) {
     free(L);
 }
 
+void print_particles(LIST *L) {
+	NODE *it;
+	for (it = L->first; it; it = it->next) {
+		printf("%i\t",it->particle->ID);
+		for (i = 0; i < DIM; i++) 
+			printf("%f\t",it->particle->x[i]);
+		printf("\n");
+	}
+}
