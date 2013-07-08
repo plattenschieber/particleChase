@@ -14,7 +14,7 @@ LIST *list_init() {
 	return L; 
 }
 
-NODE *list_create(LIST *L, PARTICLE *particle) {
+NODE *list_create_node(LIST *L, PARTICLE *particle) {
 	NODE *node;
 	if( !(node=malloc(sizeof(NODE))) ) return NULL;
 	node->particle = particle;
