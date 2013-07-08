@@ -6,6 +6,7 @@
 void simulate(LIST *L) {
 	while(world_t < world_t_end) {
 		update_x(L);
+		printf("Actual time on earth: %f\n",world_t);
 		world_t+=world_delta_t;
 		world_step++;
 	}

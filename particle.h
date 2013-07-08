@@ -18,15 +18,15 @@ typedef struct {
 	NODE *last;
 } LIST;
 
-/* get some space for a new 'LIST' */
+/* get some space for a new 'LIST' and initialize it with NULL */
 LIST *list_init();
-/* create a new node with 'data' and return its adress */
-NODE *list_create(LIST *L, PARTICLE *particle);
-/* insert a new node with 'data' behind 'cursor' and reset 'L->first' if 'cursor==NULL' */
+/* create a new node with a 'particle' and return its adress - only intern use */
+NODE *list_create_node(LIST *L, PARTICLE *particle);
+/* insert a new new node with a 'particle' behind 'cursor' and set all pointers accordingly */
 NODE *list_insert(LIST *L, NODE *cursor, PARTICLE *particle);
 /* delete the 'cursor' from the list and leave everything clean */
 void list_delete(LIST *L, NODE *cursor);
-/* remove the first element of the list and leave everything clean */
+/* delete first element of the list and leave everything clean */
 void list_pop_first(LIST *L);
 /* delete every element of the list and free it */
 void list_free(LIST *L);

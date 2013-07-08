@@ -10,6 +10,7 @@ int main() {
 	LIST *L = list_init();		
 	NODE *it;
 
+	/* insert some particles */
 	p1.x[0] = 1.3; p1.x[1] = 2.3;
 	p1.ID = 2;
 
