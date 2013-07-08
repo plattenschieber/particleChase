@@ -25,9 +25,9 @@ NODE *list_create_node(LIST *L, PARTICLE *particle) {
 NODE *list_insert(LIST *L, NODE *cursor, PARTICLE *particle) {
 	NODE *newnode;
 	/* create 'newnode' only if there is enough space */ 
-	if( (newnode=list_create(L, particle)) ) {
-		/* when 'cursor' appears in the list */
-		if (cursor != L->last) {
+	if( (newnode=list_create_node(L, particle)) ) {
+		/* 'cursor' appears in the list */
+		if (cursor) {
 			newnode->next = cursor->next;
 			cursor->next = newnode;
 			if (cursor == L->last) L->last = newnode;
