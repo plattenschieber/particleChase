@@ -8,11 +8,12 @@ int main() {
 	PARTICLE p1;
    	PARTICLE p2;
 	LIST *L = list_init();		
-	NODE *it;
+	world_init(NULL);
 
 	/* insert some particles */
 	p1.x[0] = 1.3; p1.x[1] = 2.3;
 	p1.ID = 2;
+	list_insert(L, L->first, &p1);
 
 	p2.x[0] = 1.5; p2.x[1] = 4.8;
 	p2.ID = 1;
