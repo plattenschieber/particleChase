@@ -39,7 +39,7 @@ NODE *list_insert(LIST *L, NODE *cursor, PARTICLE *particle) {
 		}
 		return newnode;
 	}
-	/* we can't continue */
+	/* there is not enough space -> we can't continue */
 	else {
 		fprintf(stderr, "Could not allocate memory for new node\n");
         exit(EXIT_FAILURE); 
