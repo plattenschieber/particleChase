@@ -17,11 +17,13 @@ typedef struct {
 	unsigned int step;
 } WORLD;
 
-/* start the simulation */
-void simulate(LIST *L);
-/* update the positions */
-void update_x(LIST *L);
 /* initialize the world's parameters */
-void world_init(FILE *F);
+WORLD *world_init(FILE *F);
+/* start the simulation */
+void simulate(WORLD *W);
+/* update positions */
+void update_x(WORLD *W);
+/* update velocity */
+void update_v(WORLD *W);
 
 #endif
