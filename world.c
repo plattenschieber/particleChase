@@ -28,3 +28,6 @@ void update_x(WORLD *W) {
 			it->particle->x[i] += 0.112+i/2;
 }
 
+void update_v(WORLD *W){
+	return;
+}
