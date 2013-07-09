@@ -34,7 +34,7 @@ void update_x(WORLD *W) {
  	for (it = W->cells->first; it != NULL; it = it->next)
 		for(i=0; i<DIM; i++)
 			/* do some calculation (move more in y coordinate than x)*/
-			it->particle->x[i] += 0.112+i/2;
+			((PARTICLE*)(it->data))->x[i] += 0.112+i/2;
 }
 
 void update_v(WORLD *W){

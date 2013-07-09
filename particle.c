@@ -1,4 +1,4 @@
-#include "particle.h"
+#include "list.h"
 #include "world.h"
 #include <stdlib.h>
 #include <stdio.h>
@@ -14,18 +14,18 @@ LIST *list_init() {
 	return L; 
 }
 
-NODE *list_create_node(LIST *L, PARTICLE *particle) {
+NODE *list_create_node(LIST *L, void *data) {
 	NODE *node;
 	if( !(node=malloc(sizeof(NODE))) ) return NULL;
-	node->particle = particle;
+	node->data = data;
 	node->next = NULL;
 	return node;
 }
 
-NODE *list_insert(LIST *L, NODE *cursor, PARTICLE *particle) {
+NODE *list_insert(LIST *L, NODE *cursor, void *data) {
 	NODE *newnode;
 	/* create 'newnode' only if there is enough space */ 
-	if( (newnode=list_create_node(L, particle)) ) {
+	if( (newnode=list_create_node(L, data)) ) {
 		/* 'cursor' appears in the list */
 		if (cursor) {
 			newnode->next = cursor->next;
@@ -66,7 +66,7 @@ void list_delete(LIST *L, NODE *cursor) {
 		else {
 			/* save 'cursor->next' and free 'cursor' */
 			tmp = it->next->next;
-			free(it->next->particle);
+			free(it->next->data);
 			free(it->next);
 			/* reset pointer accordingly */	
 			it->next = tmp;
@@ -77,7 +77,7 @@ void list_delete(LIST *L, NODE *cursor) {
 void list_pop_first(LIST *L) {
 	/* save second item and delete the first */
 	NODE *tmp = L->first->next;
-	free(L->first->particle);
+	free(L->first->data);
 	free(L->first);
 	L->first = tmp;
 } 
@@ -86,7 +86,7 @@ void list_free(LIST *L) {
 	NODE *it, *tmp;
 	for (it = L->first; it != NULL; it = tmp) {
 		tmp = it->next;
-		free(it->particle);
+		free(it->data);
 		free(it);
 	}
 	free(L);
@@ -96,9 +96,9 @@ void print_particles(LIST *L) {
 	int i;
 	NODE *it;
 	for (it = L->first; it; it = it->next) {
-		printf("%i\t",it->particle->ID);
+		printf("%i\t",((PARTICLE*)(it->data))->ID);
 		for (i = 0; i < DIM; i++) 
-			printf("%f\t",it->particle->x[i]);
+			printf("%f\t",((PARTICLE*)(it->data))->x[i]);
 		printf("\n");
 	}
 }
