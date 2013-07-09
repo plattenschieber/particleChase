@@ -70,9 +70,5 @@ $(SUFFIX).o:
 	$(CC) -MM $(CFLAGS) $(INCLUDES) $< > $*.d
 
 clean:
-	$(RM) *.o *~ *.d
-	$(RM) -r api-doc
-cleanup:
 	$(RM) *.o *~ $(MAIN) *.d
 	$(RM) -r api-doc
-
