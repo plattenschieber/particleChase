@@ -7,7 +7,7 @@ typedef struct {
 	LIST *cells;
 	// current time */
 	double t;
-	// timestep */
+	// timestep length */
 	double delta_t;
 	// end time */
 	double t_end;
