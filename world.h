@@ -28,4 +28,8 @@ void world_update_x(WORLD *W);
 /* update velocity */
 void world_update_v(WORLD *W);
 
+/* read in particles and save them into their corresponding cell */
+void world_read_particles(WORLD *W, FILE *F);
+/* read world parameter from file */
+void world_read_parameter(WORLD *W, FILE *F);
 #endif

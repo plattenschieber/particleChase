@@ -16,6 +16,8 @@ WORLD *world_init(FILE *parameter, FILE *particles) {
 	W->cells = list_init();
 	W->step = 0;
 	W->n_particles = 0;
+	world_read_particles(W, particles);
+	world_read_parameter(W, parameter);
 	return W;
 }
 
@@ -44,4 +46,35 @@ void world_update_x(WORLD *W) {
 
 void world_update_v(WORLD *W) {
 	return;
+}
+
+void world_read_particles(WORLD *W, FILE *particles) {
+	int ID;
+	double x[DIM];
+	/* read in particles in this form: ID x[0] x[1] */
+	while (fscanf(particles,"%i %lf %lf",&ID, &x[0], &x[1]) == 3) { 
+		PARTICLE *tmp;
+		tmp->ID = ID;
+		printf("%i\t",tmp->ID);
+		int i;
+		for (i = 0; i < DIM; i++){
+			tmp->x[i] = x[i];
+			printf("%f\t",tmp->x[i]);
+		}
+		printf("\n");
+
+		list_insert(W->cells, NULL, tmp);
+		W->n_particles++; 
+		printf("particle inserted\n");
+	}
+	printf("Read %i Particle(s)\n", W->n_particles);
+	
+}
+void world_read_parameter(WORLD *W, FILE *parameter) {
+	char *option;
+	int tmp1;
+	double tmp2;
+	printf("read parameter\n");
+	fscanf(parameter,"%s", option);
+	printf("%s",option);
 }
