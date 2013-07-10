@@ -1,0 +1,6 @@
+delta_t 0.1
+t_end 1.0
+t 0.0
+length 1.0 1.0
+step 0
+n_particles 0
