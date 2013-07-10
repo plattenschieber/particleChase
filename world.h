@@ -22,10 +22,10 @@ typedef struct {
 /* initialize the world's parameters */
 WORLD *world_init(FILE *F);
 /* start the simulation */
-void simulate(WORLD *W);
+void world_simulate(WORLD *W);
 /* update positions */
-void update_x(WORLD *W);
+void world_update_x(WORLD *W);
 /* update velocity */
-void update_v(WORLD *W);
+void world_update_v(WORLD *W);
 
 #endif

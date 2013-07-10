@@ -18,16 +18,17 @@ WORLD *world_init(FILE *F) {
 	return W;
 }
 
-void simulate(WORLD *W) {
+void world_simulate(WORLD *W) {
 	/* simulate until the end has come */
 	while (W->t <= W->t_end) {
+		world_update_x(W);
 		printf("Actual time on earth: %f\n",W->t);
 		W->t+=W->delta_t;
 		W->step++;
 	}
 }
 
-void update_x(WORLD *W) {
+void world_update_x(WORLD *W) {
 	NODE *it;
 	PARTICLE *p;
 	unsigned int i;
@@ -40,6 +41,6 @@ void update_x(WORLD *W) {
 		}
 }
 
-void update_v(WORLD *W){
+void world_update_v(WORLD *W) {
 	return;
 }
