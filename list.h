@@ -5,7 +5,6 @@
 typedef struct {
 	int ID;
 	double x[DIM];
-	double v[DIM];
 } PARTICLE;
 
 typedef struct NODE {
