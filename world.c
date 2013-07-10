@@ -51,7 +51,7 @@ void world_read_particles(WORLD *W, FILE *particles) {
 	double x[DIM];
 	/* read in particles in this form: ID x[0] x[1] */
 	while (fscanf(particles,"%i %lf %lf",&ID, &x[0], &x[1]) == 3) { 
-		PARTICLE *tmp;
+		PARTICLE *tmp = malloc(sizeof(PARTICLE));
 		tmp->ID = ID;
 		printf("%i\t",tmp->ID);
 		int i;
