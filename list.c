@@ -95,10 +95,13 @@ void list_free(LIST *L) {
 void print_particles(LIST *L) {
 	int i;
 	NODE *it;
+	PARTICLE *p;
 	for (it = L->first; it; it = it->next) {
-		printf("%i\t",((PARTICLE*)(it->data))->ID);
-		for (i = 0; i < DIM; i++) 
-			printf("%f\t",((PARTICLE*)(it->data))->x[i]);
+		/* cast data to particle */
+		p = it->data;
+		printf("%i\t",p->ID);
+		for (i = 0; i < DIM; i++)
+			printf("%f\t",p->x[i]);
 		printf("\n");
 	}
 }
