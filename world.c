@@ -2,7 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-WORLD *world_init(FILE *F) {
+WORLD *world_init(FILE *parameter, FILE *particles) {
+	/* get some place for the world */
 	WORLD *W;
 	if (!(W=malloc(sizeof(WORLD)))) {
 		fprintf(stderr, "Could not allocate memory for the World\n");

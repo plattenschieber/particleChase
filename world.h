@@ -20,7 +20,7 @@ typedef struct {
 } WORLD;
 
 /* initialize the world's parameters */
-WORLD *world_init(FILE *F);
+WORLD *world_init(FILE *parameter, FILE *particles);
 /* start the simulation */
 void world_simulate(WORLD *W);
 /* update positions */
