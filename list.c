@@ -5,7 +5,7 @@
 
 LIST *list_init() {
 	LIST *L;
-	if( !(L=malloc(sizeof(LIST))) ) {
+	if (!(L=malloc(sizeof(LIST)))) {
 		fprintf(stderr, "Could not allocate memory for the List\n");
 		exit(EXIT_FAILURE); 
 	}
@@ -16,7 +16,7 @@ LIST *list_init() {
 
 NODE *list_create_node(LIST *L, void *data) {
 	NODE *node;
-	if( !(node=malloc(sizeof(NODE))) ) return NULL;
+	if (!(node=malloc(sizeof(NODE)))) return NULL;
 	node->data = data;
 	node->next = NULL;
 	return node;

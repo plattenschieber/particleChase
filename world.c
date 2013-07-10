@@ -4,7 +4,7 @@
 
 WORLD *world_init(FILE *F) {
 	WORLD *W;
-	if( !(W=malloc(sizeof(WORLD))) ) {
+	if (!(W=malloc(sizeof(WORLD)))) {
 		fprintf(stderr, "Could not allocate memory for the World\n");
 		exit(EXIT_FAILURE); 
 	}
@@ -19,8 +19,8 @@ WORLD *world_init(FILE *F) {
 }
 
 void simulate(WORLD *W) {
-	while(W->t < W->t_end) {
-		update_x(W);
+	/* simulate until the end has come */
+	while (W->t <= W->t_end) {
 		printf("Actual time on earth: %f\n",W->t);
 		W->t+=W->delta_t;
 		W->step++;
@@ -32,7 +32,7 @@ void update_x(WORLD *W) {
 	PARTICLE *p;
 	unsigned int i;
  	for (it = W->cells->first; it != NULL; it = it->next)
-		for(i=0; i<DIM; i++) {
+		for (i=0; i<DIM; i++) {
 			/* cast data to particle */
 			p = it->data;
 			/* do some calculation (move more in y coordinate than x)*/
