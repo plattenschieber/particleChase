@@ -9,13 +9,11 @@ WORLD *world_init(FILE *parameter, FILE *particles) {
 		fprintf(stderr, "Could not allocate memory for the World\n");
 		exit(EXIT_FAILURE); 
 	}
-	/* read from File instead */
-	W->t = 0.0;
-	W->t_end = 2.0;
-	W->delta_t = 0.1;
+	/* get some place for its cells */
 	W->cells = list_init();
-	W->step = 0;
+	/* read in and set all parameters */
 	W->n_particles = 0;
+	W->step = 0;
 	world_read_particles(W, particles);
 	world_read_parameter(W, parameter);
 	return W;
