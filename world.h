@@ -15,6 +15,8 @@ typedef struct {
 	unsigned int n_particles;
 	/* current step */
 	unsigned int step;
+	/* length */ 
+	double length[DIM]; 
 } WORLD;
 
 /* initialize the world's parameters */
