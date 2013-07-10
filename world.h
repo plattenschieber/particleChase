@@ -13,7 +13,7 @@ typedef struct {
 	double t_end;
 	// number of overall particles */
 	unsigned int n_particles;
-	/* actual step */
+	/* current step */
 	unsigned int step;
 } WORLD;
 
