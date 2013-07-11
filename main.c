@@ -21,7 +21,7 @@ int main(int argc, char **argv) {
 #endif
 		strcpy(file1,argv[1]);
 		strcpy(file2, "unit.parameter");
-		printf("No particles file given, using 'unit.particles' instead\n");
+		printf("No parameter file given, using 'unit.parameter' instead\n");
 	}
 	else if (argc == 3) { 
 		strcpy(file1,argv[1]);
