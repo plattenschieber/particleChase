@@ -1,3 +1,5 @@
+#define FILENAME_MAX 50
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,21 +8,24 @@
 
 int main(int argc, char **argv) {
 	/* argument handling */
-	char file1[100];
-	char file2[100];
+	char file1[FILENAME_MAX];
+	char file2[FILENAME_MAX];
 	if (argc == 1) {
 		strcpy(file1,"unit.particles");
 		strcpy(file2,"unit.parameter");
 		printf("No parameter file, nor particles given - using 'unit.parameter' and 'unit.particles' instead\n");
 	}
 	else if (argc == 2) { 
-		strcpy(file1,argv[2]);
+#ifdef DEBUG
+		printf("argv[1] = %s\n",argv[1]);
+#endif
+		strcpy(file1,argv[1]);
 		strcpy(file2, "unit.parameter");
-		printf("No particles file given, using 'unit.particles' instead\n");
+		printf("No parameter file given, using 'unit.parameter' instead\n");
 	}
 	else if (argc == 3) { 
-		strcpy(file1,argv[2]);
-		strcpy(file2,argv[3]);
+		strcpy(file1,argv[1]);
+		strcpy(file2,argv[2]);
 	}
 	else 
 		printf("Too many arguments.\n");

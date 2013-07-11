@@ -1,3 +1,5 @@
+#define DEBUG
+
 #ifndef WORLD_H
 #define WORLD_H
 #include "list.h"
