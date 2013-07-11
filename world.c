@@ -23,7 +23,9 @@ void world_simulate(WORLD *W) {
 	/* simulate until the end has come */
 	while (W->t <= W->t_end) {
 		world_update_x(W);
+#ifdef DEBUG
 		printf("Actual time on earth: %f\n",W->t);
+#endif
 		W->t+=W->delta_t;
 		W->step++;
 	}
@@ -57,21 +59,31 @@ void world_read_particles(WORLD *W, FILE *particles) {
 		int i;
 		for (i = 0; i < DIM; i++){
 			tmp->x[i] = x[i];
+#ifdef DEBUG
+#endif
+#ifdef DEBUG
 			printf("%f\t",tmp->x[i]);
+#endif
 		}
 		printf("\n");
 
 		list_insert(W->cells, NULL, tmp);
 		W->n_particles++; 
+#ifdef DEBUG
 		printf("particle inserted\n");
+#endif
 	}
+#ifdef DEBUG
 	printf("Read %i Particle(s)\n", W->n_particles);
+#endif
 	
 }
 void world_read_parameter(WORLD *W, FILE *parameter) {
 	char *option = malloc(sizeof(char)*20);
 	int i,line=0;
+#ifdef DEBUG
 	printf("read parameter\n");
+#endif
 	while(fscanf(parameter,"%s", option) == 1)
 	{	
 		/* update current linenumber */ 
