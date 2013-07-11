@@ -108,7 +108,7 @@ void world_read_parameter(WORLD *W, FILE *parameter) {
 		else if (strcmp(option,"n_particles") == 0)
 			fscanf(parameter, "%i", &W->n_particles);
 		else {
-			printf("Could not read option in line %i of given parameter file. Abort.", line);
+			printf("Could not read option in line %i of given parameter file. Abort.\n", line);
 			exit(EXIT_FAILURE);
 		}
 	}
