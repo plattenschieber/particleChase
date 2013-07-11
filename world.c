@@ -49,11 +49,11 @@ void world_update_v(WORLD *W) {
 }
 
 void world_read_particles(WORLD *W, FILE *particles) {
-	int ID;
-	double x[DIM];
-	/* read in particles in this form: ID x[0] x[1] */
-	while (fscanf(particles,"%i %lf %lf",&ID, &x[0], &x[1]) == 3) { 
-		PARTICLE *tmp = malloc(sizeof(PARTICLE));
+	int ID, i;
+	PARTICLE *tmp;
+	while (fscanf(particles,"%i ",&ID) != EOF) { 
+		/* get new memory for a temporary 'PARTICLE' */
+		tmp = malloc(sizeof(PARTICLE)); 
 		tmp->ID = ID;
 #ifdef DEBUG
 		printf("\n%i\t",tmp->ID);
