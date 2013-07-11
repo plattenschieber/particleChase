@@ -58,6 +58,12 @@ void world_read_particles(WORLD *W, FILE *particles) {
 #ifdef DEBUG
 		printf("\n%i\t",tmp->ID);
 #endif
+		/* read in the coordinates */ 
+		for (i=0; i<DIM; i++) {
+			if(fscanf(particles,"%lf", &tmp->x[i])!=1) {
+				fprintf(stderr, "Something is wrong with your particle file - Abort\n");
+				exit(EXIT_FAILURE);
+			}	
 #ifdef DEBUG
 			printf("%f\t",tmp->x[i]);
 #endif
