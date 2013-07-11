@@ -16,15 +16,15 @@ int main(int argc, char **argv) {
 		printf("No parameter file, nor particles given - using 'unit.parameter' and 'unit.particles' instead\n");
 	}
 	else if (argc == 2) { 
-		strcpy(file1,argv[2]);
 #ifdef DEBUG
 #endif
+		strcpy(file1,argv[1]);
 		strcpy(file2, "unit.parameter");
 		printf("No particles file given, using 'unit.particles' instead\n");
 	}
 	else if (argc == 3) { 
-		strcpy(file1,argv[2]);
-		strcpy(file2,argv[3]);
+		strcpy(file1,argv[1]);
+		strcpy(file2,argv[2]);
 	}
 	else 
 		printf("Too many arguments.\n");
