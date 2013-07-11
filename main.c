@@ -1,3 +1,5 @@
+#define FILENAME_MAX 50
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,8 +8,8 @@
 
 int main(int argc, char **argv) {
 	/* argument handling */
-	char file1[100];
-	char file2[100];
+	char file1[FILENAME_MAX];
+	char file2[FILENAME_MAX];
 	if (argc == 1) {
 		strcpy(file1,"unit.particles");
 		strcpy(file2,"unit.parameter");
