@@ -1,6 +1,7 @@
 #include "world.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 WORLD *world_init(FILE *parameter, FILE *particles) {
 	/* get some place for the world */
