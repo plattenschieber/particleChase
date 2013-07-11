@@ -17,6 +17,7 @@ int main(int argc, char **argv) {
 	}
 	else if (argc == 2) { 
 #ifdef DEBUG
+		printf("argv[1] = %s\n",argv[1]);
 #endif
 		strcpy(file1,argv[1]);
 		strcpy(file2, "unit.parameter");

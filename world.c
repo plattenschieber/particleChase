@@ -55,17 +55,13 @@ void world_read_particles(WORLD *W, FILE *particles) {
 	while (fscanf(particles,"%i %lf %lf",&ID, &x[0], &x[1]) == 3) { 
 		PARTICLE *tmp = malloc(sizeof(PARTICLE));
 		tmp->ID = ID;
-		printf("%i\t",tmp->ID);
-		int i;
-		for (i = 0; i < DIM; i++){
-			tmp->x[i] = x[i];
 #ifdef DEBUG
+		printf("\n%i\t",tmp->ID);
 #endif
 #ifdef DEBUG
 			printf("%f\t",tmp->x[i]);
 #endif
 		}
-		printf("\n");
 
 		list_insert(W->cells, NULL, tmp);
 		W->n_particles++; 
