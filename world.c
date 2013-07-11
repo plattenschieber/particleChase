@@ -69,10 +69,32 @@ void world_read_particles(WORLD *W, FILE *particles) {
 	
 }
 void world_read_parameter(WORLD *W, FILE *parameter) {
-	char *option;
-	int tmp1;
-	double tmp2;
+	char *option = malloc(sizeof(char)*20);
+	int i,line=0;
 	printf("read parameter\n");
-	fscanf(parameter,"%s", option);
-	printf("%s",option);
+	while(fscanf(parameter,"%s", option) == 1)
+	{	
+		/* update current linenumber */ 
+		line++;
+#ifdef DEBUG
+		printf("%s\n",option);
+#endif
+		if (strcmp(option,"delta_t") == 0)
+			fscanf(parameter, "%lf", &W->delta_t);
+		else if (strcmp(option,"t_end") == 0)
+			fscanf(parameter, "%lf", &W->t_end);
+		else if (strcmp(option,"t") == 0)
+			fscanf(parameter, "%lf", &W->t);
+		else if (strcmp(option,"length") == 0)
+			for (i=0; i<DIM; i++)
+				fscanf(parameter, "%lf", &W->length[i]);
+		else if (strcmp(option,"step") == 0)
+			fscanf(parameter, "%i", &W->step);
+		else if (strcmp(option,"n_particles") == 0)
+			fscanf(parameter, "%i", &W->n_particles);
+		else {
+			printf("Could not read option in line %i of given parameter file. Abort.", line);
+			exit(EXIT_FAILURE);
+		}
+	}
 }
