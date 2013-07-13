@@ -27,6 +27,7 @@ void world_simulate(WORLD *W) {
 #ifdef DEBUG
 		printf("Actual time on earth: %f\n",W->t);
 #endif
+		print_particles(W->cells);
 		W->t+=W->delta_t;
 		W->step++;
 	}
