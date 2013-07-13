@@ -36,13 +36,28 @@ void world_update_x(WORLD *W) {
 	NODE *it;
 	PARTICLE *p;
 	unsigned int i;
- 	for (it = W->cells->first; it != NULL; it = it->next)
-		for (i=0; i<DIM; i++) {
-			/* cast data to particle */
-			p = it->data;
-			/* do some calculation (move more in y coordinate than x)*/
-			p->x[i] += 0.112+i/2;
+	double x,y;
+ 	for (it = W->cells->first; it != NULL; it = it->next) {
+		p = it->data;
+		//scanf("%i",NULL);
+		x = p->x[0];
+		y = p->x[1];
+		if ((x*x + y*y) == 0) {
+			fprintf(stderr, "division by zero\n");
+			exit(EXIT_FAILURE);
 		}
+		p->x[0] += -y/(x*x + y*y);
+		p->x[1] += x/(x*x + y*y);
+
+		
+		//for (i=0; i<DIM; i++) {
+			/* cast data to particle */
+		//
+			/* do some calculation (move more in y coordinate than x)*/
+			
+		//	p->x[i] += 0.112+i/2;
+		//}
+	}
 }
 
 void world_update_v(WORLD *W) {
