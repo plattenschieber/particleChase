@@ -70,5 +70,9 @@ $(SUFFIX).o:
 	$(CC) -MM $(CFLAGS) $(INCLUDES) $< > $*.d
 
 clean:
-	$(RM) *.o *~ $(MAIN) *.d
+	$(RM) *.o *~ $(MAIN) *.d plot.gnuplot
 	$(RM) -r api-doc
+
+plot:
+	$(RM) plot.gnuplot 
+	./$(MAIN) plot.particles >> plot.gnuplot
