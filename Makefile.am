@@ -4,7 +4,7 @@
 
 if P4EST_ENABLE_BUILD_2D
 bin_PROGRAMS += particleChase/particleChase
-particleChase_particleChase_SOURCES = example/simple/ptest2.c
+particleChase_particleChase_SOURCES = particleChase/particleChase.c particleChase/list.c particleChase/world.c 
 
 LINT_CSOURCES += $(particleChase_particleChase_SOURCES)
 endif
