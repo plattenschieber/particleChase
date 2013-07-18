@@ -2,3 +2,5 @@
 *.d
 particleChase
 .DS_Store
+.deps/
+.dirstamp
