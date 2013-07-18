@@ -6,10 +6,10 @@
 #
 
 # define the executable file 
-MAIN = ParticleChase
+MAIN = particleChase
 
 # define the C source files 
-SRCS = main.c list.c world.c
+SRCS = particleChase.c list.c world.c
 
 # define the C compiler to use
 CC = gcc
