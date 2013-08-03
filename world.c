@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <time.h>
 
 WORLD *world_init(FILE *parameter, FILE *particles) {
 	/* get some place for the world */
