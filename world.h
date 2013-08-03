@@ -1,4 +1,4 @@
-#define DEBUG
+//#define DEBUG
 #define MAX_PARTICLES 15
 
 #ifndef WORLD_H
