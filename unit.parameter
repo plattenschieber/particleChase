@@ -1,5 +1,5 @@
-delta_t 0.1
-t_end 1.0
+delta_t 0.0001
+t_end 9.0
 t 0.0
 length 1.0 1.0
 step 0
