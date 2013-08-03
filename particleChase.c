@@ -13,7 +13,9 @@ int main(int argc, char **argv) {
 	if (argc == 1) {
 		strcpy(file1,"unit.particles");
 		strcpy(file2,"unit.parameter");
+#ifdef DEBUG
 		printf("No parameter file, nor particles given - using 'unit.parameter' and 'unit.particles' instead\n");
+#endif
 	}
 	else if (argc == 2) { 
 #ifdef DEBUG
