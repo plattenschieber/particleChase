@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 WORLD *world_init(FILE *parameter, FILE *particles) {
 	/* get some place for the world */
@@ -42,24 +43,12 @@ void world_update_x(WORLD *W) {
 	double x,y;
  	for (it = W->cells->first; it != NULL; it = it->next) {
 		p = it->data;
-		//scanf("%i",NULL);
-		x = p->x[0];
-		y = p->x[1];
-		if ((x*x + y*y) == 0) {
-			fprintf(stderr, "division by zero\n");
-			exit(EXIT_FAILURE);
-		}
-		p->x[0] += -y/(x*x + y*y);
-		p->x[1] += x/(x*x + y*y);
+		x = -p->x[1];
+		y = p->x[0];
 
-		
-		//for (i=0; i<DIM; i++) {
-			/* cast data to particle */
-		//
-			/* do some calculation (move more in y coordinate than x)*/
-			
-		//	p->x[i] += 0.112+i/2;
-		//}
+		double norm = sqrt(x*x + y*y);
+		p->x[0] += W->delta_t * x/norm;
+		p->x[1] += W->delta_t * y/norm;
 	}
 }
 
