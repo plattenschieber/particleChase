@@ -148,3 +148,40 @@ void world_randomfill(WORLD *W) {
 	} while(++i < MAX_PARTICLES);
 }
 
+void world_print_particlesXYZ(WORLD *W) {
+	int i;
+	NODE *it;
+	PARTICLE *p;
+	printf("%i\n",W->n_particles);
+	//for (it = L->first; it; it = it->next) {
+		/* cast data to particle */
+		p = it->data;
+		printf("%i\t",p->ID);
+		for (i = 0; i < DIM; i++)
+			printf("%f\t",p->x[i]);
+		printf("\n");
+	//}
+	/*
+    int nParticles = 0;
+    // write size and actual time of our world W
+    //coordinates << W.nParticles << std::endl << "Time: " << W.t << std::endl;
+    for (std::vector<Cell>::const_iterator i = W.cells.begin(); i < W.cells.end(); i++)
+        for (std::list<Particle>::const_iterator j = i->particles.begin(); j != i->particles.end(); j++)
+            nParticles++;
+    coordinates << nParticles << std::endl << "Time: " << W.t << std::endl;
+    // get out every particle to satisfy the xyz format
+    for (std::vector<Cell>::const_iterator i = W.cells.begin(); i < W.cells.end(); i++)
+        for (std::list<Particle>::const_iterator j = i->particles.begin(); j != i->particles.end(); j++)
+        {
+            // each particle should be an H-atom. At least now...
+            coordinates << "H\t";
+            // particle j is located in a DIM-dimensional space
+            for (unsigned int d=0; d<DIM; d++)
+                // get it out, seperated with tabulars
+                coordinates << j->x[d] << "\t";
+            // newline at end of each particle
+            coordinates << std::endl;
+        }
+*/
+
+}

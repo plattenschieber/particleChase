@@ -37,4 +37,6 @@ void world_read_particles(WORLD *W, FILE *F);
 void world_read_parameter(WORLD *W, FILE *F);
 /* fill in MAX_PARTICLES particles */
 void world_randomfill(WORLD *W);
+/* print XYZ file */
+void world_print_particlesXYZ(WORLD *W);
 #endif
