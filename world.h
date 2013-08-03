@@ -1,4 +1,5 @@
 #define DEBUG
+#define MAX_PARTICLES 15
 
 #ifndef WORLD_H
 #define WORLD_H
@@ -34,4 +35,6 @@ void world_update_v(WORLD *W);
 void world_read_particles(WORLD *W, FILE *F);
 /* read world parameter from file */
 void world_read_parameter(WORLD *W, FILE *F);
+/* fill in MAX_PARTICLES particles */
+void world_randomfill(WORLD *W);
 #endif

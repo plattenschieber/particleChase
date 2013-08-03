@@ -15,8 +15,10 @@ WORLD *world_init(FILE *parameter, FILE *particles) {
 	/* read in and set all parameters */
 	W->n_particles = 0;
 	W->step = 0;
-	world_read_particles(W, particles);
 	world_read_parameter(W, parameter);
+	/* world_read_particles(W, particles); */
+	/* fill in some particles randomly instead */
+	world_randomfill(W);
 	return W;
 }
 
@@ -129,3 +131,20 @@ void world_read_parameter(WORLD *W, FILE *parameter) {
 		}
 	}
 }
+
+void world_randomfill(WORLD *W) {
+
+	/* reset seed */
+	srand(time(NULL));
+	PARTICLE *p;
+	int i = 0;
+	do {
+		p = malloc(sizeof(PARTICLE)); 
+		p->x[0] = W->length[0] * rand()/(RAND_MAX + 1.);
+		p->x[1] = W->length[1] * rand()/(RAND_MAX + 1.);
+		p->ID = i;
+		list_insert(W->cells, NULL, p);
+		W->n_particles++; 
+	} while(++i < MAX_PARTICLES);
+}
+
