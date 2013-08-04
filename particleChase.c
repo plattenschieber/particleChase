@@ -2,7 +2,6 @@
 
 #include <p4est_bits.h>
 #include <p4est_extended.h>
-#include <p4est_ghost.h>
 #include <p4est_vtk.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,7 +9,37 @@
 #include "list.h"
 #include "world.h"
 
+typedef struct
+{
+  MPI_Comm            mpicomm;
+  int                 mpisize;
+  int                 mpirank;
+}
+mpi_context_t;
+
 int main(int argc, char **argv) {
+
+	int                 mpiret;
+	mpi_context_t       mpi_context, *mpi = &mpi_context;
+	p4est_t            *p4est;
+	p4est_connectivity_t *connectivity;
+	p4est_refine_t      refine_fn;
+	p4est_coarsen_t     coarsen_fn;
+
+	/* initialize MPI and p4est internals */
+	mpiret = MPI_Init (&argc, &argv);
+	SC_CHECK_MPI (mpiret);
+	mpi->mpicomm = MPI_COMM_WORLD;        /* your favourite comm here */
+	mpiret = MPI_Comm_size (mpi->mpicomm, &mpi->mpisize);
+	SC_CHECK_MPI (mpiret);
+	mpiret = MPI_Comm_rank (mpi->mpicomm, &mpi->mpirank);
+	SC_CHECK_MPI (mpiret);
+	sc_init (mpi->mpicomm, 1, 1, NULL, SC_LP_DEFAULT);
+	p4est_init (NULL, SC_LP_DEFAULT);
+
+	connectivity = p4est_connectivity_new_unitsquare ();
+	
+
 	/* argument handling */
 	char file1[FILENAME_MAX];
 	char file2[FILENAME_MAX];
