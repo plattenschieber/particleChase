@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
+#include <time.h>
 
 WORLD *world_init(FILE *parameter, FILE *particles) {
 	/* get some place for the world */
@@ -15,8 +17,10 @@ WORLD *world_init(FILE *parameter, FILE *particles) {
 	/* read in and set all parameters */
 	W->n_particles = 0;
 	W->step = 0;
-	world_read_particles(W, particles);
 	world_read_parameter(W, parameter);
+	/* world_read_particles(W, particles); */
+	/* fill in some particles randomly instead */
+	world_randomfill(W);
 	return W;
 }
 
@@ -40,24 +44,12 @@ void world_update_x(WORLD *W) {
 	double x,y;
  	for (it = W->cells->first; it != NULL; it = it->next) {
 		p = it->data;
-		//scanf("%i",NULL);
-		x = p->x[0];
-		y = p->x[1];
-		if ((x*x + y*y) == 0) {
-			fprintf(stderr, "division by zero\n");
-			exit(EXIT_FAILURE);
-		}
-		p->x[0] += -y/(x*x + y*y);
-		p->x[1] += x/(x*x + y*y);
+		x = -p->x[1];
+		y = p->x[0];
 
-		
-		//for (i=0; i<DIM; i++) {
-			/* cast data to particle */
-		//
-			/* do some calculation (move more in y coordinate than x)*/
-			
-		//	p->x[i] += 0.112+i/2;
-		//}
+		double norm = sqrt(x*x + y*y);
+		p->x[0] += W->delta_t * x/norm;
+		p->x[1] += W->delta_t * y/norm;
 	}
 }
 
@@ -128,4 +120,58 @@ void world_read_parameter(WORLD *W, FILE *parameter) {
 			exit(EXIT_FAILURE);
 		}
 	}
+}
+
+void world_randomfill(WORLD *W) {
+
+	/* reset seed */
+	srand(time(NULL));
+	PARTICLE *p;
+	int i = 0;
+	do {
+		p = malloc(sizeof(PARTICLE)); 
+		p->x[0] = W->length[0] * rand()/(RAND_MAX + 1.);
+		p->x[1] = W->length[1] * rand()/(RAND_MAX + 1.);
+		p->ID = i;
+		list_insert(W->cells, NULL, p);
+		W->n_particles++; 
+	} while(++i < MAX_PARTICLES);
+}
+
+void world_print_particlesXYZ(WORLD *W) {
+	int i;
+	NODE *it;
+	PARTICLE *p;
+	printf("%i\n",W->n_particles);
+	//for (it = L->first; it; it = it->next) {
+		/* cast data to particle */
+		p = it->data;
+		printf("%i\t",p->ID);
+		for (i = 0; i < DIM; i++)
+			printf("%f\t",p->x[i]);
+		printf("\n");
+	//}
+	/*
+    int nParticles = 0;
+    // write size and actual time of our world W
+    //coordinates << W.nParticles << std::endl << "Time: " << W.t << std::endl;
+    for (std::vector<Cell>::const_iterator i = W.cells.begin(); i < W.cells.end(); i++)
+        for (std::list<Particle>::const_iterator j = i->particles.begin(); j != i->particles.end(); j++)
+            nParticles++;
+    coordinates << nParticles << std::endl << "Time: " << W.t << std::endl;
+    // get out every particle to satisfy the xyz format
+    for (std::vector<Cell>::const_iterator i = W.cells.begin(); i < W.cells.end(); i++)
+        for (std::list<Particle>::const_iterator j = i->particles.begin(); j != i->particles.end(); j++)
+        {
+            // each particle should be an H-atom. At least now...
+            coordinates << "H\t";
+            // particle j is located in a DIM-dimensional space
+            for (unsigned int d=0; d<DIM; d++)
+                // get it out, seperated with tabulars
+                coordinates << j->x[d] << "\t";
+            // newline at end of each particle
+            coordinates << std::endl;
+        }
+*/
+
 }

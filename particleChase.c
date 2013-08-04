@@ -1,5 +1,9 @@
 #define FILENAME_MAX 50
 
+#include <p4est_bits.h>
+#include <p4est_extended.h>
+#include <p4est_ghost.h>
+#include <p4est_vtk.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
