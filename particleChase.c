@@ -11,9 +11,9 @@
 
 typedef struct
 {
-  MPI_Comm            mpicomm;
-  int                 mpisize;
-  int                 mpirank;
+	MPI_Comm            mpicomm;
+	int                 mpisize;
+	int                 mpirank;
 }
 mpi_context_t;
 
