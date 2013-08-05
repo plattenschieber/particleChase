@@ -64,6 +64,9 @@ int main(int argc, char **argv) {
 	p4est = p4est_new_ext (mpi->mpicomm, connectivity, 15, 0, 0,
 			sizeof (PARTICLE), init_fn, NULL);
 	p4est_vtk_write_file (p4est, NULL, "simple2_new");
+	/* refinement and coarsening */
+	p4est_refine (p4est, 1, refine_fn, init_fn);
+	p4est_vtk_write_file (p4est, NULL, "simple2_refined");
 	/* argument handling */
 	char file1[FILENAME_MAX];
 	char file2[FILENAME_MAX];
