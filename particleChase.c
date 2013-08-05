@@ -17,7 +17,14 @@ typedef struct
 }
 mpi_context_t;
 
+/* every quadrant will get one particle with ID -1 */
+static void
+init_fn (p4est_t * p4est, p4est_topidx_t which_tree, p4est_quadrant_t * quadrant)
+{
+	quadrant->p.user_data = random_particle();
 	++PARTICLE_COUNT;
+}
+
 /* refines the cell only for first particle */
 static int
 refine_fn (p4est_t * p4est, p4est_topidx_t which_tree, p4est_quadrant_t * quadrant)
