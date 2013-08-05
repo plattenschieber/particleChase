@@ -18,6 +18,18 @@ typedef struct
 mpi_context_t;
 
 	++PARTICLE_COUNT;
+/* refines the cell only for first particle */
+static int
+refine_fn (p4est_t * p4est, p4est_topidx_t which_tree, p4est_quadrant_t * quadrant)
+{
+	if (((PARTICLE *) (quadrant->p.user_data))->ID == 0)
+	{
+		return 1;
+	}
+
+	return 0;
+}
+
 int main(int argc, char **argv) {
 
 	int                 mpiret;
