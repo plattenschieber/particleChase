@@ -44,7 +44,6 @@ int main(int argc, char **argv) {
 	p4est_t            *p4est;
 	p4est_connectivity_t *connectivity;
 	p4est_refine_t      refine_fn;
-	p4est_coarsen_t     coarsen_fn;
 
 	/* initialize MPI and p4est internals */
 	mpiret = MPI_Init (&argc, &argv);
