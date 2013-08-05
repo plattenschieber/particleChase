@@ -84,9 +84,9 @@ int main(int argc, char **argv) {
 	fclose(parameter);
 	fclose(particles);
 	/* print particles before and after the simulation */ 
-	print_particles(W->cells);
+	print_particles(W->particles);
 	world_simulate(W);
-	print_particles(W->cells);
+	print_particles(W->particles);
 
 	return 0;
 }

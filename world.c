@@ -31,7 +31,7 @@ void world_simulate(WORLD *W) {
 #ifdef DEBUG
 		printf("Actual time on earth: %f\n",W->t);
 #endif
-		print_particles(W->cells);
+		print_particles(W->particles);
 		W->t+=W->delta_t;
 		W->step++;
 	}
@@ -40,9 +40,8 @@ void world_simulate(WORLD *W) {
 void world_update_x(WORLD *W) {
 	NODE *it;
 	PARTICLE *p;
-	unsigned int i;
 	double x,y;
- 	for (it = W->cells->first; it != NULL; it = it->next) {
+ 	for (it = W->particles->first; it != NULL; it = it->next) {
 		p = it->data;
 		x = -p->x[1];
 		y = p->x[0];
@@ -78,7 +77,7 @@ void world_read_particles(WORLD *W, FILE *particles) {
 #endif
 		}
 
-		list_insert(W->cells, NULL, tmp);
+		list_insert(W->particles, NULL, tmp);
 		W->n_particles++; 
 #ifdef DEBUG
 		printf("particle inserted\n");
@@ -155,12 +154,12 @@ void world_print_particlesXYZ(WORLD *W) {
     int nParticles = 0;
     // write size and actual time of our world W
     //coordinates << W.nParticles << std::endl << "Time: " << W.t << std::endl;
-    for (std::vector<Cell>::const_iterator i = W.cells.begin(); i < W.cells.end(); i++)
+    for (std::vector<Cell>::const_iterator i = W.particles.begin(); i < W.particles.end(); i++)
         for (std::list<Particle>::const_iterator j = i->particles.begin(); j != i->particles.end(); j++)
             nParticles++;
     coordinates << nParticles << std::endl << "Time: " << W.t << std::endl;
     // get out every particle to satisfy the xyz format
-    for (std::vector<Cell>::const_iterator i = W.cells.begin(); i < W.cells.end(); i++)
+    for (std::vector<Cell>::const_iterator i = W.particles.begin(); i < W.particles.end(); i++)
         for (std::list<Particle>::const_iterator j = i->particles.begin(); j != i->particles.end(); j++)
         {
             // each particle should be an H-atom. At least now...

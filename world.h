@@ -7,7 +7,7 @@
 #include <stdio.h> 
 typedef struct {
 	/* a list of cells with particle lists */
-	LIST *cells;
+	LIST *particles;
 	// current time */
 	double t;
 	// timestep length */
