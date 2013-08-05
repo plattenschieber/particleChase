@@ -58,8 +58,8 @@ int main(int argc, char **argv) {
 	/* Registers p4est with the SC Library and sets the logging behavior */
 	p4est_init (NULL, SC_LP_DEFAULT);
 
+	/* store connectivity for a unitsquare */
 	connectivity = p4est_connectivity_new_unitsquare ();
-	
 
 	/* argument handling */
 	char file1[FILENAME_MAX];
