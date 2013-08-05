@@ -61,6 +61,9 @@ int main(int argc, char **argv) {
 	/* store connectivity for a unitsquare */
 	connectivity = p4est_connectivity_new_unitsquare ();
 
+	p4est = p4est_new_ext (mpi->mpicomm, connectivity, 15, 0, 0,
+			sizeof (PARTICLE), init_fn, NULL);
+	p4est_vtk_write_file (p4est, NULL, "simple2_new");
 	/* argument handling */
 	char file1[FILENAME_MAX];
 	char file2[FILENAME_MAX];
