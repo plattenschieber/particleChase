@@ -53,7 +53,9 @@ int main(int argc, char **argv) {
 	SC_CHECK_MPI (mpiret);
 	mpiret = MPI_Comm_rank (mpi->mpicomm, &mpi->mpirank);
 	SC_CHECK_MPI (mpiret);
-	sc_init (mpi->mpicomm, 1, 1, NULL, SC_LP_DEFAULT);
+	/* Sets the global program identifier (e.g. the MPI rank) and some flags */
+	sc_init (mpi->mpicomm, 1, 1, NULL, SC_LP_ALWAYS); 
+	/* Registers p4est with the SC Library and sets the logging behavior */
 	p4est_init (NULL, SC_LP_DEFAULT);
 
 	connectivity = p4est_connectivity_new_unitsquare ();
