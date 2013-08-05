@@ -5,3 +5,5 @@ particleChase
 .deps/
 .dirstamp
 *.gnuplot
+*visit
+*vtu
