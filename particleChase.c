@@ -71,6 +71,10 @@ int main(int argc, char **argv) {
 	p4est_balance (p4est, P4EST_CONNECT_FULL, init_fn);
 	p4est_vtk_write_file (p4est, NULL, "simple2_balanced");
 
+	/* destroy the p4est and its connectivity structure */
+	p4est_destroy (p4est);
+	p4est_connectivity_destroy (connectivity);
+
 	/* argument handling */
 	char file1[FILENAME_MAX];
 	char file2[FILENAME_MAX];
