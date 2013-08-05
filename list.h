@@ -2,6 +2,8 @@
 #define LIST_H
 #define DIM 2
 
+static int PARTICLE_COUNT = 0;
+
 typedef struct {
 	int ID;
 	double x[DIM];

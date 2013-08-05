@@ -17,6 +17,7 @@ typedef struct
 }
 mpi_context_t;
 
+	++PARTICLE_COUNT;
 int main(int argc, char **argv) {
 
 	int                 mpiret;
