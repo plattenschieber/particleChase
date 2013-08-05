@@ -67,6 +67,10 @@ int main(int argc, char **argv) {
 	/* refinement and coarsening */
 	p4est_refine (p4est, 1, refine_fn, init_fn);
 	p4est_vtk_write_file (p4est, NULL, "simple2_refined");
+	/* balance */
+	p4est_balance (p4est, P4EST_CONNECT_FULL, init_fn);
+	p4est_vtk_write_file (p4est, NULL, "simple2_balanced");
+
 	/* argument handling */
 	char file1[FILENAME_MAX];
 	char file2[FILENAME_MAX];
