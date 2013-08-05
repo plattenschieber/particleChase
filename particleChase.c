@@ -75,6 +75,12 @@ int main(int argc, char **argv) {
 	p4est_destroy (p4est);
 	p4est_connectivity_destroy (connectivity);
 
+	/* clean up and exit */
+	sc_finalize ();
+
+	mpiret = MPI_Finalize ();
+	SC_CHECK_MPI (mpiret);
+
 	/* argument handling */
 	char file1[FILENAME_MAX];
 	char file2[FILENAME_MAX];
