@@ -122,19 +122,30 @@ void world_read_parameter(WORLD *W, FILE *parameter) {
 }
 
 void world_randomfill(WORLD *W) {
+	unsigned i;
+	for (i=0; i<MAX_PARTICLES; i++) 
+		world_random_particle(W);
 
-	/* reset seed */
-	srand(time(NULL));
-	PARTICLE *p;
-	int i = 0;
-	do {
-		p = malloc(sizeof(PARTICLE)); 
-		p->x[0] = W->length[0] * rand()/(RAND_MAX + 1.);
-		p->x[1] = W->length[1] * rand()/(RAND_MAX + 1.);
-		p->ID = i;
-		list_insert(W->cells, NULL, p);
-		W->n_particles++; 
-	} while(++i < MAX_PARTICLES);
+}
+
+PARTICLE * random_particle() {
+	int i;
+	PARTICLE *p = malloc(sizeof(PARTICLE));
+	for (i=0; i<DIM; i++)
+		p->x[i] = rand()/(RAND_MAX + 1.);
+	p->ID = PARTICLE_COUNT;
+	PARTICLE_COUNT++; 
+	return p;
+}
+PARTICLE * world_random_particle(WORLD *W) {
+	int i;
+	PARTICLE *p = malloc(sizeof(PARTICLE));
+	for (i=0; i<DIM; i++)
+		p->x[i] = W->length[i] * rand()/(RAND_MAX + 1.);
+	p->ID = W->n_particles;
+	list_insert(W->particles, NULL, p);
+	W->n_particles++; 
+	return p;
 }
 
 void world_print_particlesXYZ(WORLD *W) {

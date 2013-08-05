@@ -37,6 +37,10 @@ void world_read_particles(WORLD *W, FILE *F);
 void world_read_parameter(WORLD *W, FILE *F);
 /* fill in MAX_PARTICLES particles */
 void world_randomfill(WORLD *W);
+/* fill the world with random particles */
+PARTICLE * world_random_particle(WORLD *W);
+/* return a randomly assigned particle inside the world */
+PARTICLE * random_particle();
 /* print XYZ file */
 void world_print_particlesXYZ(WORLD *W);
 #endif
