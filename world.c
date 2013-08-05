@@ -19,6 +19,8 @@ WORLD *world_init(FILE *parameter, FILE *particles) {
 	W->step = 0;
 	world_read_parameter(W, parameter);
 	/* world_read_particles(W, particles); */
+	/* reset seed */
+	srand(time(NULL));
 	/* fill in some particles randomly instead */
 	world_randomfill(W);
 	return W;
