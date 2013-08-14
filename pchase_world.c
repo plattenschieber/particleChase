@@ -53,6 +53,19 @@ pchase_particle_t * pchase_world_random_particle(pchase_world_t *W) {
 	return p;
 }
 
+p4est_quadrant_t * pchase_translate_particle_to_p4est(pchase_world_t *W, pchase_particle_t *p) {
+	p4est_quadrant_t *q;
+	P4EST_QUADRANT_INIT(q);
+	q->level=P4EST_MAXLEVEL;
+	/* first convert particles' coord to [0,1) then place it into p4est */
+	q->x = (int) floor((p->x[0]/W->length[0])*P4EST_ROOT_LEN);
+	q->y = (int) floor((p->x[1]/W->length[1])*P4EST_ROOT_LEN);
+#if DIM == 3
+	q->z = (int) floor((p->x[2]/W->length[2])*P4EST_ROOT_LEN);
+#endif
+	return q;
+}
+
 void pchase_world_print_particlesXYZ(pchase_world_t *W){
 	printf("PRINT XYZ - NOT IMPLEMENTED YET");
 }

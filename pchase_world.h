@@ -51,10 +51,12 @@ p4est_quadrant_t * pchase_world_insert_particle(pchase_world_t *W, pchase_partic
  */
 void pchase_world_print_particlesXYZ(pchase_world_t *W);
 
-/** converts a worlds (particle) coordinate into a p4est quadrant coordinate 
- * \param [in] coord	world coordinate to be converted
+/** take out a particle of its world and find out where it stays in p4est
+ * \param [in] W	the world we are working on
+ * \param [in] p	a particle lying inside the world 
+ * \return 		the quadrant to which the given particle belongs
  */
-p4est_quadrant_t * pchase_translate_particle_to_p4est(pchase_particle_t *p);
+p4est_quadrant_t * pchase_translate_particle_to_p4est(pchase_world_t *W, pchase_particle_t *p);
 
 /** find the owner of a given quadrant 
  * \param [in] q	quadrant whos owner rank shall be found
