@@ -26,17 +26,6 @@ WORLD *world_init(FILE *parameter, FILE *particles);
 void world_simulate(WORLD *W);
 /* update positions */
 void world_update_x(WORLD *W);
-/* update velocity */
-void world_update_v(WORLD *W);
-
-/* read in particles and save them into their corresponding cell */
-void world_read_particles(WORLD *W, FILE *F);
-/* read world parameter from file */
-void world_read_parameter(WORLD *W, FILE *F);
-/* fill in MAX_PARTICLES particles */
-void world_randomfill(WORLD *W);
-/* fill the world with random particles */
-PARTICLE * world_random_particle(WORLD *W);
 /* return a randomly assigned particle inside the world */
 PARTICLE * random_particle();
 /* return a particle via random distribution inside the pchase_worlds boundaries */
