@@ -1,9 +1,11 @@
-#ifndef WORLD_H
-#define WORLD_H
+#ifndef PCHASE_WORLD_H
+#define PCHASE_WORLD_H
 #define DEBUG
 #define DIM 2
 
 #include <stdio.h> 
+#include "pchase_particle.h"
+
 /* pchase_world_t holds the entire information of our simulation */
 typedef struct {
 	// current time */
@@ -18,17 +20,16 @@ typedef struct {
 	unsigned int step;
 	/* length */ 
 	double length[DIM]; 
-} WORLD;
+} pchase_world_t;
 
-/* initialize the world's parameters */
-WORLD *world_init(FILE *parameter, FILE *particles);
+/* initialize the pchase_world's parameters */
+pchase_world_t *pchase_world_init(FILE *parameter, FILE *particles);
 /* start the simulation */
-void world_simulate(WORLD *W);
+void pchase_world_simulate(pchase_world_t *W);
 /* update positions */
-void world_update_x(WORLD *W);
-/* return a randomly assigned particle inside the world */
-PARTICLE * random_particle();
+void pchase_world_update_x(pchase_world_t *W);
 /* return a particle via random distribution inside the pchase_worlds boundaries */
+pchase_particle_t * pchase_world_random_particle();
 /* print XYZ file */
-void world_print_particlesXYZ(WORLD *W);
+void pchase_world_print_particlesXYZ(pchase_world_t *W);
 #endif
