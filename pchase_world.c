@@ -1,6 +1,6 @@
 #include "pchase_world.h"
 
-pchase_world_t *pchase_world_init() {
+pchase_world_t *pchase_world_init(p4est_t p4est) {
 	int i;
 	/* get some place for the pchase_world */
 	pchase_world_t *W;
@@ -14,6 +14,7 @@ pchase_world_t *pchase_world_init() {
 	W->t_end		= 1.0;
 	W->n_particles 		= 0;
 	W->step 		= 0;
+	W->p4est 		= p4est;
 	for (i=0; i<DIM; i++)
 		W->length[i] = 1.0;
 	/* reset seed */

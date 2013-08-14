@@ -17,12 +17,13 @@ typedef struct {
 	unsigned int 	n_particles;	/* number of overall particles */
 	unsigned int 	step;		/* current step */
 	double 		length[DIM];	/* length */ 
+	p4est_t		p4est;		/* a pointer to the allocated p4est */
 } pchase_world_t;
 
 /** initialize a world with static parameter
  * \return		a ready to use world
  */
-pchase_world_t *pchase_world_init();
+pchase_world_t *pchase_world_init(p4est_t p4est);
 
 /** start the simulation 
  * \param [in] W	the world we are working on
