@@ -1,6 +1,6 @@
 #ifndef PCHASE_PARTICLE_H
 #define PCHASE_PARTICLE_H
-#include "world.h"
+#include "pchase_world.h"
 
 typedef struct {
 #ifdef DEBUG /* needed only to follow the particle */
