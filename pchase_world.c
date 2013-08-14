@@ -53,5 +53,5 @@ pchase_particle_t * pchase_world_random_particle(pchase_world_t *W) {
 }
 
 void pchase_world_print_particlesXYZ(pchase_world_t *W){
-	prinft("PRINT XYZ - NOT IMPLEMENTED YET");
+	printf("PRINT XYZ - NOT IMPLEMENTED YET");
 }
