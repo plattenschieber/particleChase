@@ -19,14 +19,39 @@ typedef struct {
 	double length[DIM];		/* length */ 
 } pchase_world_t;
 
-/* initialize the pchase_world's parameters */
+/** initialize a world with static parameter
+ * \return		a ready to use world
+ */
 pchase_world_t *pchase_world_init();
-/* start the simulation */
+
+/** start the simulation 
+ * \param [in] W	the world we are working on
+ */
 void pchase_world_simulate(pchase_world_t *W);
-/* update positions */
+
+/** update positions
+ * \param [in] W	the world we are working on
+ */
 void pchase_world_update_x(pchase_world_t *W);
-/* return a particle via random distribution inside the pchase_worlds boundaries */
+
+/** return a particle via random distribution inside the pchase_worlds boundaries
+ * \param [in] W	the world we are working on
+ */
 pchase_particle_t * pchase_world_random_particle(pchase_world_t *W);
-/* print XYZ file */
+
+/** insert a particle into its belonging quadrant and return the quadrant
+ * \param [in] W	the world into which we are operating
+ * \param [in] p	the particle to be inserted 
+ */
+p4est_quadrant_t * pchase_world_insert_particle(pchase_world_t *W, pchase_particle_t *p);
+
+/** prints out all particles into a XYZ file
+ * \param [in] W	the world which shall be printed 
+ */
 void pchase_world_print_particlesXYZ(pchase_world_t *W);
+
+/** converts a worlds (particle) coordinate into a p4est quadrant coordinate 
+ * \param [in] coord	world coordinate to be converted
+ */
+p4est_quadrant_t * pchase_translate_particle_to_p4est(pchase_particle_t *p);
 #endif
