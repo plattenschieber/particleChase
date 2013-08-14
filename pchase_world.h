@@ -11,12 +11,12 @@
 
 /* pchase_world_t holds the entire information of our simulation */
 typedef struct {
-	double t;			/* current time */
-	double delta_t;			/* timestep length */
-	double t_end;			/* end time */
-	unsigned int n_particles;	/* number of overall particles */
-	unsigned int step;		/* current step */
-	double length[DIM];		/* length */ 
+	double 		t;		/* current time */
+	double 		delta_t;	/* timestep length */
+	double 		t_end;		/* end time */
+	unsigned int 	n_particles;	/* number of overall particles */
+	unsigned int 	step;		/* current step */
+	double 		length[DIM];	/* length */ 
 } pchase_world_t;
 
 /** initialize a world with static parameter
