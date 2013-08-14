@@ -23,7 +23,7 @@ typedef struct {
 } pchase_world_t;
 
 /* initialize the pchase_world's parameters */
-pchase_world_t *pchase_world_init(FILE *parameter, FILE *particles);
+pchase_world_t *pchase_world_init();
 /* start the simulation */
 void pchase_world_simulate(pchase_world_t *W);
 /* update positions */

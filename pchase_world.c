@@ -1,6 +1,6 @@
 #include "pchase_world.h"
 
-pchase_world_t *pchase_world_init(FILE *parameter, FILE *particles) {
+pchase_world_t *pchase_world_init() {
 	int i;
 	/* get some place for the pchase_world */
 	pchase_world_t *W;
