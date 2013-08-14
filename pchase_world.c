@@ -53,6 +53,19 @@ pchase_particle_t * pchase_world_random_particle(pchase_world_t *W) {
 	return p;
 }
 
+p4est_quadrant_t * pchase_world_insert_particle(pchase_world_t *W, pchase_particle_t *p) {
+	p4est_quadrant_t *q = pchase_translate_particle_to_p4est(p);
+	if (p4est_comm_find_owner(W->p4est, W->p4est.first_local_tree, q, -1) == W->p4est.mpirank)
+	{
+		printf("Not yet implemented");
+	}
+	/* send particle to belonging */
+	else
+		printf("Not yet implemented");
+
+	return q;
+}
+
 p4est_quadrant_t * pchase_translate_particle_to_p4est(pchase_world_t *W, pchase_particle_t *p) {
 	p4est_quadrant_t *q;
 	P4EST_QUADRANT_INIT(q);
