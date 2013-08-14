@@ -56,3 +56,7 @@ pchase_particle_t * pchase_world_random_particle(pchase_world_t *W) {
 void pchase_world_print_particlesXYZ(pchase_world_t *W){
 	printf("PRINT XYZ - NOT IMPLEMENTED YET");
 }
+
+int pchase_quadrant_is_in_proc(p4est_quadrant_t *q){
+	return -1;
+}

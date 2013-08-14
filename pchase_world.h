@@ -55,4 +55,10 @@ void pchase_world_print_particlesXYZ(pchase_world_t *W);
  * \param [in] coord	world coordinate to be converted
  */
 p4est_quadrant_t * pchase_translate_particle_to_p4est(pchase_particle_t *p);
+
+/** find the owner of a given quadrant 
+ * \param [in] q	quadrant whos owner rank shall be found
+ * \return 		owner rank
+ */
+int pchase_quadrant_is_in_proc(p4est_quadrant_t *q);
 #endif
