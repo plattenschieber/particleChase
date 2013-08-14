@@ -5,6 +5,8 @@
 
 #include "pchase_particle.h"
 #include <stdlib.h>
+#include <stdio.h>
+#include <time.h>
 
 /* pchase_world_t holds the entire information of our simulation */
 typedef struct {

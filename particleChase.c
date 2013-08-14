@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "pchase_particle.h"
 #include "pchase_world.h"
 
 typedef struct
