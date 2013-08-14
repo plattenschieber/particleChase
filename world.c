@@ -12,9 +12,6 @@ WORLD *world_init(FILE *parameter, FILE *particles) {
 		fprintf(stderr, "Could not allocate memory for the World\n");
 		exit(EXIT_FAILURE); 
 	}
-	/* get some place for its particles */
-	W->particles = list_init();
-	/* read in and set all parameters */
 	W->n_particles = 0;
 	W->step = 0;
 	world_read_parameter(W, parameter);

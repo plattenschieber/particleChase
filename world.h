@@ -5,8 +5,6 @@
 
 #include <stdio.h> 
 typedef struct {
-	/* a list of cells with particle lists */
-	LIST *particles;
 	// current time */
 	double t;
 	// timestep length */
