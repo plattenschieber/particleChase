@@ -52,7 +52,7 @@ int main(int argc, char **argv) {
   /* Sets the global program identifier (e.g. the MPI rank) and some flags */
   sc_init (mpi->mpicomm, 1, 1, NULL, SC_LP_ALWAYS); 
   /* Registers p4est with the SC Library and sets the logging behavior */
-  p4est_init (NULL, SC_LP_DEFAULT);
+  p4est_init (NULL, SC_LP_DEFAULT); 
 
   /* store connectivity for a unitsquare */
   connectivity = p4est_connectivity_new_unitsquare ();
@@ -62,6 +62,7 @@ int main(int argc, char **argv) {
 
   p4est_vtk_write_file (p4est, NULL, "pchase_new");
 
+  
   /* destroy the p4est and its connectivity structure */
   p4est_destroy (p4est);
   p4est_connectivity_destroy (connectivity);
