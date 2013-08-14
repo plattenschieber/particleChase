@@ -5,10 +5,11 @@
 #include <math.h>
 #include <time.h>
 
-pchase_pchase_world_t *pchase_world_init(FILE *parameter, FILE *particles) {
+pchase_world_t *pchase_world_init(FILE *parameter, FILE *particles) {
+	int i;
 	/* get some place for the pchase_world */
-	pchase_pchase_world_t *W;
-	if (!(W=malloc(sizeof(pchase_pchase_world_t)))) {
+	pchase_world_t *W;
+	if (!(W=malloc(sizeof(pchase_world_t)))) {
 		fprintf(stderr, "Could not allocate memory for the World\n");
 		exit(EXIT_FAILURE); 
 	}
@@ -27,7 +28,7 @@ pchase_pchase_world_t *pchase_world_init(FILE *parameter, FILE *particles) {
 	return W;
 }
 
-void pchase_world_simulate(pchase_pchase_world_t *W) {
+void pchase_world_simulate(pchase_world_t *W) {
 	/* simulate until the end has come */
 	while (W->t <= W->t_end) {
 		pchase_world_update_x(W);
@@ -40,21 +41,21 @@ void pchase_world_simulate(pchase_pchase_world_t *W) {
 	}
 }
 
-void pchase_world_update_x(pchase_pchase_world_t *W) {
+void pchase_world_update_x(pchase_world_t *W) {
 	/* evaluate potential */
-	prinft("EVALUATE VELOCITY FIELD - NOT IMPLEMENTED YET");
+	printf("EVALUATE VELOCITY FIELD - NOT IMPLEMENTED YET");
 }
 
 
-pchase_particle_t * pchase_world_random_particle(pchase_pchase_world_t *W) {
+pchase_particle_t * pchase_world_random_particle(pchase_world_t *W) {
 	int i;
 	pchase_particle_t *p = malloc(sizeof(pchase_particle_t));
 	for (i=0; i<DIM; i++)
 		p->x[i] = W->length[i] * rand()/(RAND_MAX + 1.);
 #ifdef DEBUG
-	p->ID = pchase_world_pcounter;
+	p->ID = W->n_particles;
 #endif 
-	pchase_world_pcounter++; 
+	W->n_particles++; 
 
 	return p;
 }
