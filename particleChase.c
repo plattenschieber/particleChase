@@ -61,8 +61,10 @@ int main(int argc, char **argv) {
 	/* store connectivity for a unitsquare */
 	connectivity = p4est_connectivity_new_unitsquare ();
 
-	p4est = p4est_new_ext (mpi->mpicomm, connectivity, 15, 0, 0,
-			sizeof (PARTICLE), init_fn, NULL);
+	/* get quadrant space for 25 particles each */
+	p4est = p4est_new_ext (mpi->mpicomm, connectivity, 0, 0, 0,
+			25 * sizeof (PARTICLE), init_fn, NULL);
+
 	p4est_vtk_write_file (p4est, NULL, "simple2_new");
 	/* refinement and coarsening */
 	p4est_refine (p4est, 1, refine_fn, init_fn);
