@@ -1,9 +1,4 @@
 #include "pchase_world.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <math.h>
-#include <time.h>
 
 pchase_world_t *pchase_world_init(FILE *parameter, FILE *particles) {
 	int i;

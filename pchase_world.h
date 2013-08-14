@@ -3,8 +3,8 @@
 #define DEBUG
 #define DIM 2
 
-#include <stdio.h> 
 #include "pchase_particle.h"
+#include <stdlib.h>
 
 /* pchase_world_t holds the entire information of our simulation */
 typedef struct {
