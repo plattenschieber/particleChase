@@ -13,8 +13,13 @@ pchase_pchase_world_t *pchase_world_init(FILE *parameter, FILE *particles) {
 		exit(EXIT_FAILURE); 
 	}
 	/* set all parameters */
-	W->n_particles = 0;
-	W->step = 0;
+	W->t 			= 0.0;
+	W->delta_t 		= 0.1;
+	W->t_end		= 1.0;
+	W->n_particles 	= 0;
+	W->step 		= 0;
+	for (i=0; i<DIM; i++)
+		W->length[i] = 2.0;
 	/* reset seed */
 	srand(time(NULL));
 	/* fill in some particles randomly */
