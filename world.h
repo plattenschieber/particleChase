@@ -3,7 +3,6 @@
 
 #ifndef WORLD_H
 #define WORLD_H
-#include "list.h"
 #include <stdio.h> 
 typedef struct {
 	/* a list of cells with particle lists */
