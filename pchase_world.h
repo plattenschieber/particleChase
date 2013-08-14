@@ -29,7 +29,7 @@ void pchase_world_simulate(pchase_world_t *W);
 /* update positions */
 void pchase_world_update_x(pchase_world_t *W);
 /* return a particle via random distribution inside the pchase_worlds boundaries */
-pchase_particle_t * pchase_world_random_particle();
+pchase_particle_t * pchase_world_random_particle(pchase_world_t *W);
 /* print XYZ file */
 void pchase_world_print_particlesXYZ(pchase_world_t *W);
 #endif
