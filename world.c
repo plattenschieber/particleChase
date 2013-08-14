@@ -6,20 +6,21 @@
 #include <time.h>
 
 WORLD *world_init(FILE *parameter, FILE *particles) {
-	/* get some place for the world */
 	WORLD *W;
 	if (!(W=malloc(sizeof(WORLD)))) {
+	/* get some place for the pchase_world */
 		fprintf(stderr, "Could not allocate memory for the World\n");
 		exit(EXIT_FAILURE); 
 	}
+	/* set all parameters */
 	W->n_particles = 0;
 	W->step = 0;
 	world_read_parameter(W, parameter);
 	/* world_read_particles(W, particles); */
 	/* reset seed */
 	srand(time(NULL));
-	/* fill in some particles randomly instead */
 	world_randomfill(W);
+	/* fill in some particles randomly */
 	return W;
 }
 

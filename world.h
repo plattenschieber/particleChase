@@ -4,6 +4,7 @@
 #define DIM 2
 
 #include <stdio.h> 
+/* pchase_world_t holds the entire information of our simulation */
 typedef struct {
 	// current time */
 	double t;
@@ -38,6 +39,7 @@ void world_randomfill(WORLD *W);
 PARTICLE * world_random_particle(WORLD *W);
 /* return a randomly assigned particle inside the world */
 PARTICLE * random_particle();
+/* return a particle via random distribution inside the pchase_worlds boundaries */
 /* print XYZ file */
 void world_print_particlesXYZ(WORLD *W);
 #endif
