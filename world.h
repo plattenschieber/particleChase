@@ -1,8 +1,8 @@
-//#define DEBUG
-#define MAX_PARTICLES 15
-
 #ifndef WORLD_H
 #define WORLD_H
+#define DEBUG
+#define DIM 2
+
 #include <stdio.h> 
 typedef struct {
 	/* a list of cells with particle lists */
