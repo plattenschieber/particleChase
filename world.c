@@ -23,8 +23,6 @@ pchase_world_t *pchase_world_init(FILE *parameter, FILE *particles) {
 		W->length[i] = 2.0;
 	/* reset seed */
 	srand(time(NULL));
-	/* fill in some particles randomly */
-	pchase_world_randomfill(W);
 	return W;
 }
 
@@ -35,7 +33,6 @@ void pchase_world_simulate(pchase_world_t *W) {
 #ifdef DEBUG
 		printf("Actual time on earth: %f\n",W->t);
 #endif
-		print_particles(W->particles);
 		W->t+=W->delta_t;
 		W->step++;
 	}
