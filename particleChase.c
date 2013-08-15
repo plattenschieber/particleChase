@@ -40,6 +40,7 @@ main(int argc, char **argv)
         p4est_t            *p4est;
         p4est_connectivity_t *connectivity;
         p4est_refine_t      refine_fn;
+        pchase_world_t     *W;
 
         /* initialize MPI and p4est internals */
         mpiret = MPI_Init(&argc, &argv);
@@ -66,9 +67,11 @@ main(int argc, char **argv)
          */
         p4est = p4est_new_ext(mpi->mpicomm, connectivity, 0, 0, 1,
                               sizeof(pchase_quadrant_data_t), init_fn, NULL);
-
         p4est_vtk_write_file(p4est, NULL, "pchase_new");
 
+        /* build up the world to insert some particles */
+        W = pchase_world_init(p4est);
+        pchase_world_insert_particle(W, pchase_world_random_particle(W));
 
         /* destroy the p4est and its connectivity structure */
         p4est_destroy(p4est);
