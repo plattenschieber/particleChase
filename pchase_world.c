@@ -1,7 +1,7 @@
 #include "pchase_world.h"
 
 pchase_world_t     *
-pchase_world_init(p4est_t p4est)
+pchase_world_init(p4est_t * p4est)
 {
         int                 i;
         /* get some place for the pchase_world */
