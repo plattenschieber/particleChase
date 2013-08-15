@@ -71,7 +71,9 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
          * check if the quadrant holding our to be inserted particle lies on
          * this proc
          */
-        if (p4est_comm_find_owner(W->p4est, W->p4est.first_local_tree, q, -1) == W->p4est.mpirank) {
+        p4est_comm_find_owner(W->p4est, W->p4est->first_local_tree, q, -1);
+        scanf("%i", NULL);
+        if (1 == W->p4est->mpirank) {
                 printf("Not yet implemented");
         }
         /* send particle to belonging */
