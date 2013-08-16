@@ -87,7 +87,7 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
         /* get place for one point and take care of it via q */
         point = sc_array_new_size(sizeof(p4est_quadrant_t), 1);
         q = (p4est_quadrant_t *) sc_array_index(point, 0);
-        q->p.user_int=-1;
+        q->p.user_int = -1;
 
         /* create mini quadrant that is enclosing the given particle p */
         pchase_translate_particle_to_p4est(W, p, q);
@@ -104,6 +104,10 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
          * p4est_comm_find_owner(W->p4est, W->p4est->first_local_tree, q, * -1);
          */
         if (W->p4est->mpirank == 0) {
+                /*
+                 * find most deepest quadrant which encloses the mini quad in
+                 * point and save it in p4est->user_pointer
+                 */
                 p4est_search(W->p4est, W->search_fn, point);
                 /* extract found quad from user_pointer */
                 p4est_quadrant_t   *tmp = (p4est_quadrant_t *) W->p4est->user_pointer;
