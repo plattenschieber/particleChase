@@ -72,7 +72,7 @@ p4est_quadrant_t   *pchase_translate_particle_to_p4est(pchase_world_t * W, pchas
 /** find the owner of a given quadrant
  *
  * \param [in] q	quadrant whos owner rank shall be found
- * \return 		    owner rank 
+ * \return 		    owner rank
  */
 int                 pchase_quadrant_is_in_proc(p4est_quadrant_t * q);
 
