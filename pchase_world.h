@@ -64,4 +64,19 @@ p4est_quadrant_t   *pchase_translate_particle_to_p4est(pchase_world_t * W, pchas
  * \return 		owner rank
  */
 int                 pchase_quadrant_is_in_proc(p4est_quadrant_t * q);
+
+/** callback indicating if a given mini quad (*point), which encloses a
+ * particle, belongs to the current quad set marker to this quad
+ * if (current quad is enclosing particle && this.quad.level > marker.level
+ *
+ * \param[in] p4est     the forest we are working on
+ * \param[in] which_tree the tree we are looking at
+ * \param[in] quadrant  current quadrant
+ * \param[in] is_leaf   is this a leaf or not
+ * \param[in] point     our mini quad, enclosing the inserted particle
+ * \return              true if we found a quadrant that is enclosing our mini quad
+ */
+static int
+search_fn(p4est_t * p4est, p4est_topidx_t which_tree,
+          p4est_quadrant_t * quadrant, int is_leaf, void *point);
 #endif
