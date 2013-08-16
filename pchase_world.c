@@ -76,8 +76,8 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
         p4est_quadrant_t   *q;
         sc_array_t         *point;
 
-        /* get place for one point and take care of it via q */ 
-        point = sc_array_new_size(sizeof(p4est_quadrant_t), 1); 
+        /* get place for one point and take care of it via q */
+        point = sc_array_new_size(sizeof(p4est_quadrant_t), 1);
         q = (p4est_quadrant_t *) sc_array_index(point, 0);
 
         /* actually create mini quadrant that is enclosing the given partile p */
