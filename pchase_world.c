@@ -86,6 +86,7 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
         /* get place for one point and take care of it via q */
         point = sc_array_new_size(sizeof(p4est_quadrant_t), 1);
         q = (p4est_quadrant_t *) sc_array_index(point, 0);
+        q->p.user_int=-1;
 
         /* create mini quadrant that is enclosing the given particle p */
         pchase_translate_particle_to_p4est(W, p, q);
@@ -166,12 +167,12 @@ search_fn(p4est_t * p4est, p4est_topidx_t which_tree,
 
         if (q->x >= quadrant->x && q->x <= quadrant->x + quadrant_length &&
             q->y >= quadrant->y && q->y <= quadrant->y + quadrant_length &&
-        /* q->p.user_int < quadrant->level) { */
-            1) {
                 /*
                  * replace current_quad with quadrant and save it's level for
                  * faster access in user_int
                  */
+        /* and quadrants level needs to be greater than the already found one */
+            q->p.user_int < quadrant->level) {
                 q->p.user_int = quadrant->level;
 
 #ifdef DEBUG
