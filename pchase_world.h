@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <time.h>
 #include "p4est_extended.h"
+#include "p4est_search.h"
 
 /* pchase_world_t holds the entire information of our simulation */
 typedef struct {
