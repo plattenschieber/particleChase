@@ -18,6 +18,11 @@ typedef struct {
         unsigned int        step;       /* current step */
         double              length[DIM];        /* length */
         p4est_t            *p4est;      /* a pointer to the allocated p4est */
+        p4est_init_t        init_fn;
+        p4est_refine_t      refine_fn;
+        p4est_coarsen_t     coarsen_fn;
+        p4est_replace_t     replace_fn;
+        p4est_search_query_t search_fn;
 }
                     pchase_world_t;
 
@@ -90,4 +95,10 @@ int                 pchase_quadrant_is_in_proc(p4est_quadrant_t * q);
 static int
 search_fn(p4est_t * p4est, p4est_topidx_t which_tree,
           p4est_quadrant_t * quadrant, int is_leaf, void *point);
+static void
+init_fn(p4est_t * p4est, p4est_topidx_t which_tree,
+        p4est_quadrant_t * quadrant);
+static int
+refine_fn(p4est_t * p4est, p4est_topidx_t which_tree,
+          p4est_quadrant_t * quadrant);
 #endif

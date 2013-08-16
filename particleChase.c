@@ -16,21 +16,6 @@ typedef struct {
 }
                     mpi_context_t;
 
-/* every quadrant will get one particle with ID -1 */
-static void
-init_fn(p4est_t * p4est, p4est_topidx_t which_tree, p4est_quadrant_t * quadrant)
-{
-        ((pchase_quadrant_data_t *) quadrant->p.user_data)->nParticles = 0;
-}
-
-static int
-refine_fn(p4est_t * p4est, p4est_topidx_t which_tree, p4est_quadrant_t * quadrant)
-{
-        if (0)
-                return 1;
-        else
-                return 0;
-}
 int
 main(int argc, char **argv)
 {

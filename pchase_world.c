@@ -17,6 +17,11 @@ pchase_world_init(p4est_t * p4est)
         W->n_particles = 0;
         W->step = 0;
         W->p4est = p4est;
+        W->init_fn = init_fn;
+        W->coarsen_fn = NULL;
+        W->refine_fn = refine_fn;
+        W->search_fn = search_fn;
+        W->replace_fn = NULL;
         for (i = 0; i < DIM; i++)
                 W->length[i] = 1.0;
         /* reset seed */
@@ -137,4 +142,17 @@ search_fn(p4est_t * p4est, p4est_topidx_t which_tree,
                 /* replace current_quad with quadrant and save it's level for faster access in user_int */
                 q->p.user_int = quadrant->level;
         }
+static void
+init_fn(p4est_t * p4est, p4est_topidx_t which_tree, p4est_quadrant_t * quadrant)
+{
+        ((pchase_quadrant_data_t *) quadrant->p.user_data)->nParticles = 0;
+}
+
+static int
+refine_fn(p4est_t * p4est, p4est_topidx_t which_tree, p4est_quadrant_t * quadrant)
+{
+        if (0)
+                return 1;
+        else
+                return 0;
 }
