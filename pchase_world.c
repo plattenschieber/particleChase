@@ -82,6 +82,7 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
 {
         p4est_quadrant_t   *q;
         sc_array_t         *point;
+        int                 i;
 
         /* get place for one point and take care of it via q */
         point = sc_array_new_size(sizeof(p4est_quadrant_t), 1);
@@ -104,6 +105,19 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
          */
         if (W->p4est->mpirank == 0) {
                 p4est_search(W->p4est, W->search_fn, point);
+                /* extract found quad from user_pointer */
+                p4est_quadrant_t   *tmp = (p4est_quadrant_t *) W->p4est->user_pointer;
+                /*
+                 * and get its pchase_quadrant_data_t field to insert the
+                 * particle
+                 */
+                pchase_quadrant_data_t *tmpData = tmp->p.user_data;
+
+                /* insert particle data into quad */
+                tmpData->p[tmpData->nParticles].ID = p->ID;
+                for (i = 0; i < DIM; ++i)
+                        tmpData->p[tmpData->nParticles].x[i] = p->x[i];
+                tmpData->nParticles++;
 
         }
         /* send particle to belonging */
