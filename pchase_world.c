@@ -113,6 +113,12 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
                  */
                 pchase_quadrant_data_t *tmpData = tmp->p.user_data;
 
+                /*
+                 * TODO: - check if there are already 5 particles inside quads
+                 *      particle array and flag quad to refine
+                 *       - free all unneeded data
+                 */
+
                 /* insert particle data into quad */
                 tmpData->p[tmpData->nParticles].ID = p->ID;
                 for (i = 0; i < DIM; ++i)
