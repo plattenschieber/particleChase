@@ -166,7 +166,7 @@ search_fn(p4est_t * p4est, p4est_topidx_t which_tree,
 
         if (q->x >= quadrant->x && q->x <= quadrant->x + quadrant_length &&
             q->y >= quadrant->y && q->y <= quadrant->y + quadrant_length &&
-            /* q->p.user_int < quadrant->level) { */
+        /* q->p.user_int < quadrant->level) { */
             1) {
 #ifdef DEBUG
                 printf("YES YES YES - we found a quadrant whos child holds our mini quad\n");
@@ -178,9 +178,8 @@ search_fn(p4est_t * p4est, p4est_topidx_t which_tree,
                  */
                 q->p.user_int = quadrant->level;
                 return 1;
-        }
-        else 
-            return 0;
+        } else
+                return 0;
 }
 
 static void
