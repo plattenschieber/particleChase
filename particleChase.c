@@ -54,7 +54,7 @@ main(int argc, char **argv)
                               sizeof(pchase_quadrant_data_t), NULL, NULL);
         p4est_vtk_write_file(p4est, NULL, "pchase_new");
 
-        /* build up the world to insert some particles */
+        /* build up the world to insert one particle */
         W = pchase_world_init(p4est);
         pchase_world_insert_particle(W, pchase_world_random_particle(W));
 
