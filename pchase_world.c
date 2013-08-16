@@ -178,8 +178,8 @@ search_fn(p4est_t * p4est, p4est_topidx_t which_tree,
 
 #ifdef DEBUG
                 printf("YES YES YES - we found a quadrant whos child holds \
-                        our mini quad at linear positon: %lld\n",
-                        p4est_quadrant_linear_id(quadrant, quadrant->level));
+                        our mini quad at linear positon: %lld in level: %lld\n",
+                       p4est_quadrant_linear_id(quadrant, quadrant->level), quadrant->level);
 #endif
 
                 return 1;
