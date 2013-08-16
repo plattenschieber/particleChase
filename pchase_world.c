@@ -93,7 +93,12 @@ pchase_translate_particle_to_p4est(pchase_world_t * W, pchase_particle_t * p)
         q = P4EST_ALLOC(p4est_quadrant_t, 1);
         quadrant_length = P4EST_QUADRANT_LEN(1);
         q->level = P4EST_MAXLEVEL;
-        /* first convert particles' coord to [0,1) then place it into p4est */
+
+        /*
+         * normalize particle and transform it to p4est world length by
+         * truncating its position on the quadrant grid and MULT by 2, to get
+         * its real position in p4est
+         */
         q->x = (p4est_qcoord_t) (p->x[0] / W->length[0] * quadrant_length) << 1;
         q->y = (p4est_qcoord_t) (p->x[1] / W->length[1] * quadrant_length) << 1;
 #if DIM == 3
