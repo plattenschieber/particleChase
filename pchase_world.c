@@ -81,15 +81,13 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
 
         /*
          * check if the quadrant holding our to be inserted particle lies on
-         * this proc
-         */
-        /* scanf("%i", NULL); */
-        /*
-         * p4est_comm_find_owner(W->p4est, W->p4est->first_local_tree, q,
-         * -1);
+         * this processor
+         * 
+         * p4est_comm_find_owner(W->p4est, W->p4est->first_local_tree, q, * -1);
          */
         if (W->p4est->mpirank == 0) {
                 p4est_search(W->p4est, W->search_fn, point);
+
         }
         /* send particle to belonging */
         else
