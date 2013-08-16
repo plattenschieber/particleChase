@@ -58,22 +58,23 @@ pchase_world_random_particle(pchase_world_t * W)
         p->ID = W->n_particles;
 #endif
         W->n_particles++;
-
         return p;
 }
 
 p4est_quadrant_t   *
 pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
 {
-        /* get mini quadrant in which the particle lies */
         p4est_quadrant_t   *q = pchase_translate_particle_to_p4est(W, p);
 
         /*
          * check if the quadrant holding our to be inserted particle lies on
          * this proc
          */
-        p4est_comm_find_owner(W->p4est, W->p4est->first_local_tree, q, -1);
-        scanf("%i", NULL);
+        /* scanf("%i", NULL); */
+        /*
+         * p4est_comm_find_owner(W->p4est, W->p4est->first_local_tree, q,
+         * -1);
+         */
         if (1 == W->p4est->mpirank) {
                 printf("Not yet implemented");
         }
