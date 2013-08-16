@@ -50,8 +50,8 @@ main(int argc, char **argv)
          * build up uniform tree and require quadrant space for 25 particles
          * each
          */
-        p4est = p4est_new_ext(mpi->mpicomm, connectivity, 0, 0, 1,
-                              sizeof(pchase_quadrant_data_t), init_fn, NULL);
+        p4est = p4est_new_ext(mpi->mpicomm, connectivity, 0, 1, 1,
+                              sizeof(pchase_quadrant_data_t), NULL, NULL);
         p4est_vtk_write_file(p4est, NULL, "pchase_new");
 
         /* build up the world to insert some particles */
