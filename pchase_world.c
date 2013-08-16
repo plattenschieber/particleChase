@@ -150,7 +150,12 @@ search_fn(p4est_t * p4est, p4est_topidx_t which_tree,
                  */
 
                 q->p.user_int = quadrant->level;
+                return 1;
         }
+        else 
+            return 0;
+}
+
 static void
 init_fn(p4est_t * p4est, p4est_topidx_t which_tree, p4est_quadrant_t * quadrant)
 {
