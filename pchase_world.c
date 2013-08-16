@@ -76,6 +76,9 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
         point = sc_array_new_size(sizeof(p4est_quadrant_t), 1); 
         q = (p4est_quadrant_t *) sc_array_index(point, 0);
 
+        /* actually create mini quadrant that is enclosing the given partile p */
+        pchase_translate_particle_to_p4est(W, p, q);
+
         /*
          * check if the quadrant holding our to be inserted particle lies on
          * this proc
