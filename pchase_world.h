@@ -70,9 +70,9 @@ void                pchase_world_print_particlesXYZ(pchase_world_t * W);
  *
  * \param [in] W	the world we are working on
  * \param [in] p	a particle lying inside the world
- * \return 		    the quadrant to which the given particle belongs
+ * \param [out]q    the quadrant to which the given particle belongs
  */
-p4est_quadrant_t   *pchase_translate_particle_to_p4est(pchase_world_t * W, pchase_particle_t * p);
+void                pchase_translate_particle_to_p4est(pchase_world_t * W, pchase_particle_t * p, p4est_quadrant_t * q);
 
 /** find the owner of a given quadrant
  *

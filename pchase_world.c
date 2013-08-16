@@ -90,14 +90,10 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
         return q;
 }
 
-p4est_quadrant_t   *
-pchase_translate_particle_to_p4est(pchase_world_t * W, pchase_particle_t * p)
+void
+pchase_translate_particle_to_p4est(pchase_world_t * W, pchase_particle_t * p, p4est_quadrant_t * q)
 {
-        p4est_quadrant_t   *q;
-        double              quadrant_length;
-
-        q = P4EST_ALLOC(p4est_quadrant_t, 1);
-        quadrant_length = (double)(1 << P4EST_QMAXLEVEL);
+        double              quadrant_length = (double)(1 << P4EST_QMAXLEVEL);
 
         /*
          * normalize particle and transform it to p4est world length by
