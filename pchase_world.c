@@ -106,7 +106,7 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
 }
 
 void
-pchase_translate_particle_to_p4est(pchase_world_t * W, pchase_particle_t * p, p4est_quadrant_t * q)
+pchase_translate_particle_to_p4est(pchase_world_t * W, const pchase_particle_t * p, p4est_quadrant_t * q)
 {
         double              quadrant_length = (double)(1 << P4EST_QMAXLEVEL);
 
