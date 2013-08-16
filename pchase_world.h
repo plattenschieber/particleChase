@@ -14,7 +14,8 @@ typedef struct {
         double              t;  /* current time */
         double              delta_t;    /* timestep length */
         double              t_end;      /* end time */
-        unsigned int        n_particles;        /* number of particles */
+        unsigned int        n_particles;        /* number of overall
+                                                 * particles */
         unsigned int        step;       /* current step */
         double              length[DIM];        /* length */
         p4est_t            *p4est;      /* a pointer to the allocated p4est */
