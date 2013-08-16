@@ -168,13 +168,12 @@ search_fn(p4est_t * p4est, p4est_topidx_t which_tree,
         /* mini quad must lie entirely in quadrant */
         if (q->x >= quadrant->x && q->x <= quadrant->x + quadrant_length &&
             q->y >= quadrant->y && q->y <= quadrant->y + quadrant_length &&
-                /*
-                 * replace current_quad with quadrant and save it's level for
-                 * faster access in user_int
-                 */
         /* and quadrants level needs to be greater than the already found one */
             q->p.user_int < quadrant->level) {
+                /* save current deepest level in mini quads user_int */
                 q->p.user_int = quadrant->level;
+                /* and don't forget to remember whos the daddy */
+                p4est->user_pointer = quadrant;
 
 #ifdef DEBUG
                 printf("YES YES YES - we found a quadrant whos child holds \
