@@ -97,7 +97,7 @@ pchase_translate_particle_to_p4est(pchase_world_t * W, pchase_particle_t * p)
         q->x = (p4est_qcoord_t) (p->x[0] / W->length[0] * quadrant_length) << 1;
         q->y = (p4est_qcoord_t) (p->x[1] / W->length[1] * quadrant_length) << 1;
 #if DIM == 3
-        q->z = (int)floor((p->x[2] / W->length[2]) * P4EST_ROOT_LEN);
+        q->z = (p4est_qcoord_t) (p->x[2] / W->length[2] * quadrant_length) << 1;
 #endif
         return q;
 }
