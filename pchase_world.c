@@ -165,6 +165,7 @@ search_fn(p4est_t * p4est, p4est_topidx_t which_tree,
         quadrant_length = P4EST_QUADRANT_LEN(quadrant->level);
         q = (p4est_quadrant_t *) point;
 
+        /* mini quad must lie entirely in quadrant */
         if (q->x >= quadrant->x && q->x <= quadrant->x + quadrant_length &&
             q->y >= quadrant->y && q->y <= quadrant->y + quadrant_length &&
                 /*
