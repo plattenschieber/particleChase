@@ -125,6 +125,16 @@ static int
 search_fn(p4est_t * p4est, p4est_topidx_t which_tree,
           p4est_quadrant_t * quadrant, int is_leaf, void *point)
 {
+        p4est_quadrant_t   *q;
+        int                 quadrant_length;
 
+        quadrant_length = P4EST_QUADRANT_LEN(quadrant->level);
+        q = (p4est_quadrant_t *) point;
 
+        if (q->x >= quadrant->x && q->x <= quadrant->x + quadrant_length &&
+            q->y >= quadrant->y && q->y <= quadrant->y + quadrant_length &&
+            q->p.user_int < quadrant->level) {
+                /* replace current_quad with quadrant and save it's level for faster access in user_int */
+                q->p.user_int = quadrant->level;
+        }
 }
