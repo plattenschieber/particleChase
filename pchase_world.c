@@ -90,8 +90,9 @@ pchase_translate_particle_to_p4est(pchase_world_t * W, pchase_particle_t * p)
 {
         p4est_quadrant_t   *q;
         double              quadrant_length;
+
         q = P4EST_ALLOC(p4est_quadrant_t, 1);
-        quadrant_length = P4EST_QUADRANT_LEN(1);
+        quadrant_length = (double)(1 << P4EST_QMAXLEVEL);
         q->level = P4EST_MAXLEVEL;
 
         /*
