@@ -92,7 +92,7 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
 
 #ifdef DEBUG
         printf("Insert Particle: particle(x,y)=(%lf,%lf)\n", p->x[0], p->x[1]);
-        printf("quadrant(x,y)=(%d,%d)\n", q->x, q->y);
+        printf("in quadrant(x,y)=(%d,%d)\n", q->x, q->y);
 #endif
 
         /*
@@ -168,15 +168,18 @@ search_fn(p4est_t * p4est, p4est_topidx_t which_tree,
             q->y >= quadrant->y && q->y <= quadrant->y + quadrant_length &&
         /* q->p.user_int < quadrant->level) { */
             1) {
-#ifdef DEBUG
-                printf("YES YES YES - we found a quadrant whos child holds our mini quad\n");
-#endif 
-
                 /*
                  * replace current_quad with quadrant and save it's level for
                  * faster access in user_int
                  */
                 q->p.user_int = quadrant->level;
+
+#ifdef DEBUG
+                printf("YES YES YES - we found a quadrant whos child holds \
+                        our mini quad at linear positon: %lld\n",
+                        p4est_quadrant_linear_id(quadrant, quadrant->level));
+#endif
+
                 return 1;
         } else
                 return 0;
