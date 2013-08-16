@@ -89,7 +89,9 @@ p4est_quadrant_t   *
 pchase_translate_particle_to_p4est(pchase_world_t * W, pchase_particle_t * p)
 {
         p4est_quadrant_t   *q;
+        double              quadrant_length;
         q = P4EST_ALLOC(p4est_quadrant_t, 1);
+        quadrant_length = P4EST_QUADRANT_LEN(1);
         q->level = P4EST_MAXLEVEL;
         /* first convert particles' coord to [0,1) then place it into p4est */
         q->x = (int)floor((p->x[0] / W->length[0]) * P4EST_ROOT_LEN);
