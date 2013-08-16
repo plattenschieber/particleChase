@@ -122,7 +122,7 @@ pchase_translate_particle_to_p4est(pchase_world_t * W, const pchase_particle_t *
         printf("Step 2: p->x/W->length.x = %lf\n", p->x[0] / W->length[0]);
         printf("Step 3: times quad_len = %lf with quad_len = %lf and root_len = %lld\n", p->x[0] / W->length[0] * quadrant_length, quadrant_length, P4EST_ROOT_LEN);
         printf("Step 4: truncate = %d\n", (p4est_qcoord_t) (p->x[0] / W->length[0] * quadrant_length));
-        printf("Step 5: q->x = %lld\n", (p4est_qcoord_t) (p->x[0] / W->length[0] * quadrant_length) << 1);
+        printf("Step 5: times 2 gives q->x = %lld\n", (p4est_qcoord_t) (p->x[0] / W->length[0] * quadrant_length) << 1);
 #endif
 
         /*
