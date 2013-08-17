@@ -23,6 +23,7 @@ pchase_world_init(p4est_t * p4est)
         W->search_fn = search_fn;
         W->replace_fn = NULL;
         W->viter_fn = viter_fn;
+        W->destroy_fn = destroy_fn;
         for (i = 0; i < DIM; i++)
                 W->length[i] = 1.0;
         /* reset seed */
