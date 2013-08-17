@@ -64,8 +64,7 @@ pchase_particle_t  *
 pchase_world_random_particle(pchase_world_t * W)
 {
         int                 i;
-        pchase_particle_t  *p = malloc((sizeof(pchase_particle_t)));
-        /* pchase_particle_t  *p = P4EST_ALLOC(pchase_particle_t, 1); */
+        pchase_particle_t  *p = P4EST_ALLOC(pchase_particle_t, 1);
 
         for (i = 0; i < DIM; i++)
                 p->x[i] = W->length[i] * rand() / (RAND_MAX + 1.);
