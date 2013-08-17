@@ -108,9 +108,20 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
                  * find most deepest quadrant which encloses the mini quad in
                  * point and save it in p4est->user_pointer
                  */
+#ifdef DEBUG
+                printf("STARTSEARCH\n ");
+#endif
                 p4est_search(W->p4est, W->search_fn, point);
+#ifdef DEBUG
+                printf("ENDSEARCH\n ");
+#endif
                 /* extract found quad from user_pointer */
                 p4est_quadrant_t   *tmp = (p4est_quadrant_t *) W->p4est->user_pointer;
+#ifdef DEBUG
+                /* print saved quad once again */
+                printf("Here in insert particle, ROOT is doing the job\t ");
+                p4est_quadrant_print(SC_LP_ALWAYS, tmp);
+#endif
                 /*
                  * and get its pchase_quadrant_data_t field to insert the
                  * particle
@@ -123,6 +134,9 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
                  *       - free all unneeded data
                  */
 
+#ifdef DEBUG
+                printf("#Particles in Quad: %d \n", tmpData->nParticles);
+#endif
                 /* insert particle data into quad */
                 tmpData->p[tmpData->nParticles].ID = p->ID;
                 for (i = 0; i < DIM; ++i)
@@ -200,9 +214,10 @@ search_fn(p4est_t * p4est, p4est_topidx_t which_tree,
                 p4est->user_pointer = quadrant;
 
 #ifdef DEBUG
-                printf("YES YES YES - we found a quadrant whos child holds \
-                        our mini quad at linear positon: %lld in level: %lld\n",
-                       p4est_quadrant_linear_id(quadrant, quadrant->level), quadrant->level);
+                printf("YES YES YES - we found a quadrant whos child holds" \
+                        "our mini quad at linear positon: %lld in level: %lld is_leaf: %lld\n",
+                       p4est_quadrant_linear_id(quadrant, quadrant->level), quadrant->level, is_leaf);
+                printf("QuadLen: %lld, pos(x,y)=(%lld,%lld)\n", P4EST_QUADRANT_LEN(quadrant->level), quadrant->x, quadrant->y);
 #endif
 
                 return 1;
