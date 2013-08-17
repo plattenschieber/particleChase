@@ -69,7 +69,7 @@ pchase_world_random_particle(pchase_world_t * W)
         for (i = 0; i < DIM; i++)
                 p->x[i] = W->length[i] * rand() / (RAND_MAX + 1.);
 #ifdef DEBUG
-        printf("Random Particle Generator: ");
+        printf("[pchase randPart] ");
         p->ID = W->n_particles;
         for (i = 0; i < DIM; i++)
                 printf("p->x[%d]=%lf,\t", i, p->x[i]);
@@ -95,8 +95,8 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
         pchase_translate_particle_to_p4est(W, p, miniQuad);
 
 #ifdef DEBUG
-        printf("Insert Particle: particle(x,y)=(%lf,%lf)\n", p->x[0], p->x[1]);
-        printf("in quadrant(x,y)=(%d,%d)\n", q->x, q->y);
+        printf("[pchase insertPart] Particle(x,y)=(%lf,%lf)\n", p->x[0], p->x[1]);
+        printf("[pchase insertPart] in mini quad(%lld,%lld) at %lld\n", miniQuad->x, miniQuad->y, miniQuad);
 #endif
 
         /*
@@ -110,19 +110,13 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
                  * find most deepest quadrant which encloses the mini quad in
                  * point and save it in p4est->user_pointer
                  */
-#ifdef DEBUG
-                printf("STARTSEARCH\n ");
-#endif
                 p4est_search(W->p4est, W->search_fn, point);
-#ifdef DEBUG
-                printf("ENDSEARCH\n ");
-#endif
                 /* extract found quad from user_pointer */
                 p4est_quadrant_t   *tmp = (p4est_quadrant_t *) W->p4est->user_pointer;
 #ifdef DEBUG
                 /* print saved quad once again */
-                printf("Here in insert particle, ROOT is doing the job\n ");
-                printf("In user pointer lies this quad pointer: %d\n",tmp);
+                printf("[pchase insertPart] ROOT is doing the job\n ");
+                printf("[pchase insertPart] quad in user_pointer: %lld\n", enclQuad);
 #endif
                 /*
                  * and get its pchase_quadrant_data_t field to insert the
@@ -138,7 +132,8 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
                  */
 
 #ifdef DEBUG
-                printf("#Particles in Quad: %d \n", tmpData->nParticles);
+                printf("[pchase insertPart] #Particles in Quad: %d \n", enclQuadData->nParticles);
+                printf("[pchase insertPart] BEFORE REAL INSERTION\n");
 #endif
                 //enclQuadData->p[enclQuadData->nParticles] =*(pchase_particle_t *) malloc(sizeof(pchase_particle_t));
                 enclQuadData->p[enclQuadData->nParticles] = *P4EST_ALLOC(pchase_particle_t,1); 
@@ -154,6 +149,9 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
                 printf("Not yet implemented");
 
         return q;
+#ifdef DEBUG
+        printf("[pchase insertPart] REAL INSERTION DONE\n");
+#endif
         return miniQuad;
 }
 
@@ -163,11 +161,11 @@ pchase_translate_particle_to_p4est(pchase_world_t * W, const pchase_particle_t *
         double              quadrant_length = (double)(1 << P4EST_QMAXLEVEL);
 
 #ifdef DEBUG
-        printf("Step 1: p->x = %lf\n", p->x[0]);
-        printf("Step 2: p->x/W->length.x = %lf\n", p->x[0] / W->length[0]);
-        printf("Step 3: times quad_len = %lf with quad_len = %lf and root_len = %lld\n", p->x[0] / W->length[0] * quadrant_length, quadrant_length, P4EST_ROOT_LEN);
-        printf("Step 4: truncate = %d\n", (p4est_qcoord_t) (p->x[0] / W->length[0] * quadrant_length));
-        printf("Step 5: times 2 gives q->x = %lld\n", (p4est_qcoord_t) (p->x[0] / W->length[0] * quadrant_length) << 1);
+        printf("[pchase translatePart] Step 1: p->x = %lf\n", p->x[0]);
+        printf("[pchase translatePart] Step 2: p->x/W->length.x = %lf\n", p->x[0] / W->length[0]);
+        printf("[pchase translatePart] Step 3: times quad_len = %lf with quad_len = %lf and root_len = %lld\n", p->x[0] / W->length[0] * quadrant_length, quadrant_length, P4EST_ROOT_LEN);
+        printf("[pchase translatePart] Step 4: truncate = %d\n", (p4est_qcoord_t) (p->x[0] / W->length[0] * quadrant_length));
+        printf("[pchase translatePart] Step 5: times 2 gives q->x = %lld\n", (p4est_qcoord_t) (p->x[0] / W->length[0] * quadrant_length) << 1);
 #endif
 
         /*
@@ -203,7 +201,7 @@ search_fn(p4est_t * p4est, p4est_topidx_t which_tree,
         int                 quadrant_length;
 
 #ifdef DEBUG
-        printf("HELLOOO I AM A CALLBACK in x:%i y%i\n", quadrant->x, quadrant->y);
+        printf("[pchase search] HELLOOO I AM A CALLBACK in x:%lld y:%lld with tree:%lld and local_num:%lld\n", quadrant->x, quadrant->y, which_tree, quadrant->p.piggy3.local_num);
 #endif
 
         quadrant_length = P4EST_QUADRANT_LEN(quadrant->level);
@@ -220,11 +218,11 @@ search_fn(p4est_t * p4est, p4est_topidx_t which_tree,
                 p4est->user_pointer = (void *) quadrant;
 
 #ifdef DEBUG
-                printf("YES YES YES - we found a quadrant whos child holds" \
-                        "our mini quad at linear positon: %lld in level: %lld is_leaf: %lld\n",
+                printf("[pchase search] YES YES YES - we found a quadrant whos child holds " \
+                       "our mini quad at linear positon: %lld in level: %lld is_leaf: %d\n",
                        p4est_quadrant_linear_id(quadrant, quadrant->level), quadrant->level, is_leaf);
-                printf("QuadLen: %lld, pos(x,y)=(%lld,%lld)\n", P4EST_QUADRANT_LEN(quadrant->level), quadrant->x, quadrant->y);
-                printf("Found this quad pointer: %d\n",quadrant);
+                printf("[pchase search] QuadLen: %lld, pos(x,y)=(%lld,%lld)\n", P4EST_QUADRANT_LEN(quadrant->level), quadrant->x, quadrant->y);
+                printf("[pchase search] Found this quad pointer: %lld\n", quadrant);
 #endif
 
                 return 1;
@@ -235,6 +233,8 @@ search_fn(p4est_t * p4est, p4est_topidx_t which_tree,
 static void
 init_fn(p4est_t * p4est, p4est_topidx_t which_tree, p4est_quadrant_t * quadrant)
 {
+        printf("[pchase init_fn] BUM, INIT for Quad(x,y): (%lld,%lld) at memory: %lld\n", quadrant->x, quadrant->y, quadrant);
+
         ((pchase_quadrant_data_t *) quadrant->p.user_data)->nParticles = 0;
 }
 
@@ -254,7 +254,7 @@ destroy_fn(p4est_iter_volume_info_t * info, void *Data)
         pchase_quadrant_data_t * qData = (pchase_quadrant_data_t *)info->quad->p.user_data;
         for (i=0; i<qData->nParticles; i++)
         {
-                printf("FREEEE, free like the wind\n");
+                printf("[pchase destroy_fn] FREEEE, free like the wind\n");
                 P4EST_FREE(&qData->p[i]);
         }
         return;
@@ -262,6 +262,6 @@ destroy_fn(p4est_iter_volume_info_t * info, void *Data)
 static void
 viter_fn(p4est_iter_volume_info_t * info, void *Data)
 {
-        printf("quad(%lld,%lld) lies at %lld \n", info->quad->x, info->quad->y, info->quad);
+        printf("[pchase iterate] quad(%lld,%lld) lies at %lld \n", info->quad->x, info->quad->y, info->quad);
         return;
 }
