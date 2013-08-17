@@ -129,6 +129,8 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
 #ifdef DEBUG
                 printf("[pchase insertPart] #Particles in Quad: %d \n", enclQuadData->nParticles);
                 printf("[pchase insertPart] BEFORE REAL INSERTION\n");
+                /* print out all quadrants */
+                p4est_iterate(W->p4est, NULL, NULL, W->viter_fn, NULL, NULL);
 #endif
                 //enclQuadData->p[enclQuadData->nParticles] =*(pchase_particle_t *) malloc(sizeof(pchase_particle_t));
                 enclQuadData->p[enclQuadData->nParticles] = *P4EST_ALLOC(pchase_particle_t,1); 
