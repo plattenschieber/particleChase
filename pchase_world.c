@@ -82,17 +82,17 @@ pchase_world_random_particle(pchase_world_t * W)
 p4est_quadrant_t   *
 pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
 {
-        p4est_quadrant_t   *q;
+        p4est_quadrant_t   *miniQuad;
         sc_array_t         *point;
         int                 i;
 
         /* get place for one point and take care of it via q */
         point = sc_array_new_size(sizeof(p4est_quadrant_t), 1);
-        q = (p4est_quadrant_t *) sc_array_index(point, 0);
         q->p.user_int = -1;
+        miniQuad = (p4est_quadrant_t *) sc_array_index(point, 0);
 
         /* create mini quadrant that is enclosing the given particle p */
-        pchase_translate_particle_to_p4est(W, p, q);
+        pchase_translate_particle_to_p4est(W, p, miniQuad);
 
 #ifdef DEBUG
         printf("Insert Particle: particle(x,y)=(%lf,%lf)\n", p->x[0], p->x[1]);
@@ -154,6 +154,7 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
                 printf("Not yet implemented");
 
         return q;
+        return miniQuad;
 }
 
 void
