@@ -128,12 +128,8 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
                  * caller and make miniQuad an array
                  */
 
-                /* reserve some memory for the particle struct */
-                enclQuadData->p[enclQuadData->nParticles] = *P4EST_ALLOC(pchase_particle_t, 1);
-                /* insert particle data into quad */
-                enclQuadData->p[enclQuadData->nParticles].ID = p->ID;
-                for (i = 0; i < DIM; ++i)
-                        enclQuadData->p[enclQuadData->nParticles].x[i] = p->x[i];
+                /* insert particle data into quad and update particle counter */
+                enclQuadData->p[enclQuadData->nParticles] = p;
                 enclQuadData->nParticles++;
 
         } else
