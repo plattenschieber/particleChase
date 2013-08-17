@@ -63,7 +63,8 @@ pchase_particle_t  *
 pchase_world_random_particle(pchase_world_t * W)
 {
         int                 i;
-        pchase_particle_t  *p = P4EST_ALLOC(pchase_particle_t, 1);
+        pchase_particle_t  *p = malloc((sizeof(pchase_particle_t)));
+        /* pchase_particle_t  *p = P4EST_ALLOC(pchase_particle_t, 1); */
 
         for (i = 0; i < DIM; i++)
                 p->x[i] = W->length[i] * rand() / (RAND_MAX + 1.);
@@ -139,6 +140,8 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
 #ifdef DEBUG
                 printf("#Particles in Quad: %d \n", tmpData->nParticles);
 #endif
+                //enclQuadData->p[enclQuadData->nParticles] =*(pchase_particle_t *) malloc(sizeof(pchase_particle_t));
+                enclQuadData->p[enclQuadData->nParticles] = *P4EST_ALLOC(pchase_particle_t,1); 
                 /* insert particle data into quad */
                 tmpData->p[tmpData->nParticles].ID = p->ID;
                 for (i = 0; i < DIM; ++i)
