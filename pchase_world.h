@@ -27,6 +27,7 @@ typedef struct {
         p4est_replace_t     replace_fn;
         p4est_search_query_t search_fn;
         p4est_iter_volume_t viter_fn;
+        p4est_iter_volume_t destroy_fn;
 }
                     pchase_world_t;
 
@@ -85,6 +86,7 @@ void                pchase_translate_particle_to_p4est(pchase_world_t * W, const
  */
 int                 pchase_quadrant_is_in_proc(p4est_quadrant_t * q);
 
+
 /** callback indicating if a given mini quad (*point), which encloses a
  * particle, belongs to the current quad set marker to this quad
  * if (current quad is enclosing particle && this.quad.level > marker.level
@@ -108,4 +110,7 @@ refine_fn(p4est_t * p4est, p4est_topidx_t which_tree,
 /* prints all x,y data and pointers */
 static void
 viter_fn(p4est_iter_volume_info_t * info, void *Data);
+/* frees all arrays from particles */
+static void
+destroy_fn(p4est_iter_volume_info_t * info, void *Data);
 #endif
