@@ -9,6 +9,7 @@
 #include <time.h>
 #include "p4est_extended.h"
 #include "p4est_search.h"
+#include "p4est_iterate.h"
 
 /* pchase_world_t holds the entire information of our simulation */
 typedef struct {
@@ -25,6 +26,7 @@ typedef struct {
         p4est_coarsen_t     coarsen_fn;
         p4est_replace_t     replace_fn;
         p4est_search_query_t search_fn;
+        p4est_iter_volume_t viter_fn;
 }
                     pchase_world_t;
 
@@ -103,4 +105,7 @@ init_fn(p4est_t * p4est, p4est_topidx_t which_tree,
 static int
 refine_fn(p4est_t * p4est, p4est_topidx_t which_tree,
           p4est_quadrant_t * quadrant);
+/* prints all x,y data and pointers */
+static void
+viter_fn(p4est_iter_volume_info_t * info, void *Data);
 #endif

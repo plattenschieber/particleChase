@@ -22,6 +22,7 @@ pchase_world_init(p4est_t * p4est)
         W->refine_fn = refine_fn;
         W->search_fn = search_fn;
         W->replace_fn = NULL;
+        W->viter_fn = viter_fn;
         for (i = 0; i < DIM; i++)
                 W->length[i] = 1.0;
         /* reset seed */
@@ -240,4 +241,10 @@ refine_fn(p4est_t * p4est, p4est_topidx_t which_tree, p4est_quadrant_t * quadran
                 return 1;
         else
                 return 0;
+}
+static void
+viter_fn(p4est_iter_volume_info_t * info, void *Data)
+{
+        printf("quad(%lld,%lld) lies at %lld \n", info->quad->x, info->quad->y, info->quad);
+        return;
 }
