@@ -117,6 +117,7 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
                 /* print saved quad once again */
                 printf("[pchase insertPart] ROOT is doing the job\n ");
                 printf("[pchase insertPart] quad in user_pointer: %lld\n", enclQuad);
+                printf("[pchase insertPart] #Particles in Quad: %d \n", enclQuadData->nParticles);
 #endif
 
                 /*
@@ -125,12 +126,6 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
                  * unneeded data - initialize quadData->nParticles in init_fn
                  */
 
-#ifdef DEBUG
-                printf("[pchase insertPart] #Particles in Quad: %d \n", enclQuadData->nParticles);
-                printf("[pchase insertPart] BEFORE REAL INSERTION\n");
-                /* print out all quadrants */
-                p4est_iterate(W->p4est, NULL, NULL, W->viter_fn, NULL, NULL);
-#endif
                 /* reserve some memory for the particle struct */
                 enclQuadData->p[enclQuadData->nParticles] = *P4EST_ALLOC(pchase_particle_t, 1);
                 /* insert particle data into quad */
@@ -143,9 +138,6 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
                 /* send particle to its belonging proc */
                 printf("[pchase insertPart] Not yet implemented");
 
-#ifdef DEBUG
-        printf("[pchase insertPart] REAL INSERTION DONE\n");
-#endif
 }
 
 void
