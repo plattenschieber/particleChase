@@ -86,7 +86,7 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
         sc_array_t         *point;
         int                 i;
 
-        /* get place for one point and take care of it via q */
+        /* get place for one point and take care of it via miniQuad */
         point = sc_array_new_size(sizeof(p4est_quadrant_t), 1);
         miniQuad = (p4est_quadrant_t *) sc_array_index(point, 0);
 
@@ -105,7 +105,7 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
         if (W->p4est->mpirank == 0) {
                 /*
                  * find most deepest quadrant which encloses the mini quad in
-                 * point and save it in p4est->user_pointer
+                 * point and save its data in point.piggy3
                  */
                 p4est_search(W->p4est, W->search_fn, point);
                 /* extract found quad from user_pointer */
@@ -140,10 +140,9 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
                         tmpData->p[tmpData->nParticles].x[i] = p->x[i];
                 tmpData->nParticles++;
 
-        }
-        /* send particle to belonging */
-        else
-                printf("Not yet implemented");
+        } else
+                /* send particle to its belonging proc */
+                printf("[pchase insertPart] Not yet implemented");
 
 #ifdef DEBUG
         printf("[pchase insertPart] REAL INSERTION DONE\n");
