@@ -136,6 +136,8 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
                 /* send particle to its belonging proc */
                 printf("[pchase insertPart] Not yet implemented");
 
+        /* 
+        sc_array_destroy(point);
 }
 
 void
