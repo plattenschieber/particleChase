@@ -240,7 +240,7 @@ destroy_fn(p4est_iter_volume_info_t * info, void *Data)
         for (i = 0; i < qData->nParticles; i++) {
                 p = qData->p[i];
                 P4EST_FREE(p);
-                printf("[pchase destroy_fn] freed particle[%i](%lf,%lf)\n, ", p->ID, p->x[0], p->x[1]);
+                printf("[pchase destroy_fn] freed particle[%i](%lf,%lf)\n", p->ID, p->x[0], p->x[1]);
         }
         return;
 }
