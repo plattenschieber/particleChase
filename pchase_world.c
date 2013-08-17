@@ -119,8 +119,8 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
                 p4est_quadrant_t   *tmp = (p4est_quadrant_t *) W->p4est->user_pointer;
 #ifdef DEBUG
                 /* print saved quad once again */
-                printf("Here in insert particle, ROOT is doing the job\t ");
-                p4est_quadrant_print(SC_LP_ALWAYS, tmp);
+                printf("Here in insert particle, ROOT is doing the job\n ");
+                printf("In user pointer lies this quad pointer: %d\n",tmp);
 #endif
                 /*
                  * and get its pchase_quadrant_data_t field to insert the
@@ -219,6 +219,7 @@ search_fn(p4est_t * p4est, p4est_topidx_t which_tree,
                         "our mini quad at linear positon: %lld in level: %lld is_leaf: %lld\n",
                        p4est_quadrant_linear_id(quadrant, quadrant->level), quadrant->level, is_leaf);
                 printf("QuadLen: %lld, pos(x,y)=(%lld,%lld)\n", P4EST_QUADRANT_LEN(quadrant->level), quadrant->x, quadrant->y);
+                printf("Found this quad pointer: %d\n",quadrant);
 #endif
 
                 return 1;
