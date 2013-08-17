@@ -118,11 +118,6 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
                 printf("[pchase insertPart] ROOT is doing the job\n ");
                 printf("[pchase insertPart] quad in user_pointer: %lld\n", enclQuad);
 #endif
-                /*
-                 * and get its pchase_quadrant_data_t field to insert the
-                 * particle
-                 */
-                pchase_quadrant_data_t *tmpData = tmp->p.user_data;
 
                 /*
                  * TODO: - check if there are already 5 particles inside quads
@@ -138,10 +133,10 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
                 //enclQuadData->p[enclQuadData->nParticles] =*(pchase_particle_t *) malloc(sizeof(pchase_particle_t));
                 enclQuadData->p[enclQuadData->nParticles] = *P4EST_ALLOC(pchase_particle_t,1); 
                 /* insert particle data into quad */
-                tmpData->p[tmpData->nParticles].ID = p->ID;
+                enclQuadData->p[enclQuadData->nParticles].ID = p->ID;
                 for (i = 0; i < DIM; ++i)
-                        tmpData->p[tmpData->nParticles].x[i] = p->x[i];
-                tmpData->nParticles++;
+                        enclQuadData->p[enclQuadData->nParticles].x[i] = p->x[i];
+                enclQuadData->nParticles++;
 
         } else
                 /* send particle to its belonging proc */
