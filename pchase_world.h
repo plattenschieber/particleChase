@@ -61,9 +61,8 @@ pchase_particle_t  *pchase_world_random_particle(pchase_world_t * W);
  *
  * \param [in] W	the world into which we are operating
  * \param [in] p	the particle to be inserted
- * \return          return the mini quad where the particle stays
  */
-p4est_quadrant_t   *pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p);
+void                pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p);
 
 /** prints out all particles into a XYZ file
  *
