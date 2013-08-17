@@ -108,8 +108,11 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
                  * point and save its data in point.piggy3
                  */
                 p4est_search(W->p4est, W->search_fn, point);
-                /* extract found quad from user_pointer */
-                p4est_quadrant_t   *tmp = (p4est_quadrant_t *) W->p4est->user_pointer;
+
+                /* extract enclosing quad from miniQuad.piggy3 */
+                p4est_tree_t       *enclQuadTree = p4est_tree_array_index(W->p4est->trees, miniQuad->p.piggy3.which_tree);
+                p4est_quadrant_t   *enclQuad = p4est_quadrant_array_index(&enclQuadTree->quadrants, miniQuad->p.piggy3.local_num);
+                pchase_quadrant_data_t *enclQuadData = enclQuad->p.user_data;
 #ifdef DEBUG
                 /* print saved quad once again */
                 printf("[pchase insertPart] ROOT is doing the job\n ");
