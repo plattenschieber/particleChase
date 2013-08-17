@@ -120,10 +120,9 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
 #endif
 
                 /*
-                 * TODO: - check if there are already 5 particles inside quads
-                 *      particle array and flag quad to refine
-                 *       - free all unneeded data
-                 *       - initialize quadData->nParticles in init_fn
+                 * TODO: - check if there are already 5 particles inside
+                 * quads particle array and flag quad to refine - free all
+                 * unneeded data - initialize quadData->nParticles in init_fn
                  */
 
 #ifdef DEBUG
@@ -132,8 +131,8 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
                 /* print out all quadrants */
                 p4est_iterate(W->p4est, NULL, NULL, W->viter_fn, NULL, NULL);
 #endif
-                //enclQuadData->p[enclQuadData->nParticles] =*(pchase_particle_t *) malloc(sizeof(pchase_particle_t));
-                enclQuadData->p[enclQuadData->nParticles] = *P4EST_ALLOC(pchase_particle_t,1); 
+                /* reserve some memory for the particle struct */
+                enclQuadData->p[enclQuadData->nParticles] = *P4EST_ALLOC(pchase_particle_t, 1);
                 /* insert particle data into quad */
                 enclQuadData->p[enclQuadData->nParticles].ID = p->ID;
                 for (i = 0; i < DIM; ++i)
@@ -244,10 +243,9 @@ refine_fn(p4est_t * p4est, p4est_topidx_t which_tree, p4est_quadrant_t * quadran
 static void
 destroy_fn(p4est_iter_volume_info_t * info, void *Data)
 {
-        int i;
-        pchase_quadrant_data_t * qData = (pchase_quadrant_data_t *)info->quad->p.user_data;
-        for (i=0; i<qData->nParticles; i++)
-        {
+        int                 i;
+        pchase_quadrant_data_t *qData = (pchase_quadrant_data_t *) info->quad->p.user_data;
+        for (i = 0; i < qData->nParticles; i++) {
                 printf("[pchase destroy_fn] FREEEE, free like the wind\n");
                 P4EST_FREE(&qData->p[i]);
         }
