@@ -204,14 +204,13 @@ search_fn(p4est_t * p4est, p4est_topidx_t which_tree,
 
         /* mini quad must lie entirely in quadrant */
         if (q->x >= quadrant->x && q->x <= quadrant->x + quadrant_length &&
-            q->y >= quadrant->y && q->y <= quadrant->y + quadrant_length &&
-        /* and quadrants level needs to be greater than the already found one */
-            q->p.user_int < quadrant->level) {
-                /* save current deepest level in mini quads user_int */
-                q->p.user_int = quadrant->level;
-                /* and don't forget to remember whos the daddy */
-                p4est->user_pointer = (void *) quadrant;
-
+            q->y >= quadrant->y && q->y <= quadrant->y + quadrant_length) {
+                /* only save the quad in case it's a leaf */
+                if (is_leaf) {
+                        /* save current quad via piggy3 */
+                        q->p.piggy3.local_num = quadrant->p.piggy3.local_num;
+                        q->p.piggy3.which_tree = which_tree;
+                }
 #ifdef DEBUG
                 printf("[pchase search] YES YES YES - we found a quadrant whos child holds " \
                        "our mini quad at linear positon: %lld in level: %lld is_leaf: %d\n",
