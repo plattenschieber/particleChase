@@ -132,6 +132,7 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
                  * TODO: - check if there are already 5 particles inside quads
                  *      particle array and flag quad to refine
                  *       - free all unneeded data
+                 *       - initialize quadData->nParticles in init_fn
                  */
 
 #ifdef DEBUG
