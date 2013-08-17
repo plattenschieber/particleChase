@@ -88,7 +88,6 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
 
         /* get place for one point and take care of it via q */
         point = sc_array_new_size(sizeof(p4est_quadrant_t), 1);
-        q->p.user_int = -1;
         miniQuad = (p4est_quadrant_t *) sc_array_index(point, 0);
 
         /* create mini quadrant that is enclosing the given particle p */
@@ -102,8 +101,6 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
         /*
          * check if the quadrant holding our to be inserted particle lies on
          * this processor
-         * 
-         * p4est_comm_find_owner(W->p4est, W->p4est->first_local_tree, q, * -1);
          */
         if (W->p4est->mpirank == 0) {
                 /*
@@ -148,7 +145,6 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
         else
                 printf("Not yet implemented");
 
-        return q;
 #ifdef DEBUG
         printf("[pchase insertPart] REAL INSERTION DONE\n");
 #endif
