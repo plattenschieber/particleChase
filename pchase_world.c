@@ -252,8 +252,9 @@ destroy_fn(p4est_iter_volume_info_t * info, void *Data)
         return;
 }
 static void
-viter_fn(p4est_iter_volume_info_t * info, void *Data)
+viter_fn(p4est_iter_volume_info_t * info, void *user_data)
 {
-        printf("[pchase iterate] quad(%lld,%lld) lies at %lld \n", info->quad->x, info->quad->y, info->quad);
+        pchase_quadrant_data_t *quadData = (pchase_quadrant_data_t *) info->quad->p.user_data;
+        printf("[pchase main iterate] quad(%lld,%lld) with %i particles \n", info->quad->x, info->quad->y, quadData->nParticles);
         return;
 }

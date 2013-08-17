@@ -61,6 +61,11 @@ main(int argc, char **argv)
         /* add one particle to the world */
         pchase_world_insert_particle(W, pchase_world_random_particle(W));
 
+#ifdef DEBUG
+        /* print out all quadrants */
+        p4est_iterate(W->p4est, NULL, NULL, W->viter_fn, NULL, NULL);
+#endif
+
         /* destroy the p4est and its connectivity structure */
         p4est_iterate(W->p4est, NULL, NULL, W->destroy_fn, NULL, NULL);
         p4est_destroy(p4est);
