@@ -130,10 +130,15 @@ scanf("%i",NULL);
                 enclQuadData->p[enclQuadData->nParticles] = p;
                 enclQuadData->nParticles++;
 
-        } else
+        }
+        /* particle lies on another proc */
+        else {
                 /* send particle to its belonging proc */
                 printf("[pchase %i insertPart] Sending Particle not implemented yet", W->p4est->mpirank);
 
+                /* and free particle on this proc */
+                P4EST_FREE(p);
+        }
         sc_array_destroy(point);
 }
 
