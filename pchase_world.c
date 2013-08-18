@@ -28,13 +28,6 @@ pchase_world_init(p4est_t * p4est)
                 W->length[i] = 1.0;
         /* reset seed */
         srand(time(NULL));
-#ifdef DEBUG
-        /*
-         * produce a random number and discard it. Otherwise rand() produces
-         * almost everytime a number about 0.431..
-         */
-        rand();
-#endif
         return W;
 }
 
