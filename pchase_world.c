@@ -106,15 +106,6 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
         /* using find_owner to pigeon-hole particle into the right proc */
         printf("[pchase %i owner] resolving owner of miniQuad\n", W->p4est->mpirank);
         printf("[pchase %i owner] Found owner: %i of miniQuad\n", W->p4est->mpirank, p4est_comm_find_owner(W->p4est, miniQuad->p.piggy3.which_tree, miniQuad, W->p4est->mpirank));
-scanf("%i",NULL);
-        /* extract enclosing quad from miniQuad.piggy3 */
-        p4est_tree_t       *enclQuadTree = p4est_tree_array_index(W->p4est->trees, miniQuad->p.piggy3.which_tree);
-        p4est_quadrant_t   *enclQuad = p4est_quadrant_array_index(&enclQuadTree->quadrants, miniQuad->p.piggy3.local_num);
-        pchase_quadrant_data_t *enclQuadData = enclQuad->p.user_data;
-#ifdef DEBUG
-        /* print number of particles in quad */
-        printf("[pchase %i insertPart] #Particles in enclQuad: %d \n", W->p4est->mpirank, enclQuadData->nParticles);
-#endif
 
         /*
          * check if the quadrant holding our to be inserted particle lies on
