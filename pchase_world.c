@@ -105,11 +105,8 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
 
 
 
-        /*
-         * check if the quadrant holding our to be inserted particle lies on
-         * this processor
-         */
-        if (W->p4est->mpirank == 0) {
+        /* if the miniQuad is not flagged, it's lying on this proc */
+        if (miniQuad->p.piggy3.local_num != -1) {
                 /* extract enclosing quad from miniQuad.piggy3 */
                 p4est_tree_t       *enclQuadTree = p4est_tree_array_index(W->p4est->trees, miniQuad->p.piggy3.which_tree);
                 p4est_quadrant_t   *enclQuad = p4est_quadrant_array_index(&enclQuadTree->quadrants, miniQuad->p.piggy3.local_num);
