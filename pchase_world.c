@@ -93,8 +93,8 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
         pchase_translate_particle_to_p4est(W, p, miniQuad);
 
 #ifdef DEBUG
-        printf("[pchase %i insertPart] Translated Particle(%lf,%lf) to miniQuad (%09lld,%09lld) at tree %lld\n",
-               W->p4est->mpirank, p->x[0], p->x[1], miniQuad->x, miniQuad->y, miniQuad->p.which_tree);
+        printf("[pchase %i insertPart] Translated Particle(%lf,%lf) to miniQuad (%09lld,%09lld)\n",
+             W->p4est->mpirank, p->x[0], p->x[1], miniQuad->x, miniQuad->y);
 #endif
         /*
          * find most deepest quadrant which encloses the mini quad in point
