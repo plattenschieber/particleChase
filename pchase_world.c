@@ -115,17 +115,23 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
                 /* insert particle data into quad and update particle counter */
                 enclQuadData->p[enclQuadData->nParticles] = p;
                 enclQuadData->nParticles++;
-
+#ifdef DEBUG
+                /* print number of particles in quad */
+                printf("[pchase %i insertPart] #Particles in enclQuad: %d \n", W->p4est->mpirank, enclQuadData->nParticles);
+#endif
         }
         /* particle lies on another proc */
         else {
                 /* send particle to its belonging proc */
                 printf("[pchase %i insertPart] Sending Particle not implemented yet", W->p4est->mpirank);
+
                 /* use find_owner to pigeon-hole particle into the right proc */
                 owner = p4est_comm_find_owner(W->p4est, miniQuad->p.piggy3.which_tree, miniQuad, W->p4est->mpirank);
+#ifdef DEBUG
                 printf("[pchase %i insertPart] resolving owner of miniQuad\n", W->p4est->mpirank);
                 printf("[pchase %i insertPart] Found owner: %i of miniQuad\n", W->p4est->mpirank);
-
+                printf("[pchase %i insertPart] particle[%i] sent to proc %i and freed", p->ID, W->p4est->mpirank, owner);
+#endif
                 /* and free particle on this proc */
                 P4EST_FREE(p);
         }
@@ -170,8 +176,8 @@ search_fn(p4est_t * p4est, p4est_topidx_t which_tree,
         int                 quadrant_length;
 
 #ifdef DEBUG
-        printf("[pchase %i search] looking into quad(%09lld,%09lld) in tree:%lld at local_num:%lld\n",
-               p4est->mpirank, quadrant->x, quadrant->y, which_tree, quadrant->p.piggy3.local_num);
+        printf("[pchase %i search] looking into quad(%09lld,%09lld) in tree:%lld\n",
+               p4est->mpirank, quadrant->x, quadrant->y, which_tree);
 #endif
 
         quadrant_length = P4EST_QUADRANT_LEN(quadrant->level);
@@ -192,9 +198,9 @@ search_fn(p4est_t * p4est, p4est_topidx_t which_tree,
                 else
                         miniQuad->p.piggy3.local_num = -1;
 #ifdef DEBUG
-                printf("[pchase %i search] we found a quadrant (holding miniQuad)" \
-                       "at linear positon: %d in level: %d is_leaf: %d\n", p4est->mpirank,
-                       p4est_quadrant_linear_id(quadrant, quadrant->level), quadrant->level, is_leaf);
+                printf("[pchase %i search] we found a quadrant (holding miniQuad) " \
+                       "with local_num %d in level: %d is_leaf: %d\n", p4est->mpirank,
+                       miniQuad->p.piggy3.local_num, quadrant->level, quadrant->level, is_leaf);
 #endif
 
                 return 1;
