@@ -128,7 +128,7 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
                 /* use find_owner to pigeon-hole particle into the right proc */
                 owner = p4est_comm_find_owner(W->p4est, miniQuad->p.piggy3.which_tree, miniQuad, W->p4est->mpirank);
 #ifdef DEBUG
-                printf("[pchase %i insertPart] particle[%i] sent to proc %i\n", p->ID, W->p4est->mpirank, owner);
+                printf("[pchase %i insertPart] particle[%i] sent to proc %i\n", W->p4est->mpirank, p->ID, owner);
 #endif
                 /* and free particle on this proc */
                 P4EST_FREE(p);
