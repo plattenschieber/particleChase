@@ -96,6 +96,11 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
         printf("[pchase %i insertPart] Translated Particle(%lf,%lf) to miniQuad (%lld,%lld) at tree %lld\n",
                W->p4est->mpirank, p->x[0], p->x[1], miniQuad->x, miniQuad->y, miniQuad->p.which_tree);
 #endif
+        /*
+         * find most deepest quadrant which encloses the mini quad in point
+         * and save its data in point.piggy3
+         */
+        p4est_search(W->p4est, W->search_fn, point);
 
 
         /* using find_owner to pigeon-hole particle into the right proc */
