@@ -93,13 +93,18 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
         pchase_translate_particle_to_p4est(W, p, miniQuad);
 
 #ifdef DEBUG
-        printf("[pchase %i insertPart] Particle(x,y)=(%lf,%lf)\n", W->p4est->mpirank, p->x[0], p->x[1]);
-        printf("[pchase %i insertPart] in mini quad(%lld,%lld) at %lld\n", W->p4est->mpirank, miniQuad->x, miniQuad->y, miniQuad);
+        printf("[pchase %i insertPart] Translated Particle(%lf,%lf) to miniQuad (%lld,%lld) at tree %lld\n",
+               W->p4est->mpirank, p->x[0], p->x[1], miniQuad->x, miniQuad->y, miniQuad->p.which_tree);
 #endif
 
 
         /* using find_owner to pigeon-hole particle into the right proc */
-        //p4est_comm_find_owner(W->p4est, enclQuad - which_tree, const p4est_quadrant_t * q, int guess);
+        printf("[pchase %i] Before owner owner owner ", W->p4est->mpirank);
+        printf("[pchase %i] OWNER OWNER OWNER: %i", W->p4est->mpirank, p4est_comm_find_owner(W->p4est, miniQuad->p.piggy3.which_tree, miniQuad, W->p4est->mpirank));
+#ifdef DEBUG
+        /* print number of particles in quad */
+        printf("[pchase %i insertPart] #Particles in enclQuad: %d \n", W->p4est->mpirank, enclQuadData->nParticles);
+#endif
 
         /*
          * check if the quadrant holding our to be inserted particle lies on
@@ -116,12 +121,6 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
                 p4est_tree_t       *enclQuadTree = p4est_tree_array_index(W->p4est->trees, miniQuad->p.piggy3.which_tree);
                 p4est_quadrant_t   *enclQuad = p4est_quadrant_array_index(&enclQuadTree->quadrants, miniQuad->p.piggy3.local_num);
                 pchase_quadrant_data_t *enclQuadData = enclQuad->p.user_data;
-#ifdef DEBUG
-                /* print saved quad once again */
-                printf("[pchase %i insertPart] ROOT is doing the job\n ", W->p4est->mpirank);
-                printf("[pchase %i insertPart] quad in user_pointer: %lld\n", W->p4est->mpirank, enclQuad);
-                printf("[pchase %i insertPart] #Particles in Quad: %d \n", W->p4est->mpirank, enclQuadData->nParticles);
-#endif
 
                 /*
                  * TODO: - check if there are already 5 particles inside
@@ -137,8 +136,7 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
 
         } else
                 /* send particle to its belonging proc */
-                printf("[pchase %i insertPart] Not yet implemented", W->p4est->mpirank);
-
+                printf("[pchase %i insertPart] Sending Particle not implemented yet", W->p4est->mpirank);
 
         sc_array_destroy(point);
 }
@@ -147,14 +145,6 @@ void
 pchase_translate_particle_to_p4est(pchase_world_t * W, const pchase_particle_t * p, p4est_quadrant_t * q)
 {
         double              quadrant_length = (double)(1 << P4EST_QMAXLEVEL);
-
-#ifdef DEBUG
-        printf("[pchase %i translatePart] Step 1: p->x = %lf\n", W->p4est->mpirank, p->x[0]);
-        printf("[pchase %i translatePart] Step 2: p->x/W->length.x = %lf\n", W->p4est->mpirank, p->x[0] / W->length[0]);
-        printf("[pchase %i translatePart] Step 3: times quad_len = %lf with quad_len = %lf and root_len = %lld\n", W->p4est->mpirank, p->x[0] / W->length[0] * quadrant_length, quadrant_length, P4EST_ROOT_LEN);
-        printf("[pchase %i translatePart] Step 4: truncate = %d\n", W->p4est->mpirank, (p4est_qcoord_t) (p->x[0] / W->length[0] * quadrant_length));
-        printf("[pchase %i translatePart] Step 5: times 2 gives q->x = %lld\n", W->p4est->mpirank, (p4est_qcoord_t) (p->x[0] / W->length[0] * quadrant_length) << 1);
-#endif
 
         /*
          * normalize particle and transform it to p4est world length by
@@ -189,7 +179,8 @@ search_fn(p4est_t * p4est, p4est_topidx_t which_tree,
         int                 quadrant_length;
 
 #ifdef DEBUG
-        printf("[pchase %i search] HELLOOO I AM A CALLBACK in x:%lld y:%lld with tree:%lld and local_num:%lld\n", p4est->mpirank, quadrant->x, quadrant->y, which_tree, quadrant->p.piggy3.local_num);
+        printf("[pchase %i search] HELLOOO I AM A CALLBACK in quad(%lld,%lld) in tree:%lld at local_num:%lld\n",
+               p4est->mpirank, quadrant->x, quadrant->y, which_tree, quadrant->p.piggy3.local_num);
 #endif
 
         quadrant_length = P4EST_QUADRANT_LEN(quadrant->level);
@@ -205,11 +196,9 @@ search_fn(p4est_t * p4est, p4est_topidx_t which_tree,
                         q->p.piggy3.which_tree = which_tree;
                 }
 #ifdef DEBUG
-                printf("[pchase %i search] YES YES YES - we found a quadrant whos child holds " \
-                       "our mini quad at linear positon: %d in level: %d is_leaf: %d\n", p4est->mpirank,
+                printf("[pchase %i search] YES YES YES - we found a quadrant (holding miniQuad)," \
+                       "at linear positon: %d in level: %d is_leaf: %d\n", p4est->mpirank,
                        p4est_quadrant_linear_id(quadrant, quadrant->level), quadrant->level, is_leaf);
-                printf("[pchase %i search] QuadLen: %lld, pos(x,y)=(%lld,%lld)\n", p4est->mpirank, P4EST_QUADRANT_LEN(quadrant->level), quadrant->x, quadrant->y);
-                printf("[pchase %i search] Found this quad pointer: %lld\n", p4est->mpirank, quadrant);
 #endif
 
                 return 1;
@@ -220,8 +209,7 @@ search_fn(p4est_t * p4est, p4est_topidx_t which_tree,
 static void
 init_fn(p4est_t * p4est, p4est_topidx_t which_tree, p4est_quadrant_t * quadrant)
 {
-        printf("[pchase %i init_fn] BUM, INIT for Quad(x,y): (%lld,%lld) at memory: %lld\n", p4est->mpirank, quadrant->x, quadrant->y, quadrant);
-
+        printf("[pchase %i init_fn] BUM, INIT for quad(%lld,%lld) in tree: %lld\n", p4est->mpirank, quadrant->x, quadrant->y, which_tree);
         ((pchase_quadrant_data_t *) quadrant->p.user_data)->nParticles = 0;
 }
 
@@ -251,6 +239,6 @@ static void
 viter_fn(p4est_iter_volume_info_t * info, void *user_data)
 {
         pchase_quadrant_data_t *quadData = (pchase_quadrant_data_t *) info->quad->p.user_data;
-        printf("[pchase %i main iterate] quad(%lld,%lld) with %i particles \n", info->p4est->mpirank, info->quad->x, info->quad->y, quadData->nParticles);
+        printf("[pchase %i main iterate] quad(%lld,%lld) has %i particles \n", info->p4est->mpirank, info->quad->x, info->quad->y, quadData->nParticles);
         return;
 }
