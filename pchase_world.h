@@ -10,6 +10,7 @@
 #include "p4est_extended.h"
 #include "p4est_search.h"
 #include "p4est_iterate.h"
+#include "p4est_communication.h"
 
 /* pchase_world_t holds the entire information of our simulation */
 typedef struct {

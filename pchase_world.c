@@ -84,6 +84,7 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
 {
         p4est_quadrant_t   *miniQuad;
         sc_array_t         *point;
+        int                 owner;
 
         /* get place for one point and take care of it via miniQuad */
         point = sc_array_new_size(sizeof(p4est_quadrant_t), 1);
@@ -103,9 +104,6 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
         p4est_search(W->p4est, W->search_fn, point);
 
 
-        /* using find_owner to pigeon-hole particle into the right proc */
-        printf("[pchase %i owner] resolving owner of miniQuad\n", W->p4est->mpirank);
-        printf("[pchase %i owner] Found owner: %i of miniQuad\n", W->p4est->mpirank, p4est_comm_find_owner(W->p4est, miniQuad->p.piggy3.which_tree, miniQuad, W->p4est->mpirank));
 
         /*
          * check if the quadrant holding our to be inserted particle lies on
@@ -126,6 +124,10 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
         else {
                 /* send particle to its belonging proc */
                 printf("[pchase %i insertPart] Sending Particle not implemented yet", W->p4est->mpirank);
+                /* use find_owner to pigeon-hole particle into the right proc */
+                owner = p4est_comm_find_owner(W->p4est, miniQuad->p.piggy3.which_tree, miniQuad, W->p4est->mpirank);
+                printf("[pchase %i insertPart] resolving owner of miniQuad\n", W->p4est->mpirank);
+                printf("[pchase %i insertPart] Found owner: %i of miniQuad\n", W->p4est->mpirank);
 
                 /* and free particle on this proc */
                 P4EST_FREE(p);
