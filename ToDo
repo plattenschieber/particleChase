@@ -1,4 +1,3 @@
-- check if there are already 5 particles inside quads particle array and flag quad to refine
 - create point array with #particles given from function caller and make miniQuad an array
 - save vtk file so that it contains #particles per quad -> output is displayable as heatmap
 - add simple velocity field into particle_move aka update_x
