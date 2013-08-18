@@ -171,7 +171,7 @@ static int
 search_fn(p4est_t * p4est, p4est_topidx_t which_tree,
           p4est_quadrant_t * quadrant, int is_leaf, void *point)
 {
-        p4est_quadrant_t   *q;
+        p4est_quadrant_t   *miniQuad;
         int                 quadrant_length;
 
 #ifdef DEBUG
@@ -180,16 +180,16 @@ search_fn(p4est_t * p4est, p4est_topidx_t which_tree,
 #endif
 
         quadrant_length = P4EST_QUADRANT_LEN(quadrant->level);
-        q = (p4est_quadrant_t *) point;
+        miniQuad = (p4est_quadrant_t *) point;
 
         /* mini quad must lie entirely in quadrant */
-        if (q->x >= quadrant->x && q->x <= quadrant->x + quadrant_length &&
-            q->y >= quadrant->y && q->y <= quadrant->y + quadrant_length) {
+        if (miniQuad->x >= quadrant->x && miniQuad->x <= quadrant->x + quadrant_length &&
+            miniQuad->y >= quadrant->y && miniQuad->y <= quadrant->y + quadrant_length) {
                 /* only save the quad in case it's a leaf */
                 if (is_leaf) {
-                        /* save current quad via piggy3 */
-                        q->p.piggy3.local_num = quadrant->p.piggy3.local_num;
-                        q->p.piggy3.which_tree = which_tree;
+                        /* save current quad in miniQuad via piggy3 */
+                        miniQuad->p.piggy3.local_num = quadrant->p.piggy3.local_num;
+                        miniQuad->p.piggy3.which_tree = which_tree;
                 }
 #ifdef DEBUG
                 printf("[pchase %i search] we found a quadrant (holding miniQuad)" \
