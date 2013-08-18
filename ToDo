@@ -1,0 +1,7 @@
+- create point array with #particles given from function caller and make miniQuad an array
+- save vtk file so that it contains #particles per quad -> output is displayable as heatmap
+- add simple velocity field into particle_move aka update_x
+- refine as soon as we have more than 5 particles in a quad
+- coarsen if all given siblings have together less than 5 particles
+- move particle to proc to which enclQuad belongs
+
