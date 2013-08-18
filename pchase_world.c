@@ -198,6 +198,9 @@ search_fn(p4est_t * p4est, p4est_topidx_t which_tree,
                  */
                 if (is_leaf)
                         miniQuad->p.piggy3.local_num = quadrant->p.piggy3.local_num;
+                /* flag the quad in the other case */
+                else
+                        miniQuad->p.piggy3.local_num = -1;
 #ifdef DEBUG
                 printf("[pchase %i search] we found a quadrant (holding miniQuad)" \
                        "at linear positon: %d in level: %d is_leaf: %d\n", p4est->mpirank,
