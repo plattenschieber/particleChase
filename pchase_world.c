@@ -190,11 +190,13 @@ search_fn(p4est_t * p4est, p4est_topidx_t which_tree,
         /* mini quad must lie entirely in quadrant */
         if (miniQuad->x >= quadrant->x && miniQuad->x <= quadrant->x + quadrant_length &&
             miniQuad->y >= quadrant->y && miniQuad->y <= quadrant->y + quadrant_length) {
-                /* only save the quad in case it's a leaf */
-                if (is_leaf) {
-                        /* save current quad in miniQuad via piggy3 */
                 /* remember current tree (needed to identify proc) */
                 miniQuad->p.piggy3.which_tree = which_tree;
+                /*
+                 * if it's a leaf, it holds it's position in the tree and can
+                 * only exist on this proc.
+                 */
+                if (is_leaf)
                         miniQuad->p.piggy3.local_num = quadrant->p.piggy3.local_num;
 #ifdef DEBUG
                 printf("[pchase %i search] we found a quadrant (holding miniQuad)" \
