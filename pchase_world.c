@@ -93,7 +93,7 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
         pchase_translate_particle_to_p4est(W, p, miniQuad);
 
 #ifdef DEBUG
-        printf("[pchase %i insertPart] Translated Particle(%lf,%lf) to miniQuad (%lld,%lld) at tree %lld\n",
+        printf("[pchase %i insertPart] Translated Particle(%lf,%lf) to miniQuad (%09lld,%09lld) at tree %lld\n",
                W->p4est->mpirank, p->x[0], p->x[1], miniQuad->x, miniQuad->y, miniQuad->p.which_tree);
 #endif
         /*
@@ -104,8 +104,8 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
 
 
         /* using find_owner to pigeon-hole particle into the right proc */
-        printf("[pchase %i] Before owner owner owner ", W->p4est->mpirank);
-        printf("[pchase %i] OWNER OWNER OWNER: %i", W->p4est->mpirank, p4est_comm_find_owner(W->p4est, miniQuad->p.piggy3.which_tree, miniQuad, W->p4est->mpirank));
+        printf("[pchase %i owner] resolving owner of miniQuad\n", W->p4est->mpirank);
+        printf("[pchase %i owner] Found owner: %i of miniQuad", W->p4est->mpirank, p4est_comm_find_owner(W->p4est, miniQuad->p.piggy3.which_tree, miniQuad, W->p4est->mpirank));
         /* extract enclosing quad from miniQuad.piggy3 */
         p4est_tree_t       *enclQuadTree = p4est_tree_array_index(W->p4est->trees, miniQuad->p.piggy3.which_tree);
         p4est_quadrant_t   *enclQuad = p4est_quadrant_array_index(&enclQuadTree->quadrants, miniQuad->p.piggy3.local_num);
@@ -174,7 +174,7 @@ search_fn(p4est_t * p4est, p4est_topidx_t which_tree,
         int                 quadrant_length;
 
 #ifdef DEBUG
-        printf("[pchase %i search] HELLOOO I AM A CALLBACK in quad(%lld,%lld) in tree:%lld at local_num:%lld\n",
+        printf("[pchase %i search] looking into quad(%09lld,%09lld) in tree:%lld at local_num:%lld\n",
                p4est->mpirank, quadrant->x, quadrant->y, which_tree, quadrant->p.piggy3.local_num);
 #endif
 
@@ -191,7 +191,7 @@ search_fn(p4est_t * p4est, p4est_topidx_t which_tree,
                         q->p.piggy3.which_tree = which_tree;
                 }
 #ifdef DEBUG
-                printf("[pchase %i search] YES YES YES - we found a quadrant (holding miniQuad)," \
+                printf("[pchase %i search] we found a quadrant (holding miniQuad)," \
                        "at linear positon: %d in level: %d is_leaf: %d\n", p4est->mpirank,
                        p4est_quadrant_linear_id(quadrant, quadrant->level), quadrant->level, is_leaf);
 #endif
@@ -204,7 +204,7 @@ search_fn(p4est_t * p4est, p4est_topidx_t which_tree,
 static void
 init_fn(p4est_t * p4est, p4est_topidx_t which_tree, p4est_quadrant_t * quadrant)
 {
-        printf("[pchase %i init_fn] BUM, INIT for quad(%lld,%lld) in tree: %lld\n", p4est->mpirank, quadrant->x, quadrant->y, which_tree);
+        printf("[pchase %i init_fn] quad(%09lld,%09lld) in tree: %lld\n", p4est->mpirank, quadrant->x, quadrant->y, which_tree);
         ((pchase_quadrant_data_t *) quadrant->p.user_data)->nParticles = 0;
 }
 
@@ -234,6 +234,6 @@ static void
 viter_fn(p4est_iter_volume_info_t * info, void *user_data)
 {
         pchase_quadrant_data_t *quadData = (pchase_quadrant_data_t *) info->quad->p.user_data;
-        printf("[pchase %i main iterate] quad(%lld,%lld) has %i particles \n", info->p4est->mpirank, info->quad->x, info->quad->y, quadData->nParticles);
+        printf("[pchase %i main iterate] quad(%09lld,%09lld) has %i particles \n", info->p4est->mpirank, info->quad->x, info->quad->y, quadData->nParticles);
         return;
 }
