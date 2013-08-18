@@ -123,14 +123,14 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
         /* particle lies on another proc */
         else {
                 /* send particle to its belonging proc */
-                printf("[pchase %i insertPart] Sending Particle not implemented yet", W->p4est->mpirank);
+                printf("[pchase %i insertPart] Sending Particle not implemented yet\n", W->p4est->mpirank);
 
                 /* use find_owner to pigeon-hole particle into the right proc */
                 owner = p4est_comm_find_owner(W->p4est, miniQuad->p.piggy3.which_tree, miniQuad, W->p4est->mpirank);
 #ifdef DEBUG
                 printf("[pchase %i insertPart] resolving owner of miniQuad\n", W->p4est->mpirank);
                 printf("[pchase %i insertPart] Found owner: %i of miniQuad\n", W->p4est->mpirank);
-                printf("[pchase %i insertPart] particle[%i] sent to proc %i and freed", p->ID, W->p4est->mpirank, owner);
+                printf("[pchase %i insertPart] particle[%i] sent to proc %i and freed\n", p->ID, W->p4est->mpirank, owner);
 #endif
                 /* and free particle on this proc */
                 P4EST_FREE(p);
