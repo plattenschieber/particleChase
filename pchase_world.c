@@ -105,7 +105,8 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
 
         /* using find_owner to pigeon-hole particle into the right proc */
         printf("[pchase %i owner] resolving owner of miniQuad\n", W->p4est->mpirank);
-        printf("[pchase %i owner] Found owner: %i of miniQuad", W->p4est->mpirank, p4est_comm_find_owner(W->p4est, miniQuad->p.piggy3.which_tree, miniQuad, W->p4est->mpirank));
+        printf("[pchase %i owner] Found owner: %i of miniQuad\n", W->p4est->mpirank, p4est_comm_find_owner(W->p4est, miniQuad->p.piggy3.which_tree, miniQuad, W->p4est->mpirank));
+scanf("%i",NULL);
         /* extract enclosing quad from miniQuad.piggy3 */
         p4est_tree_t       *enclQuadTree = p4est_tree_array_index(W->p4est->trees, miniQuad->p.piggy3.which_tree);
         p4est_quadrant_t   *enclQuad = p4est_quadrant_array_index(&enclQuadTree->quadrants, miniQuad->p.piggy3.local_num);
@@ -191,7 +192,7 @@ search_fn(p4est_t * p4est, p4est_topidx_t which_tree,
                         q->p.piggy3.which_tree = which_tree;
                 }
 #ifdef DEBUG
-                printf("[pchase %i search] we found a quadrant (holding miniQuad)," \
+                printf("[pchase %i search] we found a quadrant (holding miniQuad)" \
                        "at linear positon: %d in level: %d is_leaf: %d\n", p4est->mpirank,
                        p4est_quadrant_linear_id(quadrant, quadrant->level), quadrant->level, is_leaf);
 #endif
