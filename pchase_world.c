@@ -84,7 +84,6 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
 {
         p4est_quadrant_t   *miniQuad;
         sc_array_t         *point;
-        int                 i;
 
         /* get place for one point and take care of it via miniQuad */
         point = sc_array_new_size(sizeof(p4est_quadrant_t), 1);
