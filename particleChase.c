@@ -54,6 +54,9 @@ main(int argc, char **argv)
         /* add one particle to the world */
         pchase_world_insert_particle(W, pchase_world_random_particle(W));
 
+        /* let this particle move */
+         pchase_world_simulate(W);
+
 #ifdef DEBUG
         /* print out all quadrants */
         p4est_iterate(W->p4est, NULL, NULL, W->viter_fn, NULL, NULL);
