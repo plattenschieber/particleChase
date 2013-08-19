@@ -78,6 +78,11 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
         p4est_quadrant_t   *miniQuad;
         sc_array_t         *point;
         int                 owner;
+        int                 i;
+        int                 mpiret;
+        int                *receivers, num_receivers;
+        int                *senders, num_senders;
+        
 
         /* get place for one point and take care of it via miniQuad */
         point = sc_array_new_size(sizeof(p4est_quadrant_t), 1);
@@ -120,6 +125,23 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
 
                 /* use find_owner to pigeon-hole particle into the right proc */
                 owner = p4est_comm_find_owner(W->p4est, miniQuad->p.piggy3.which_tree, miniQuad, W->p4est->mpirank);
+
+                /* retrieving #recv should be done more efficiently, when sending a lot of particles */
+                num_receivers = point->elem_count;
+                receivers = SC_ALLOC(int, num_receivers);
+                for (i=0; i<num_receivers; i++) {
+                        receivers[i] = owner;
+                }
+                qsort (receivers, num_receivers, sizeof (int), sc_int_compare);
+                senders = SC_ALLOC (int, W->p4est->mpisize);
+                mpiret = sc_notify (receivers, num_receivers,
+                                senders, &num_senders, W->p4est->mpicomm);
+                SC_CHECK_MPI (mpiret);
+                
+                
+                
+                
+
 #ifdef DEBUG
                 printf("[pchase %i insertPart] particle[%i] sent to proc %i\n", W->p4est->mpirank, p->ID, owner);
 #endif

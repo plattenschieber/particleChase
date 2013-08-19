@@ -11,6 +11,7 @@
 #include "p4est_search.h"
 #include "p4est_iterate.h"
 #include "p4est_communication.h"
+#include "sc_notify.h"
 
 /* pchase_world_t holds the entire information of our simulation */
 typedef struct {
