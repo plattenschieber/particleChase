@@ -29,6 +29,7 @@ typedef struct {
         p4est_search_query_t search_fn;
         p4est_iter_volume_t viter_fn;
         p4est_iter_volume_t destroy_fn;
+        p4est_iter_volume_t print_fn;
 }
                     pchase_world_t;
 
@@ -113,4 +114,7 @@ static void
 /* frees all arrays from particles */
 static void
                     destroy_fn(p4est_iter_volume_info_t * info, void *Data);
+/* prints all particles in a xyz manner */
+static void
+                    print_fn(p4est_iter_volume_info_t * info, void *user_data);
 #endif

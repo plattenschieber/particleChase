@@ -24,6 +24,7 @@ pchase_world_init(p4est_t * p4est)
         W->replace_fn = NULL;
         W->viter_fn = viter_fn;
         W->destroy_fn = destroy_fn;
+        W->print_fn = print_fn;
         for (i = 0; i < DIM; i++)
                 W->length[i] = 1.0;
         /* reset seed */
@@ -39,6 +40,7 @@ pchase_world_simulate(pchase_world_t * W)
                 pchase_world_update_x(W);
 #ifdef DEBUG
                 printf("Actual time on earth: %f\n", W->t);
+                p4est_iterate(W->p4est, NULL, NULL, W->print_fn, NULL, NULL);
 #endif
                 W->t += W->delta_t;
                 W->step++;
@@ -235,4 +237,14 @@ viter_fn(p4est_iter_volume_info_t * info, void *user_data)
         pchase_quadrant_data_t *quadData = (pchase_quadrant_data_t *) info->quad->p.user_data;
         printf("[pchase %i main iterate] quad(0x%08X,0x%08X) has %i particles \n", info->p4est->mpirank, info->quad->x, info->quad->y, quadData->nParticles);
         return;
+}
+static void
+print_fn(p4est_iter_volume_info_t * info, void *user_data)
+{
+        int                 i;
+        pchase_quadrant_data_t *quadData = (pchase_quadrant_data_t *) info->quad->p.user_data;
+
+        for (i = 0; i < quadData->nParticles; i++) {
+                printf("%i\t%lf\t%lf\n", quadData->p[i]->ID, quadData->p[i]->x[0], quadData->p[i]->x[1]);
+        }
 }
