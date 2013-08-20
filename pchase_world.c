@@ -276,6 +276,12 @@ update_x_fn(p4est_iter_volume_info_t * info, void *user_data)
                 norm = sqrt(x * x + y * y);
                 quadData->p[i]->x[0] += W->delta_t * x / norm;
                 quadData->p[i]->x[1] += W->delta_t * y / norm;
+                if(W->step % 100 == 0)
+#ifdef PRINTXYZ
+                        fprintf(pchase_output,"H\t%lf\t%lf\t0\n", quadData->p[i]->x[0], quadData->p[i]->x[1]);
+#elif defined(PRINTGNUPLOT)
+                        fprintf(pchase_output,"%lf\t%lf\n", quadData->p[i]->x[0], quadData->p[i]->x[1]);
+#endif
         }
 }
 
