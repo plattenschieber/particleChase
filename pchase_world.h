@@ -123,4 +123,6 @@ static void
 /* moves all particles according to a given velocity field */
 static void
                     update_x_fn(p4est_iter_volume_info_t * info, void *user_data);
+int
+pchase_particle_lies_in_quad(pchase_world_t * W, const pchase_particle_t * p, p4est_quadrant_t * q);
 #endif

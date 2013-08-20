@@ -261,3 +261,11 @@ print_fn(p4est_iter_volume_info_t * info, void *user_data)
         
         }
 }
+
+int
+pchase_particle_lies_in_quad(pchase_world_t * W, const pchase_particle_t * p, p4est_quadrant_t * q)
+{
+        /* return 1 if it lies here */
+        /* return 0 if not */
+        return 0;
+}
