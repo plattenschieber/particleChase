@@ -6,3 +6,4 @@
 - move particle to proc to which enclQuad belongs
 - handle particle ID in parallel - until now every proc is asigning his own bunch of IDs -> this could result in confusion when sending particle to other procs
 - moving particles should be collected and pigeon-holed at the end of one time step, this speeds up a lot (comparison picture!)
+- to generate some nice simulations, consider inserting as many particles randomized each timestep as there are particles deleted due to crossing the worlds border
