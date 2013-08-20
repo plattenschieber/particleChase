@@ -335,7 +335,7 @@ replace_fn(p4est_t * p4est, p4est_topidx_t which_tree,
         if (num_outgoing == 1) {
 #ifdef DEBUG
                 printf("[pchase %i replace] REPLACING QUAD BY %i CHILDREN\n", p4est->mpirank, P4EST_CHILDREN);
-#define
+#endif
                 /* set readable names */
                 p = outgoing[0];
                 quadData = (pchase_quadrant_data_t *) p->p.user_data;
