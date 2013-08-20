@@ -51,7 +51,11 @@ pchase_world_simulate(pchase_world_t * W)
                         fprintf(pchase_output, "Time: %f\n", W->t);
                 }
 #endif
+                /* update the position of all particles on all quads */
                 p4est_iterate(W->p4est, NULL, W, W->update_x_fn, NULL, NULL);
+                if (W->step % 1000 == 0)
+                        /* refine every quad containing more than 5 particles */
+                        p4est_refine_ext(W->p4est, 0, -1, W->refine_fn, W->init_fn, W->replace_fn);
                 W->t += W->delta_t;
                 W->step++;
         }
@@ -213,7 +217,7 @@ init_fn(p4est_t * p4est, p4est_topidx_t which_tree, p4est_quadrant_t * quadrant)
 static int
 refine_fn(p4est_t * p4est, p4est_topidx_t which_tree, p4est_quadrant_t * quadrant)
 {
-        if (0)
+        if (((pchase_quadrant_data_t *) quadrant->p.user_data)->nParticles > 4)
                 return 1;
         else
                 return 0;
