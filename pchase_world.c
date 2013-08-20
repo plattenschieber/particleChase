@@ -319,3 +319,55 @@ pchase_particle_lies_in_quad(const pchase_particle_t * p, p4est_quadrant_t * q)
         } else
                 return 1;
 }
+static void
+replace_fn(p4est_t * p4est, p4est_topidx_t which_tree,
+           int num_outgoing, p4est_quadrant_t * outgoing[],
+           int num_incoming, p4est_quadrant_t * incoming[])
+{
+        p4est_quadrant_t  **fam;
+        p4est_quadrant_t   *p;
+        pchase_quadrant_data_t *quadData, *famJData;
+        int                 i, j;
+
+        /* refining quad -> spread data to its children */
+        if (num_outgoing == 1) {
+                printf("[pchase %i replace] REPLACING QUAD BY %i CHILDREN\n", p4est->mpirank, P4EST_CHILDREN);
+                /* set readable names */
+                p = outgoing[0];
+                quadData = (pchase_quadrant_data_t *) p->p.user_data;
+                fam = incoming;
+                for (i = 0; i < quadData->nParticles; i++)
+                        for (j = 0; j < P4EST_CHILDREN; j++) {
+                                printf("i: %i, j: %i nParticles %i\n", i, j, quadData->nParticles);
+                                if (pchase_particle_lies_in_quad(quadData->p[i], fam[j])) {
+                                        /*
+                                         * move particle to this quad(fam[j])
+                                         */
+                                        famJData = (pchase_quadrant_data_t *) fam[j]->p.user_data;
+                                        famJData->p[famJData->nParticles] = quadData->p[i];
+                                        /*
+                                         * move the last particle to i'th
+                                         * place to prevent a hole
+                                         */
+                                        quadData->p[i] = quadData->p[quadData->nParticles - 1];
+                                        /*
+                                         * reset iterator and particle
+                                         * counter
+                                         */
+                                        i--;
+                                        famJData->nParticles++;
+                                        quadData->nParticles--;
+                                        break;
+                                }
+                                printf("Next child\n");
+                        }
+        }
+        /*
+         * coarsening children -> gather data from them and sent to parent
+         */
+        else {
+                /* set readable names */
+                p = incoming[0];
+                fam = outgoing;
+        }
+}
