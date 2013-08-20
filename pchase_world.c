@@ -376,6 +376,26 @@ replace_fn(p4est_t * p4est, p4est_topidx_t which_tree,
         else {
                 /* set readable names */
                 p = incoming[0];
+                quadData = (pchase_quadrant_data_t *) p->p.user_data;
                 fam = outgoing;
+                for (j = 0; j < P4EST_CHILDREN; j++) {
+                        famJData = (pchase_quadrant_data_t *) fam[j]->p.user_data;
+                        for (i = 0; i < famJData->nParticles; i++) {
+                                /* move particle to parent */
+                                quadData->p[quadData->nParticles] = famJData->p[i];
+                                /*
+                                 * move last particle in array to originated
+                                 * hole
+                                 */
+                                famJData->p[i] = famJData->p[famJData->nParticles - 1];
+#ifdef DEBUG
+                                famJData->p[famJData->nParticles - 1] = NULL;
+#endif
+                                /* reset iterator and particle counter */
+                                i--;
+                                famJData->nParticles--;
+                                quadData->nParticles++;
+                        }
+                }
         }
 }
