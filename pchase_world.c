@@ -141,7 +141,9 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
 #endif
                 /* and free particle on this proc */
                 P4EST_FREE(p);
+#ifdef DEBUG
                 printf("[pchase %i insertPart] freed particle\n", W->p4est->mpirank);
+#endif
         }
         sc_array_destroy(point);
 }
@@ -214,7 +216,9 @@ search_fn(p4est_t * p4est, p4est_topidx_t which_tree,
 static void
 init_fn(p4est_t * p4est, p4est_topidx_t which_tree, p4est_quadrant_t * quadrant)
 {
+#ifdef DEBUG
         printf("[pchase %i init_fn] quad(0x%08X,0x%08X) in tree: %lld\n", p4est->mpirank, quadrant->x, quadrant->y, which_tree);
+#endif
         ((pchase_quadrant_data_t *) quadrant->p.user_data)->nParticles = 0;
 }
 
@@ -271,7 +275,7 @@ print_fn(p4est_iter_volume_info_t * info, void *user_data)
         for (i = 0; i < quadData->nParticles; i++)
 #ifdef DEBUG
                 printf("%i\t%lf\t%lf\n", quadData->p[i]->ID, quadData->p[i]->x[0], quadData->p[i]->x[1]);
-#elif
+#else
         printf("%lf\t%lf\n", quadData->p[i]->x[0], quadData->p[i]->x[1]);
 #endif
 
