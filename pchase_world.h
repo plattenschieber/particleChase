@@ -30,6 +30,7 @@ typedef struct {
         p4est_iter_volume_t viter_fn;
         p4est_iter_volume_t destroy_fn;
         p4est_iter_volume_t print_fn;
+        p4est_iter_volume_t update_x_fn;
 }
                     pchase_world_t;
 
@@ -117,4 +118,7 @@ static void
 /* prints all particles in a xyz manner */
 static void
                     print_fn(p4est_iter_volume_info_t * info, void *user_data);
+/* moves all particles according to a given velocity field */
+static void
+                    update_x_fn(p4est_iter_volume_info_t * info, void *user_data);
 #endif

@@ -37,23 +37,15 @@ pchase_world_simulate(pchase_world_t * W)
 {
         /* simulate until the end has come */
         while (W->t <= W->t_end) {
-                pchase_world_update_x(W);
 #ifdef DEBUG
                 printf("Actual time on earth: %f\n", W->t);
                 p4est_iterate(W->p4est, NULL, NULL, W->print_fn, NULL, NULL);
 #endif
+                p4est_iterate(W->p4est, NULL, W, W->update_x_fn, NULL, NULL);
                 W->t += W->delta_t;
                 W->step++;
         }
 }
-
-void
-pchase_world_update_x(pchase_world_t * W)
-{
-        /* evaluate potential */
-        printf("EVALUATE VELOCITY FIELD - NOT IMPLEMENTED YET");
-}
-
 
 pchase_particle_t  *
 pchase_world_random_particle(pchase_world_t * W)
