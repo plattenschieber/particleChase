@@ -20,7 +20,7 @@ pchase_world_init(p4est_t * p4est)
         W->step = 0;
         W->p4est = p4est;
         W->init_fn = init_fn;
-        W->coarsen_fn = NULL;
+        W->coarsen_fn = coarsen_fn;
         W->refine_fn = refine_fn;
         W->search_fn = search_fn;
         W->replace_fn = replace_fn;
@@ -53,9 +53,11 @@ pchase_world_simulate(pchase_world_t * W)
 #endif
                 /* update the position of all particles on all quads */
                 p4est_iterate(W->p4est, NULL, W, W->update_x_fn, NULL, NULL);
-                if (W->step % 1000 == 0)
+                if (W->step % 1000 == 0) {
                         /* refine every quad containing more than 5 particles */
                         p4est_refine_ext(W->p4est, 0, -1, W->refine_fn, W->init_fn, W->replace_fn);
+                        p4est_coarsen_ext(W->p4est, 0, W->coarsen_fn, W->init_fn, W->replace_fn);
+                }
                 W->t += W->delta_t;
                 W->step++;
         }
@@ -221,6 +223,19 @@ refine_fn(p4est_t * p4est, p4est_topidx_t which_tree, p4est_quadrant_t * quadran
                 return 1;
         else
                 return 0;
+}
+
+static int
+coarsen_fn(p4est_t * p4est, p4est_topidx_t which_tree, p4est_quadrant_t * q[])
+{
+        int                 i, sum;
+        for (i = 0, sum = 0; i < P4EST_CHILDREN; i++)
+                sum += ((pchase_quadrant_data_t *) q[i]->p.user_data)->nParticles;
+
+        if (sum > 5)
+                return 0;
+        else
+                return 1;
 }
 
 static void

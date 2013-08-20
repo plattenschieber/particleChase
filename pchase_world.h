@@ -111,6 +111,9 @@ init_fn(p4est_t * p4est, p4est_topidx_t which_tree,
 static int
 refine_fn(p4est_t * p4est, p4est_topidx_t which_tree,
           p4est_quadrant_t * quadrant);
+static int
+                    coarsen_fn(p4est_t * p4est, p4est_topidx_t which_tree, p4est_quadrant_t * q[]);
+
 /* prints all x,y data and pointers */
 static void
                     viter_fn(p4est_iter_volume_info_t * info, void *Data);
