@@ -122,7 +122,9 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
         /* particle lies on another proc */
         else {
                 /* send particle to its belonging proc */
+#ifdef DEBUG
                 printf("[pchase %i insertPart] Sending Particle not implemented yet\n", W->p4est->mpirank);
+#endif
 
                 /* use find_owner to pigeon-hole particle into the right proc */
                 owner = p4est_comm_find_owner(W->p4est, miniQuad->p.piggy3.which_tree, miniQuad, W->p4est->mpirank);
@@ -231,7 +233,9 @@ destroy_fn(p4est_iter_volume_info_t * info, void *Data)
         for (i = 0; i < qData->nParticles; i++) {
                 p = qData->p[i];
                 P4EST_FREE(p);
+#ifdef DEBUG
                 printf("[pchase %i destroy_fn] freed particle[%i](%lf,%lf)\n", info->p4est->mpirank, p->ID, p->x[0], p->x[1]);
+#endif
         }
         return;
 }
@@ -248,7 +252,12 @@ print_fn(p4est_iter_volume_info_t * info, void *user_data)
         int                 i;
         pchase_quadrant_data_t *quadData = (pchase_quadrant_data_t *) info->quad->p.user_data;
 
-        for (i = 0; i < quadData->nParticles; i++) {
+        for (i = 0; i < quadData->nParticles; i++) 
+#ifdef DEBUG
                 printf("%i\t%lf\t%lf\n", quadData->p[i]->ID, quadData->p[i]->x[0], quadData->p[i]->x[1]);
+#elif
+                printf("%lf\t%lf\n", quadData->p[i]->x[0], quadData->p[i]->x[1]);
+#endif
+        
         }
 }
