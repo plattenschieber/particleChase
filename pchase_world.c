@@ -298,7 +298,18 @@ update_x_fn(p4est_iter_volume_info_t * info, void *user_data)
 int
 pchase_particle_lies_in_quad(pchase_world_t * W, const pchase_particle_t * p, p4est_quadrant_t * q)
 {
-        /* return 1 if it lies here */
-        /* return 0 if not */
-        return 0;
+        p4est_qcoord_t quadrant_length,root_len;
+        quadrant_length = P4EST_QUADRANT_LEN(q->level);
+        root_len = P4EST_ROOT_LEN;
+
+        if (p->x[0]*root_len < q->x || p->x[0]*root_len >= q->x + quadrant_length ||
+            p->x[1]*root_len < q->y || p->x[1]*root_len >= q->y + quadrant_length) {
+#ifdef DEBUG
+                printf("particles at p4est_coord(0x%08X, 0x%08X) left Quad(%09lld,%lld)\n",
+                                (int) (p->x[0]*root_len), (int) (p->x[1]*root_len), q->x, q->y);
+#endif
+                return 0;
+        }
+        else
+                return 1;
 }
