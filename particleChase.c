@@ -52,7 +52,22 @@ main(int argc, char **argv)
         W->p4est = p4est;
 
         /* add one particle to the world */
-        pchase_world_insert_particle(W, pchase_world_random_particle(W));
+        //pchase_world_insert_particle(W, pchase_world_random_particle(W));
+        pchase_particle_t *p = P4EST_ALLOC(pchase_particle_t, 1);
+        p->ID = 666;
+        p->x[0]=0.3; p->x[1]=0.3; 
+        pchase_particle_t *p2 = P4EST_ALLOC(pchase_particle_t, 1);
+        p2->ID = 666;
+        p2->x[0]=0.4; p2->x[1]=0.4; 
+        pchase_particle_t *p3 = P4EST_ALLOC(pchase_particle_t, 1);
+        p3->ID = 666;
+        p3->x[0]=0.9; p3->x[1]=0.5; 
+        pchase_world_insert_particle(W, p);
+        pchase_world_insert_particle(W, p2);
+        pchase_world_insert_particle(W, p3);
+
+        /* let this particle move */
+         pchase_world_simulate(W);
 
 #ifdef DEBUG
         /* print out all quadrants */

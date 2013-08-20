@@ -1,6 +1,8 @@
 #ifndef PCHASE_WORLD_H
 #define PCHASE_WORLD_H
 #define DEBUG
+#define PRINTGNUPLOT
+//#define PRINTXYZ
 #define DIM 2
 
 #include "pchase_particle.h"
@@ -30,6 +32,7 @@ typedef struct {
         p4est_iter_volume_t viter_fn;
         p4est_iter_volume_t destroy_fn;
         p4est_iter_volume_t print_fn;
+        p4est_iter_volume_t update_x_fn;
 }
                     pchase_world_t;
 
@@ -117,4 +120,9 @@ static void
 /* prints all particles in a xyz manner */
 static void
                     print_fn(p4est_iter_volume_info_t * info, void *user_data);
+/* moves all particles according to a given velocity field */
+static void
+                    update_x_fn(p4est_iter_volume_info_t * info, void *user_data);
+int
+pchase_particle_lies_in_quad(pchase_world_t * W, const pchase_particle_t * p, p4est_quadrant_t * q);
 #endif
