@@ -2,7 +2,7 @@
 #define PCHASE_WORLD_H
 #define DEBUG
 #define PRINTGNUPLOT
-//#define PRINTXYZ
+/* #define PRINTXYZ */
 #define DIM 2
 
 #include "pchase_particle.h"
@@ -111,6 +111,9 @@ init_fn(p4est_t * p4est, p4est_topidx_t which_tree,
 static int
 refine_fn(p4est_t * p4est, p4est_topidx_t which_tree,
           p4est_quadrant_t * quadrant);
+static int
+                    coarsen_fn(p4est_t * p4est, p4est_topidx_t which_tree, p4est_quadrant_t * q[]);
+
 /* prints all x,y data and pointers */
 static void
                     viter_fn(p4est_iter_volume_info_t * info, void *Data);
@@ -124,5 +127,9 @@ static void
 static void
                     update_x_fn(p4est_iter_volume_info_t * info, void *user_data);
 int
-pchase_particle_lies_in_quad(pchase_world_t * W, const pchase_particle_t * p, p4est_quadrant_t * q);
+                    pchase_particle_lies_in_quad(const pchase_particle_t * p, p4est_quadrant_t * q);
+static void
+replace_fn(p4est_t * p4est, p4est_topidx_t which_tree,
+           int num_outgoing, p4est_quadrant_t * outgoing[],
+           int num_incoming, p4est_quadrant_t * incoming[]);
 #endif
