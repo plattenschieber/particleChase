@@ -280,8 +280,6 @@ update_x_fn(p4est_iter_volume_info_t * info, void *user_data)
                 /* move particle if it has left the quad */ 
                 if (!pchase_particle_lies_in_quad(W,quadData->p[i],info->quad)) {
                         pchase_world_insert_particle(W, quadData->p[i]);
-                        /* then delete the particle */ 
-                        P4EST_FREE(quadData->p[i]);
 
                         /* if it's not the last particle in the array */
                         if (i!=quadData->nParticles-1) {
