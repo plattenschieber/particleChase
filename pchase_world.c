@@ -175,11 +175,6 @@ search_fn(p4est_t * p4est, p4est_topidx_t which_tree,
         p4est_quadrant_t   *miniQuad;
         int                 quadrant_length;
 
-#ifdef DEBUG
-        printf("[pchase %i search] looking into quad(0x%08X,0x%08X) in tree:0x%08X\n",
-               p4est->mpirank, quadrant->x, quadrant->y, which_tree);
-#endif
-
         quadrant_length = P4EST_QUADRANT_LEN(quadrant->level);
         miniQuad = (p4est_quadrant_t *) point;
 
@@ -198,8 +193,8 @@ search_fn(p4est_t * p4est, p4est_topidx_t which_tree,
                 else
                         miniQuad->p.piggy3.local_num = -1;
 #ifdef DEBUG
-                printf("[pchase %i search] we found a quadrant (holding miniQuad) " \
-                       "with local_num %d in level: %d is_leaf: %d\n", p4est->mpirank,
+                printf("[pchase %i search] found quad (holding miniQuad) " \
+                       "with local_num %d in level: %d is_leaf: %d\n", p4est->mpirank, 
                        miniQuad->p.piggy3.local_num, quadrant->level, is_leaf);
 #endif
 
