@@ -282,6 +282,23 @@ update_x_fn(p4est_iter_volume_info_t * info, void *user_data)
 #elif defined(PRINTGNUPLOT)
                         fprintf(pchase_output,"%lf\t%lf\n", quadData->p[i]->x[0], quadData->p[i]->x[1]);
 #endif
+                /* move particle if it has left the quad */ 
+                if (!pchase_particle_lies_in_quad(W,quadData->p[i],info->quad)) {
+                        pchase_world_insert_particle(W, quadData->p[i]);
+                        /* then delete the particle */ 
+                        P4EST_FREE(quadData->p[i]);
+
+                        /* if it's not the last particle in the array */
+                        if (i!=quadData->nParticles-1) {
+                                /* move the last particle to i'th place to prevent a hole */
+                                quadData->p[i] = quadData->p[quadData->nParticles-1];
+                                quadData->p[quadData->nParticles-1] = NULL;
+                                /* set iterator accordingly */
+                                i--;
+                        }
+                        /* update particle counter in quad array */
+                        quadData->nParticles--;
+                }
         }
 }
 
