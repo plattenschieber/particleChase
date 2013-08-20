@@ -259,6 +259,23 @@ print_fn(p4est_iter_volume_info_t * info, void *user_data)
                 printf("%lf\t%lf\n", quadData->p[i]->x[0], quadData->p[i]->x[1]);
 #endif
         
+}
+static void
+update_x_fn(p4est_iter_volume_info_t * info, void *user_data)
+{
+        double              x, y, norm;
+        int                 i;
+        pchase_quadrant_data_t *quadData = (pchase_quadrant_data_t *) info->quad->p.user_data;
+        pchase_world_t * W = (pchase_world_t *) user_data;
+
+
+        for (i = 0; i < quadData->nParticles; i++) {
+                x = -quadData->p[i]->x[1] + 0.5;
+                y = quadData->p[i]->x[0] - 0.5;
+
+                norm = sqrt(x * x + y * y);
+                quadData->p[i]->x[0] += W->delta_t * x / norm;
+                quadData->p[i]->x[1] += W->delta_t * y / norm;
         }
 }
 
