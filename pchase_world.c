@@ -292,7 +292,9 @@ update_x_fn(p4est_iter_volume_info_t * info, void *user_data)
                                  * prevent a hole
                                  */
                                 quadData->p[i] = quadData->p[quadData->nParticles - 1];
+#ifdef DEBUG
                                 quadData->p[quadData->nParticles - 1] = NULL;
+#endif
                                 /* set iterator accordingly */
                                 i--;
                         }
@@ -331,14 +333,18 @@ replace_fn(p4est_t * p4est, p4est_topidx_t which_tree,
 
         /* refining quad -> spread data to its children */
         if (num_outgoing == 1) {
+#ifdef DEBUG
                 printf("[pchase %i replace] REPLACING QUAD BY %i CHILDREN\n", p4est->mpirank, P4EST_CHILDREN);
+#define
                 /* set readable names */
                 p = outgoing[0];
                 quadData = (pchase_quadrant_data_t *) p->p.user_data;
                 fam = incoming;
                 for (i = 0; i < quadData->nParticles; i++)
                         for (j = 0; j < P4EST_CHILDREN; j++) {
+#ifdef DEBUG
                                 printf("i: %i, j: %i nParticles %i\n", i, j, quadData->nParticles);
+#endif
                                 if (pchase_particle_lies_in_quad(quadData->p[i], fam[j])) {
                                         /*
                                          * move particle to this quad(fam[j])
@@ -350,6 +356,9 @@ replace_fn(p4est_t * p4est, p4est_topidx_t which_tree,
                                          * place to prevent a hole
                                          */
                                         quadData->p[i] = quadData->p[quadData->nParticles - 1];
+#ifdef DEBUG
+                                        quadData->p[quadData->nParticles - 1] = NULL;
+#endif
                                         /*
                                          * reset iterator and particle
                                          * counter
@@ -359,7 +368,6 @@ replace_fn(p4est_t * p4est, p4est_topidx_t which_tree,
                                         quadData->nParticles--;
                                         break;
                                 }
-                                printf("Next child\n");
                         }
         }
         /*
