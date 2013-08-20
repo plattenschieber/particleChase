@@ -23,7 +23,7 @@ pchase_world_init(p4est_t * p4est)
         W->coarsen_fn = NULL;
         W->refine_fn = refine_fn;
         W->search_fn = search_fn;
-        W->replace_fn = NULL;
+        W->replace_fn = replace_fn;
         W->viter_fn = viter_fn;
         W->destroy_fn = destroy_fn;
         W->print_fn = print_fn;
