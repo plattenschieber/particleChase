@@ -1,6 +1,6 @@
 #include "pchase_world.h"
 
-static FILE * pchase_output;
+static FILE        *pchase_output;
 
 pchase_world_t     *
 pchase_world_init(p4est_t * p4est)
@@ -46,9 +46,9 @@ pchase_world_simulate(pchase_world_t * W)
         /* simulate until the end has come */
         while (W->t <= W->t_end) {
 #ifdef PRINTXYZ
-                if(W->step % 1000 == 0) {
-                        fprintf(pchase_output,"%i\n",W->n_particles);    
-                        fprintf(pchase_output,"Time: %f\n", W->t);
+                if (W->step % 1000 == 0) {
+                        fprintf(pchase_output, "%i\n", W->n_particles);
+                        fprintf(pchase_output, "Time: %f\n", W->t);
                 }
 #endif
                 p4est_iterate(W->p4est, NULL, W, W->update_x_fn, NULL, NULL);
@@ -194,8 +194,8 @@ search_fn(p4est_t * p4est, p4est_topidx_t which_tree,
                         miniQuad->p.piggy3.local_num = -1;
 #ifdef DEBUG
                 printf("[pchase %i search] found quad (holding miniQuad) " \
-                       "with local_num %d in level: %d is_leaf: %d\n", p4est->mpirank, 
-                       miniQuad->p.piggy3.local_num, quadrant->level, is_leaf);
+                       "with local_num %d in level: %d is_leaf: %d\n", p4est->mpirank,
+                    miniQuad->p.piggy3.local_num, quadrant->level, is_leaf);
 #endif
 
                 return 1;
@@ -247,13 +247,13 @@ print_fn(p4est_iter_volume_info_t * info, void *user_data)
         int                 i;
         pchase_quadrant_data_t *quadData = (pchase_quadrant_data_t *) info->quad->p.user_data;
 
-        for (i = 0; i < quadData->nParticles; i++) 
+        for (i = 0; i < quadData->nParticles; i++)
 #ifdef DEBUG
                 printf("%i\t%lf\t%lf\n", quadData->p[i]->ID, quadData->p[i]->x[0], quadData->p[i]->x[1]);
 #elif
-                printf("%lf\t%lf\n", quadData->p[i]->x[0], quadData->p[i]->x[1]);
+        printf("%lf\t%lf\n", quadData->p[i]->x[0], quadData->p[i]->x[1]);
 #endif
-        
+
 }
 static void
 update_x_fn(p4est_iter_volume_info_t * info, void *user_data)
@@ -261,7 +261,7 @@ update_x_fn(p4est_iter_volume_info_t * info, void *user_data)
         double              x, y, norm;
         int                 i;
         pchase_quadrant_data_t *quadData = (pchase_quadrant_data_t *) info->quad->p.user_data;
-        pchase_world_t * W = (pchase_world_t *) user_data;
+        pchase_world_t     *W = (pchase_world_t *) user_data;
 
 
         for (i = 0; i < quadData->nParticles; i++) {
@@ -271,21 +271,24 @@ update_x_fn(p4est_iter_volume_info_t * info, void *user_data)
                 norm = sqrt(x * x + y * y);
                 quadData->p[i]->x[0] += W->delta_t * x / norm;
                 quadData->p[i]->x[1] += W->delta_t * y / norm;
-                if(W->step % 100 == 0)
+                if (W->step % 100 == 0)
 #ifdef PRINTXYZ
-                        fprintf(pchase_output,"H\t%lf\t%lf\t0\n", quadData->p[i]->x[0], quadData->p[i]->x[1]);
+                        fprintf(pchase_output, "H\t%lf\t%lf\t0\n", quadData->p[i]->x[0], quadData->p[i]->x[1]);
 #elif defined(PRINTGNUPLOT)
-                        fprintf(pchase_output,"%lf\t%lf\n", quadData->p[i]->x[0], quadData->p[i]->x[1]);
+                fprintf(pchase_output, "%lf\t%lf\n", quadData->p[i]->x[0], quadData->p[i]->x[1]);
 #endif
                 /* move particle if it has left the quad */
                 if (!pchase_particle_lies_in_quad(quadData->p[i], info->quad)) {
                         pchase_world_insert_particle(W, quadData->p[i]);
 
                         /* if it's not the last particle in the array */
-                        if (i!=quadData->nParticles-1) {
-                                /* move the last particle to i'th place to prevent a hole */
-                                quadData->p[i] = quadData->p[quadData->nParticles-1];
-                                quadData->p[quadData->nParticles-1] = NULL;
+                        if (i != quadData->nParticles - 1) {
+                                /*
+                                 * move the last particle to i'th place to
+                                 * prevent a hole
+                                 */
+                                quadData->p[i] = quadData->p[quadData->nParticles - 1];
+                                quadData->p[quadData->nParticles - 1] = NULL;
                                 /* set iterator accordingly */
                                 i--;
                         }
@@ -298,18 +301,17 @@ update_x_fn(p4est_iter_volume_info_t * info, void *user_data)
 int
 pchase_particle_lies_in_quad(const pchase_particle_t * p, p4est_quadrant_t * q)
 {
-        p4est_qcoord_t quadrant_length,root_len;
+        p4est_qcoord_t      quadrant_length, root_len;
         quadrant_length = P4EST_QUADRANT_LEN(q->level);
         root_len = P4EST_ROOT_LEN;
 
-        if (p->x[0]*root_len < q->x || p->x[0]*root_len >= q->x + quadrant_length ||
-            p->x[1]*root_len < q->y || p->x[1]*root_len >= q->y + quadrant_length) {
+        if (p->x[0] * root_len < q->x || p->x[0] * root_len >= q->x + quadrant_length ||
+            p->x[1] * root_len < q->y || p->x[1] * root_len >= q->y + quadrant_length) {
 #ifdef DEBUG
-                printf("particles at p4est_coord(0x%08X, 0x%08X) left Quad(%09lld,%lld)\n",
-                                (int) (p->x[0]*root_len), (int) (p->x[1]*root_len), q->x, q->y);
+                printf("particles at p4est_coord(%09lld,%09lld) left Quad(0x%08X, 0x%08X)\n",
+                       (int)(p->x[0] * root_len), (int)(p->x[1] * root_len), q->x, q->y);
 #endif
                 return 0;
-        }
-        else
+        } else
                 return 1;
 }
