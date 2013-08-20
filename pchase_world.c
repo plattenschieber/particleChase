@@ -1,5 +1,7 @@
 #include "pchase_world.h"
 
+static FILE * pchase_output;
+
 pchase_world_t     *
 pchase_world_init(p4est_t * p4est)
 {
@@ -25,6 +27,12 @@ pchase_world_init(p4est_t * p4est)
         W->viter_fn = viter_fn;
         W->destroy_fn = destroy_fn;
         W->print_fn = print_fn;
+        W->update_x_fn = update_x_fn;
+#ifdef PRINTXYZ
+        pchase_output = fopen("pchase_particles.xyz", "w");
+#elif defined(PRINTGNUPLOT)
+        pchase_output = fopen("pchase_particles.plot", "w");
+#endif
         for (i = 0; i < DIM; i++)
                 W->length[i] = 1.0;
         /* reset seed */
@@ -37,14 +45,18 @@ pchase_world_simulate(pchase_world_t * W)
 {
         /* simulate until the end has come */
         while (W->t <= W->t_end) {
-#ifdef DEBUG
-                printf("Actual time on earth: %f\n", W->t);
-                p4est_iterate(W->p4est, NULL, NULL, W->print_fn, NULL, NULL);
+#ifdef PRINTXYZ
+                if(W->step % 1000 == 0) {
+                        fprintf(pchase_output,"%i\n",W->n_particles);    
+                        fprintf(pchase_output,"Time: %f\n", W->t);
+                }
 #endif
                 p4est_iterate(W->p4est, NULL, W, W->update_x_fn, NULL, NULL);
                 W->t += W->delta_t;
                 W->step++;
         }
+        printf("simulation over\n");
+        fclose(pchase_output);
 }
 
 pchase_particle_t  *

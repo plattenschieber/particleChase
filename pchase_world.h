@@ -1,6 +1,8 @@
 #ifndef PCHASE_WORLD_H
 #define PCHASE_WORLD_H
 #define DEBUG
+#define PRINTGNUPLOT
+//#define PRINTXYZ
 #define DIM 2
 
 #include "pchase_particle.h"
