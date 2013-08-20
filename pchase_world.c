@@ -200,7 +200,7 @@ search_fn(p4est_t * p4est, p4est_topidx_t which_tree,
 #ifdef DEBUG
                 printf("[pchase %i search] we found a quadrant (holding miniQuad) " \
                        "with local_num %d in level: %d is_leaf: %d\n", p4est->mpirank,
-                       miniQuad->p.piggy3.local_num, quadrant->level, quadrant->level, is_leaf);
+                       miniQuad->p.piggy3.local_num, quadrant->level, is_leaf);
 #endif
 
                 return 1;
