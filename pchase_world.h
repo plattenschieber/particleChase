@@ -124,7 +124,7 @@ static void
 static void
                     update_x_fn(p4est_iter_volume_info_t * info, void *user_data);
 int
-pchase_particle_lies_in_quad(pchase_world_t * W, const pchase_particle_t * p, p4est_quadrant_t * q);
+                    pchase_particle_lies_in_quad(const pchase_particle_t * p, p4est_quadrant_t * q);
 static void
 replace_fn(p4est_t * p4est, p4est_topidx_t which_tree,
            int num_outgoing, p4est_quadrant_t * outgoing[],

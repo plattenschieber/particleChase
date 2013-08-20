@@ -277,8 +277,8 @@ update_x_fn(p4est_iter_volume_info_t * info, void *user_data)
 #elif defined(PRINTGNUPLOT)
                         fprintf(pchase_output,"%lf\t%lf\n", quadData->p[i]->x[0], quadData->p[i]->x[1]);
 #endif
-                /* move particle if it has left the quad */ 
-                if (!pchase_particle_lies_in_quad(W,quadData->p[i],info->quad)) {
+                /* move particle if it has left the quad */
+                if (!pchase_particle_lies_in_quad(quadData->p[i], info->quad)) {
                         pchase_world_insert_particle(W, quadData->p[i]);
 
                         /* if it's not the last particle in the array */
@@ -296,7 +296,7 @@ update_x_fn(p4est_iter_volume_info_t * info, void *user_data)
 }
 
 int
-pchase_particle_lies_in_quad(pchase_world_t * W, const pchase_particle_t * p, p4est_quadrant_t * q)
+pchase_particle_lies_in_quad(const pchase_particle_t * p, p4est_quadrant_t * q)
 {
         p4est_qcoord_t quadrant_length,root_len;
         quadrant_length = P4EST_QUADRANT_LEN(q->level);
