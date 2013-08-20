@@ -374,6 +374,9 @@ replace_fn(p4est_t * p4est, p4est_topidx_t which_tree,
          * coarsening children -> gather data from them and sent to parent
          */
         else {
+#ifdef DEBUG
+                printf("[pchase %i replace] REPLACING %i CHILDREN BY THEIR PARENT\n", p4est->mpirank, P4EST_CHILDREN);
+#endif
                 /* set readable names */
                 p = incoming[0];
                 quadData = (pchase_quadrant_data_t *) p->p.user_data;
