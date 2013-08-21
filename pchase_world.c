@@ -15,7 +15,7 @@ pchase_world_init(p4est_t * p4est)
         /* set all parameters */
         W->t = 0.0;
         W->delta_t = 0.001;
-        W->t_end = 1.00;
+        W->t_end = 0.500;
         W->n_particles = 0;
         W->step = 0;
         W->p4est = p4est;
