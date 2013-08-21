@@ -1,6 +1,6 @@
 - create point array with #particles given from function caller and make miniQuad an array
 - add simple velocity field into particle_move aka update_x
-- refine as soon as we have more than 5 particles in a quad
+- refine as soon as we have more than 25 particles in a quad, to save particles from loosing
 - coarsen if all given siblings have together less than 5 particles
 - move particle to proc to which enclQuad belongs
 - handle particle ID in parallel - until now every proc is asigning his own bunch of IDs -> this could result in confusion when sending particle to other procs
