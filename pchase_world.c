@@ -338,8 +338,12 @@ update_x_fn(p4est_iter_volume_info_t * info, void *user_data)
                 /* update particles' velocity */
                 pchase_world_velocity(W, quadData->p[i]);
 
+#ifdef DEBUG
+                printf("[pchase %i updateX] particle[%i](%lf,%lf) in quad(%lld) with %i particles\n",
+                        info->p4est->mpirank, quadData->p[i]->ID, quadData->p[i]->x[0], quadData->p[i]->x[1], info->quadid, quadData->nParticles);
+#endif
 #ifdef PRINTXYZ
-                        fprintf(pchase_output, "H\t%lf\t%lf\t0\n", quadData->p[i]->x[0], quadData->p[i]->x[1]);
+                fprintf(pchase_output, "H\t%lf\t%lf\t0\n", quadData->p[i]->x[0], quadData->p[i]->x[1]);
 #elif defined(PRINTGNUPLOT)
                 fprintf(pchase_output, "%lf\t%lf\n", quadData->p[i]->x[0], quadData->p[i]->x[1]);
 #endif
