@@ -14,8 +14,8 @@ pchase_world_init(p4est_t * p4est)
         }
         /* set all parameters */
         W->t = 0.0;
-        W->delta_t = 0.00001;
-        W->t_end = 9.00;
+        W->delta_t = 0.001;
+        W->t_end = 1.00;
         W->n_particles = 0;
         W->step = 0;
         W->p4est = p4est;
@@ -43,6 +43,20 @@ pchase_world_init(p4est_t * p4est)
 void
 pchase_world_simulate(pchase_world_t * W)
 {
+        int i=0;
+        FILE *vtk_timeseries = fopen("pchase_particle_simulation.pvd","w");
+
+        fprintf (vtk_timeseries, "<?xml version=\"1.0\"?>\n");
+        fprintf (vtk_timeseries, "<VTKFile type=\"Collection\" version=\"0.1\" byte_order=\"LittleEndian\">\n");
+        fprintf (vtk_timeseries, "      <Collection>\n");
+
+        char fileName1[100]="pchase_with_particles_";
+        char fileName[100]="";
+        char VTKData1[100]="            <DataSet timestep=\"";
+        char VTKData2[100]="\" file=\"";
+        char VTKData3[100]=".pvtu\"/>\n";
+        char VTKData[200] = "";
+        char fileNumber[10];
         /* simulate until the end has come */
         while (W->t <= W->t_end) {
 #ifdef PRINTXYZ
@@ -53,17 +67,38 @@ pchase_world_simulate(pchase_world_t * W)
 #endif
                 /* update the position of all particles on all quads */
                 p4est_iterate(W->p4est, NULL, W, W->update_x_fn, NULL, NULL);
-                if (W->step % 10 == 0) {
+
+                if (W->step % 1 == 0) {
                         /* refine every quad containing more than 5 particles */
                         p4est_refine_ext(W->p4est, 0, -1, W->refine_fn, W->init_fn, W->replace_fn);
                         p4est_coarsen_ext(W->p4est, 0, W->coarsen_fn, W->init_fn, W->replace_fn);
                         p4est_balance_ext (W->p4est, P4EST_CONNECT_FULL, W->init_fn, W->replace_fn);
                         p4est_partition_ext(W->p4est, 1, NULL);
+
+                        /* convert current step to filename and write VTK Data entry */
+                        sprintf(fileNumber,"%03d",W->step);
+                        strcat(VTKData, VTKData1);
+                        strcat(VTKData, fileNumber);
+                        strcat(VTKData, VTKData2);
+                        strcat(fileName,fileName1);
+                        strcat(fileName,fileNumber);
+                        strcat(VTKData, fileName);
+                        strcat(VTKData, VTKData3);
+                        printf(VTKData);
+                        fprintf(vtk_timeseries, VTKData);
+                        p4est_vtk_write_file(W->p4est, NULL, fileName);
+                        i++;
+                        VTKData[0]='\0';
+                        fileName[0]='\0';
+
                 }
                 W->t += W->delta_t;
                 W->step++;
         }
         printf("simulation over\n");
+        fprintf (vtk_timeseries, "      </Collection>\n");
+        fprintf (vtk_timeseries, "</VTKFile>\n");
+        fclose(vtk_timeseries);
         fclose(pchase_output);
 }
 
@@ -225,7 +260,7 @@ init_fn(p4est_t * p4est, p4est_topidx_t which_tree, p4est_quadrant_t * quadrant)
 static int
 refine_fn(p4est_t * p4est, p4est_topidx_t which_tree, p4est_quadrant_t * quadrant)
 {
-        if (((pchase_quadrant_data_t *) quadrant->p.user_data)->nParticles > 4)
+        if (((pchase_quadrant_data_t *) quadrant->p.user_data)->nParticles > 1)
                 return 1;
         else
                 return 0;

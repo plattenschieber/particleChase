@@ -1,6 +1,6 @@
 #ifndef PCHASE_WORLD_H
 #define PCHASE_WORLD_H
-/* #define DEBUG */
+#define DEBUG
 #define PRINTGNUPLOT
 /* #define PRINTXYZ */
 #define DIM 2
@@ -13,6 +13,7 @@
 #include "p4est_search.h"
 #include "p4est_iterate.h"
 #include "p4est_communication.h"
+#include "p4est_vtk.h"
 
 /* pchase_world_t holds the entire information of our simulation */
 typedef struct {
