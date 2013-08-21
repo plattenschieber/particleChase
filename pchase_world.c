@@ -154,9 +154,23 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
                 p4est_quadrant_t   *enclQuad = p4est_quadrant_array_index(&enclQuadTree->quadrants, miniQuad->p.piggy3.local_num);
                 pchase_quadrant_data_t *enclQuadData = enclQuad->p.user_data;
 
-                /* insert particle data into quad and update particle counter */
-                enclQuadData->p[enclQuadData->nParticles] = p;
-                enclQuadData->nParticles++;
+                if (enclQuadData->nParticles < 25) {
+                        /* insert particle data into quad and update particle counter */
+                        enclQuadData->p[enclQuadData->nParticles] = p;
+                        enclQuadData->nParticles++;
+                }
+                /* too many particles in quad */ 
+                else {
+                        printf("[pchase %i insertPart] Too many (%i) particles ", W->p4est->mpirank, enclQuadData->nParticles);
+                        if(enclQuad->level < P4EST_QMAXLEVEL){
+                                printf("- refining enclQuad and inserting particle afterwards\n");
+                                p4est_refine_ext(W->p4est, 0, -1, W->refine_fn, W->init_fn, W->replace_fn);
+                                pchase_world_insert_particle(W, p);
+                        } else {
+                                printf("- enclQuad is not refinable - we have to dissmiss this particle\n");
+                                P4EST_FREE(p);
+                        }
+                }
 #ifdef DEBUG
                 /* print number of particles in quad */
                 printf("[pchase %i insertPart] #Particles in enclQuad: %d \n", W->p4est->mpirank, enclQuadData->nParticles);
