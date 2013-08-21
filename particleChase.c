@@ -53,12 +53,12 @@ main(int argc, char **argv)
 
         /* add one particle to the world */
         //pchase_world_insert_particle(W, pchase_world_random_particle(W));
-        for(i=0; i<400; i++) {
+        for (i = 0; i < 400; i++) {
                 pchase_particle_t  *p = P4EST_ALLOC(pchase_particle_t, 1);
 #ifdef DEBUG
                 p->ID = i;
 #endif
-                p->x[0] = i*0.0001 + 0.55;
+                p->x[0] = i * 0.0001 + 0.55;
                 p->x[1] = 0.5;
                 pchase_world_insert_particle(W, p);
         }
