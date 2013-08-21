@@ -404,9 +404,6 @@ replace_fn(p4est_t * p4est, p4est_topidx_t which_tree,
                 fam = incoming;
                 for (i = 0; i < quadData->nParticles; i++)
                         for (j = 0; j < P4EST_CHILDREN; j++) {
-#ifdef DEBUG
-                                printf("i: %i, j: %i nParticles %i\n", i, j, quadData->nParticles);
-#endif
                                 if (pchase_particle_lies_in_quad(quadData->p[i], fam[j])) {
                                         /*
                                          * move particle to this quad(fam[j])
