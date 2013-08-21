@@ -19,7 +19,7 @@ typedef struct {
 int
 main(int argc, char **argv)
 {
-        int                 mpiret;
+        int                 mpiret, i;
         mpi_context_t       mpi_context, *mpi = &mpi_context;
         p4est_t            *p4est;
         p4est_connectivity_t *connectivity;
@@ -44,50 +44,24 @@ main(int argc, char **argv)
         /* store connectivity for a unitsquare */
         connectivity = p4est_connectivity_new_unitsquare();
         /* build uniform tree and get space for 25 particles each */
-        p4est = p4est_new_ext(mpi->mpicomm, connectivity, 0, 1, 1,
+        p4est = p4est_new_ext(mpi->mpicomm, connectivity, 0, 3, 1,
                           sizeof(pchase_quadrant_data_t), W->init_fn, NULL);
-        p4est_vtk_write_file(p4est, NULL, "pchase_new");
+        //p4est_vtk_write_file(p4est, NULL, "pchase_new");
 
         /* don't forget to assign newly allocated p4est to the world */
         W->p4est = p4est;
 
         /* add one particle to the world */
         //pchase_world_insert_particle(W, pchase_world_random_particle(W));
-        pchase_particle_t  *p = P4EST_ALLOC(pchase_particle_t, 1);
+        for(i=0; i<400; i++) {
+                pchase_particle_t  *p = P4EST_ALLOC(pchase_particle_t, 1);
 #ifdef DEBUG
-        p->ID = 666;
+                p->ID = i;
 #endif
-        p->x[0] = 0.3;
-        p->x[1] = 0.3;
-        pchase_particle_t  *p2 = P4EST_ALLOC(pchase_particle_t, 1);
-#ifdef DEBUG
-        p2->ID = 666;
-#endif
-        p2->x[0] = 0.4;
-        p2->x[1] = 0.4;
-        pchase_particle_t  *p3 = P4EST_ALLOC(pchase_particle_t, 1);
-#ifdef DEBUG
-        p3->ID = 666;
-#endif
-        p3->x[0] = 0.91;
-        p3->x[1] = 0.5;
-        pchase_particle_t  *p4 = P4EST_ALLOC(pchase_particle_t, 1);
-#ifdef DEBUG
-        p4->ID = 666;
-#endif
-        p4->x[0] = 0.8;
-        p4->x[1] = 0.5;
-        pchase_particle_t  *p5 = P4EST_ALLOC(pchase_particle_t, 1);
-#ifdef DEBUG
-        p5->ID = 666;
-#endif
-        p5->x[0] = 0.7;
-        p5->x[1] = 0.5;
-        pchase_world_insert_particle(W, p);
-        pchase_world_insert_particle(W, p2);
-        pchase_world_insert_particle(W, p3);
-        pchase_world_insert_particle(W, p4);
-        pchase_world_insert_particle(W, p5);
+                p->x[0] = i*0.0001 + 0.55;
+                p->x[1] = 0.5;
+                pchase_world_insert_particle(W, p);
+        }
 
         /* let this particle move */
         pchase_world_simulate(W);
