@@ -136,8 +136,8 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
         pchase_translate_particle_to_p4est(W, p, miniQuad);
 
 #ifdef DEBUG
-        printf("[pchase %i insertPart] Translated Particle(%lf,%lf) to miniQuad (0x%08X,0x%08X)\n",
-             W->p4est->mpirank, p->x[0], p->x[1], miniQuad->x, miniQuad->y);
+        printf("[pchase %i insertPart] Translated Particle[%i](%lf,%lf) to miniQuad (0x%08X,0x%08X)\n",
+             W->p4est->mpirank, p->ID, p->x[0], p->x[1], miniQuad->x, miniQuad->y);
 #endif
         /*
          * find most deepest quadrant which encloses the mini quad in point
