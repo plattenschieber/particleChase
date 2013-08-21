@@ -315,23 +315,29 @@ print_fn(p4est_iter_volume_info_t * info, void *user_data)
 #endif
 
 }
+
+void
+pchase_world_velocity(pchase_world_t * W, pchase_particle_t * p){
+        double x,y,norm;
+        x = -p->x[1] + 0.5;
+        y =  p->x[0] - 0.5;
+
+        norm = sqrt(x * x + y * y);
+        p->x[0] += W->delta_t * x / norm;
+        p->x[1] += W->delta_t * y / norm;
+}
+
 static void
 update_x_fn(p4est_iter_volume_info_t * info, void *user_data)
 {
-        double              x, y, norm;
         int                 i;
         pchase_quadrant_data_t *quadData = (pchase_quadrant_data_t *) info->quad->p.user_data;
         pchase_world_t     *W = (pchase_world_t *) user_data;
 
-
         for (i = 0; i < quadData->nParticles; i++) {
-                x = -quadData->p[i]->x[1] + 0.5;
-                y = quadData->p[i]->x[0] - 0.5;
+                /* update particles' velocity */
+                pchase_world_velocity(W, quadData->p[i]);
 
-                norm = sqrt(x * x + y * y);
-                quadData->p[i]->x[0] += W->delta_t * x / norm;
-                quadData->p[i]->x[1] += W->delta_t * y / norm;
-                if (W->step % 100 == 0)
 #ifdef PRINTXYZ
                         fprintf(pchase_output, "H\t%lf\t%lf\t0\n", quadData->p[i]->x[0], quadData->p[i]->x[1]);
 #elif defined(PRINTGNUPLOT)
