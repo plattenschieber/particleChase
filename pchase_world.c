@@ -345,6 +345,8 @@ update_x_fn(p4est_iter_volume_info_t * info, void *user_data)
 #endif
                 /* move particle if it has left the quad */
                 if (!pchase_particle_lies_in_quad(quadData->p[i], info->quad)) {
+                        printf("[pchase %i updateX] particle[%i](%lf,%lf) left quad(0x%08X,0x%08X)\n",
+                                info->p4est->mpirank, quadData->p[i]->ID, quadData->p[i]->x[0], quadData->p[i]->x[1], info->quad->x, info->quad->y );
                         pchase_world_insert_particle(W, quadData->p[i]);
 
                         /* if it's not the last particle in the array */
