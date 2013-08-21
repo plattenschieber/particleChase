@@ -376,8 +376,8 @@ pchase_particle_lies_in_quad(const pchase_particle_t * p, p4est_quadrant_t * q)
         if (p->x[0] * root_len < q->x || p->x[0] * root_len >= q->x + quadrant_length ||
             p->x[1] * root_len < q->y || p->x[1] * root_len >= q->y + quadrant_length) {
 #ifdef DEBUG
-                printf("particles at p4est_coord(%09lld,%09lld) left Quad(0x%08X, 0x%08X)\n",
-                       (int)(p->x[0] * root_len), (int)(p->x[1] * root_len), q->x, q->y);
+                printf("particle[%i] at p4est_coord(%09lld,%09lld) left Quad(0x%08X, 0x%08X)\n",
+                       p->ID, (int)(p->x[0] * root_len), (int)(p->x[1] * root_len), q->x, q->y);
 #endif
                 return 0;
         } else
