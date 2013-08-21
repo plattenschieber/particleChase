@@ -19,7 +19,7 @@ typedef struct {
 int
 main(int argc, char **argv)
 {
-        int                 mpiret;
+        int                 mpiret, i;
         mpi_context_t       mpi_context, *mpi = &mpi_context;
         p4est_t            *p4est;
         p4est_connectivity_t *connectivity;
@@ -53,55 +53,15 @@ main(int argc, char **argv)
 
         /* add one particle to the world */
         //pchase_world_insert_particle(W, pchase_world_random_particle(W));
-        pchase_particle_t  *p = P4EST_ALLOC(pchase_particle_t, 1);
+        for(i=0; i<400; i++) {
+                pchase_particle_t  *p = P4EST_ALLOC(pchase_particle_t, 1);
 #ifdef DEBUG
-        p->ID = 1;
+                p->ID = i;
 #endif
-        p->x[0] = 0.3;
-        p->x[1] = 0.3;
-        pchase_particle_t  *p2 = P4EST_ALLOC(pchase_particle_t, 1);
-#ifdef DEBUG
-        p2->ID = 2;
-#endif
-        p2->x[0] = 0.4;
-        p2->x[1] = 0.4;
-        pchase_particle_t  *p3 = P4EST_ALLOC(pchase_particle_t, 1);
-#ifdef DEBUG
-        p3->ID = 3;
-#endif
-        p3->x[0] = 0.91;
-        p3->x[1] = 0.5;
-        pchase_particle_t  *p4 = P4EST_ALLOC(pchase_particle_t, 1);
-#ifdef DEBUG
-        p4->ID = 4;
-#endif
-        p4->x[0] = 0.8;
-        p4->x[1] = 0.5;
-        pchase_particle_t  *p5 = P4EST_ALLOC(pchase_particle_t, 1);
-#ifdef DEBUG
-        p5->ID = 5;
-#endif
-        p5->x[0] = 0.7;
-        p5->x[1] = 0.5;
-        pchase_particle_t  *p6 = P4EST_ALLOC(pchase_particle_t, 1);
-#ifdef DEBUG
-        p6->ID = 6;
-#endif
-        p6->x[0] = 0.6;
-        p6->x[1] = 0.5;
-        pchase_particle_t  *p7 = P4EST_ALLOC(pchase_particle_t, 1);
-#ifdef DEBUG
-        p7->ID = 7;
-#endif
-        p7->x[0] = 0.55;
-        p7->x[1] = 0.5;
-        pchase_world_insert_particle(W, p);
-        pchase_world_insert_particle(W, p2);
-        pchase_world_insert_particle(W, p3);
-        pchase_world_insert_particle(W, p4);
-        pchase_world_insert_particle(W, p5);
-        pchase_world_insert_particle(W, p6);
-        pchase_world_insert_particle(W, p7);
+                p->x[0] = i*0.0001 + 0.55;
+                p->x[1] = 0.5;
+                pchase_world_insert_particle(W, p);
+        }
 
         /* let this particle move */
         pchase_world_simulate(W);
