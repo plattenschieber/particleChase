@@ -161,8 +161,8 @@ pchase_world_insert_particles(pchase_world_t * W)
         }
 
         /*
-         * find all quadrants enclosing the mini quads and save their data in
-         * piggy3
+         * find all quads enclosing the miniQuads and save their data in the
+         * miniQuads' piggy3
          */
         p4est_search(W->p4est, W->search_fn, points);
 
