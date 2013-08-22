@@ -77,24 +77,23 @@ pchase_world_simulate(pchase_world_t * W)
                 /* insert all particles which left into their new quad */
                 pchase_world_insert_particles(W);
 
-                if (W->step % 1 == 0) {
-                        /* refine every quad containing more than 5 particles */
-                        p4est_refine_ext(W->p4est, 0, -1, W->refine_fn, W->init_fn, W->replace_fn);
-                        /* coarsen non recursively */
-                        p4est_coarsen_ext(W->p4est, 0, W->coarsen_fn, W->init_fn, W->replace_fn);
-                        /* balancing the tree */
-                        p4est_balance_ext(W->p4est, P4EST_CONNECT_FULL, W->init_fn, W->replace_fn);
-                        /*
-                         * the flag allows coarsening for one level on own
-                         * proc
-                         */
-                        p4est_partition_ext(W->p4est, 1, NULL);
+                /* refine every quad containing more than 5 particles */
+                p4est_refine_ext(W->p4est, 0, -1, W->refine_fn, W->init_fn, W->replace_fn);
+                /* coarsen non recursively */
+                p4est_coarsen_ext(W->p4est, 0, W->coarsen_fn, W->init_fn, W->replace_fn);
+                /* balancing the tree */
+                p4est_balance_ext(W->p4est, P4EST_CONNECT_FULL, W->init_fn, W->replace_fn);
+                /*
+                 * the flag allows coarsening for one level on own proc
+                 */
+                p4est_partition_ext(W->p4est, 1, NULL);
 
+                if (W->step % 1000 == 0) {
                         /*
                          * convert current step to filename and write VTK
                          * Data entry
                          */
-                        sprintf(fileNumber, "%03d", W->step);
+                        sprintf(fileNumber, "%03d", i);
                         strcat(VTKData, VTKData1);
                         strcat(VTKData, fileNumber);
                         strcat(VTKData, VTKData2);
@@ -109,7 +108,6 @@ pchase_world_simulate(pchase_world_t * W)
                         /* reset filenames */
                         VTKData[0] = '\0';
                         fileName[0] = '\0';
-
                 }
                 W->t += W->delta_t;
                 W->step++;
