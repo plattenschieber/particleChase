@@ -205,6 +205,7 @@ pchase_world_insert_particles(pchase_world_t * W)
                                 } else {
                                         printf("- we have to dissmiss this particle\n");
                                         P4EST_FREE(p);
+                                        W->n_particles--;
                                 }
                         }
 #ifdef DEBUG
