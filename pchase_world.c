@@ -201,7 +201,7 @@ pchase_world_insert_particles(pchase_world_t * W)
                                          * inserting as long as this list is
                                          * not empty
                                          */
-                                        sc_list_insert(W->particle_push_list, W->particle_push_list->last, p);
+                                        sc_list_append(W->particle_push_list, p);
                                 } else {
                                         printf("- we have to dissmiss this particle\n");
                                         P4EST_FREE(p);
@@ -412,7 +412,7 @@ update_x_fn(p4est_iter_volume_info_t * info, void *user_data)
                          * now, we collect all particles in one update_x pass
                          * and insert them afterwards
                          */
-                        sc_list_insert(W->particle_push_list, W->particle_push_list->last, quadData->p[i]);
+                        sc_list_append(W->particle_push_list, quadData->p[i]);
 
                         /* move last particle to i'th place to prevent a hole */
                         quadData->p[i] = quadData->p[quadData->nParticles - 1];
