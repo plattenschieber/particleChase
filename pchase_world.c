@@ -393,10 +393,7 @@ update_x_fn(p4est_iter_volume_info_t * info, void *user_data)
                          */
                         sc_list_insert(W->particle_push_list, W->particle_push_list->last, quadData->p[i]);
 
-                        /*
-                         * move the last particle to i'th place to prevent a
-                         * hole
-                         */
+                        /* move last particle to i'th place to prevent a hole */
                         quadData->p[i] = quadData->p[quadData->nParticles - 1];
 #ifdef DEBUG
                         /* we aren't going to touch this ever, but who knows */
