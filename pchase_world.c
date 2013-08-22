@@ -132,12 +132,12 @@ void
 pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
 {
         p4est_quadrant_t   *miniQuad;
-        sc_array_t         *point;
+        sc_array_t         *points;
         int                 owner;
 
-        /* get place for one point and take care of it via miniQuad */
-        point = sc_array_new_size(sizeof(p4est_quadrant_t), 1);
-        miniQuad = (p4est_quadrant_t *) sc_array_index(point, 0);
+        /* get place for as many points as particles */
+        points = sc_array_new_size(sizeof(p4est_quadrant_t), 1);
+        miniQuad = (p4est_quadrant_t *) sc_array_index(points, 0);
 
         /* create mini quadrant that is enclosing the given particle p */
         pchase_translate_particle_to_p4est(W, p, miniQuad);
@@ -147,10 +147,10 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
                W->p4est->mpirank, p->ID, p->x[0], p->x[1], miniQuad->x, miniQuad->y);
 #endif
         /*
-         * find most deepest quadrant which encloses the mini quad in point
-         * and save its data in point.piggy3
+         * find most deepest quadrant which encloses the mini quad in points
+         * and save its data in points.piggy3
          */
-        p4est_search(W->p4est, W->search_fn, point);
+        p4est_search(W->p4est, W->search_fn, points);
 
 
 
@@ -204,7 +204,7 @@ pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
                 printf("[pchase %i insertPart] freed particle\n", W->p4est->mpirank);
 #endif
         }
-        sc_array_destroy(point);
+        sc_array_destroy(points);
 }
 
 void
