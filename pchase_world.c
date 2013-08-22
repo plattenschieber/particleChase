@@ -167,61 +167,66 @@ pchase_world_insert_particles(pchase_world_t * W)
         p4est_search(W->p4est, W->search_fn, points);
 
 
+        for (i = 0; i < W->particle_push_list->elem_count; i++) {
+                /* if the miniQuad is not flagged, it's lying on this proc */
+                if (miniQuad->p.piggy3.local_num != -1) {
+                        /* extract enclosing quad from miniQuad.piggy3 */
+                        p4est_tree_t       *enclQuadTree = p4est_tree_array_index(W->p4est->trees, miniQuad->p.piggy3.which_tree);
+                        p4est_quadrant_t   *enclQuad = p4est_quadrant_array_index(&enclQuadTree->quadrants, miniQuad->p.piggy3.local_num);
+                        pchase_quadrant_data_t *enclQuadData = enclQuad->p.user_data;
 
-        /* if the miniQuad is not flagged, it's lying on this proc */
-        if (miniQuad->p.piggy3.local_num != -1) {
-                /* extract enclosing quad from miniQuad.piggy3 */
-                p4est_tree_t       *enclQuadTree = p4est_tree_array_index(W->p4est->trees, miniQuad->p.piggy3.which_tree);
-                p4est_quadrant_t   *enclQuad = p4est_quadrant_array_index(&enclQuadTree->quadrants, miniQuad->p.piggy3.local_num);
-                pchase_quadrant_data_t *enclQuadData = enclQuad->p.user_data;
-
-                if (enclQuadData->nParticles < 25) {
-                        /*
-                         * insert particle data into quad and update particle
-                         * counter
-                         */
-                        enclQuadData->p[enclQuadData->nParticles] = p;
-                        enclQuadData->nParticles++;
-                }
-                /* too many particles in quad */
-                else {
-                        printf("[pchase %i insertPart] Too many (%i) particles ", W->p4est->mpirank, enclQuadData->nParticles);
-                        if (enclQuad->level < P4EST_QMAXLEVEL) {
-                                printf("- refining enclQuad and inserting particle afterwards\n");
-                                p4est_refine_ext(W->p4est, 0, -1, W->refine_fn, W->init_fn, W->replace_fn);
+                        if (enclQuadData->nParticles < 25) {
                                 /*
-                                 * this can be done even in this special
-                                 * case, since we are inserting as long as
-                                 * this list is not empty
+                                 * insert particle data into quad and update
+                                 * particle counter
                                  */
-                                sc_list_insert(W->particle_push_list, W->particle_push_list->last, p);
-                        } else {
-                                printf("- enclQuad is not refinable - we have to dissmiss this particle\n");
-                                P4EST_FREE(p);
+                                enclQuadData->p[enclQuadData->nParticles] = p;
+                                enclQuadData->nParticles++;
                         }
-                }
+                        /* too many particles in quad */
+                        else {
+                                printf("[pchase %i insertPart] Too many (%i) particles ", W->p4est->mpirank, enclQuadData->nParticles);
+                                if (enclQuad->level < P4EST_QMAXLEVEL) {
+                                        printf("- refining enclQuad and inserting particle afterwards\n");
+                                        p4est_refine_ext(W->p4est, 0, -1, W->refine_fn, W->init_fn, W->replace_fn);
+                                        /*
+                                         * this can be done even in this
+                                         * special case, since we are
+                                         * inserting as long as this list is
+                                         * not empty
+                                         */
+                                        sc_list_insert(W->particle_push_list, W->particle_push_list->last, p);
+                                } else {
+                                        printf("- enclQuad is not refinable - we have to dissmiss this particle\n");
+                                        P4EST_FREE(p);
+                                }
+                        }
 #ifdef DEBUG
-                /* print number of particles in quad */
-                printf("[pchase %i insertPart] #Particles in enclQuad: %d \n", W->p4est->mpirank, enclQuadData->nParticles);
+                        /* print number of particles in quad */
+                        printf("[pchase %i insertPart] #Particles in enclQuad: %d \n", W->p4est->mpirank, enclQuadData->nParticles);
 #endif
-        }
-        /* particle lies on another proc */
-        else {
-                /* send particle to its belonging proc */
+                }
+                /* particle lies on another proc */
+                else {
+                        /* send particle to its belonging proc */
 #ifdef DEBUG
-                printf("[pchase %i insertPart] Sending Particle not implemented yet\n", W->p4est->mpirank);
+                        printf("[pchase %i insertPart] Sending Particle not implemented yet\n", W->p4est->mpirank);
 #endif
 
-                /* use find_owner to pigeon-hole particle into the right proc */
-                owner = p4est_comm_find_owner(W->p4est, miniQuad->p.piggy3.which_tree, miniQuad, W->p4est->mpirank);
+                        /*
+                         * use find_owner to pigeon-hole particle into the
+                         * right proc
+                         */
+                        owner = p4est_comm_find_owner(W->p4est, miniQuad->p.piggy3.which_tree, miniQuad, W->p4est->mpirank);
 #ifdef DEBUG
-                printf("[pchase %i insertPart] particle[%i] sent to proc %i\n", W->p4est->mpirank, p->ID, owner);
+                        printf("[pchase %i insertPart] particle[%i] sent to proc %i\n", W->p4est->mpirank, p->ID, owner);
 #endif
-                /* and free particle on this proc */
-                P4EST_FREE(p);
+                        /* and free particle on this proc */
+                        P4EST_FREE(p);
 #ifdef DEBUG
-                printf("[pchase %i insertPart] freed particle\n", W->p4est->mpirank);
+                        printf("[pchase %i insertPart] freed particle\n", W->p4est->mpirank);
 #endif
+                }
         }
         sc_array_destroy(points);
 }
