@@ -84,7 +84,10 @@ pchase_world_simulate(pchase_world_t * W)
                         p4est_coarsen_ext(W->p4est, 0, W->coarsen_fn, W->init_fn, W->replace_fn);
                         /* balancing the tree */
                         p4est_balance_ext(W->p4est, P4EST_CONNECT_FULL, W->init_fn, W->replace_fn);
-                        /* the flag one allows coarsening for one level on own proc */
+                        /*
+                         * the flag allows coarsening for one level on own
+                         * proc
+                         */
                         p4est_partition_ext(W->p4est, 1, NULL);
 
                         /*
@@ -196,7 +199,8 @@ pchase_world_insert_particles(pchase_world_t * W)
                         }
                         /* too many particles in quad */
                         else {
-                                printf("[pchase %i insertPart] Too many (%i) particles ", W->p4est->mpirank, enclQuadData->nParticles);
+                                printf("[pchase %i insertPart] Too many (%i) particles ",
+                                W->p4est->mpirank, enclQuadData->nParticles);
                                 if (0) {
                                         printf("- refining enclQuad and inserting particle afterwards\n");
                                         p4est_refine_ext(W->p4est, 0, -1, W->refine_fn, W->init_fn, W->replace_fn);
