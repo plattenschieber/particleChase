@@ -386,19 +386,18 @@ update_x_fn(p4est_iter_volume_info_t * info, void *user_data)
                          */
                         sc_list_insert(W->particle_push_list, W->particle_push_list->last, quadData->p[i]);
 
-                        /* if it's not the last particle in the array */
-                        if (i != quadData->nParticles - 1) {
-                                /*
-                                 * move the last particle to i'th place to
-                                 * prevent a hole
-                                 */
-                                quadData->p[i] = quadData->p[quadData->nParticles - 1];
+                        /*
+                         * move the last particle to i'th place to prevent a
+                         * hole
+                         */
+                        quadData->p[i] = quadData->p[quadData->nParticles - 1];
 #ifdef DEBUG
-                                quadData->p[quadData->nParticles - 1] = NULL;
+                        /* we aren't going to touch this ever, but who knows */
+                        quadData->p[quadData->nParticles - 1] = NULL;
 #endif
-                                /* set iterator accordingly */
-                                i--;
-                        }
+                        /* set iterator accordingly */
+                        i--;
+
                         /* update particle counter in quad array */
                         quadData->nParticles--;
                 }
