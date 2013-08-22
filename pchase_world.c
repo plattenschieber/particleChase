@@ -19,6 +19,8 @@ pchase_world_init(p4est_t * p4est)
         W->n_particles = 0;
         W->step = 0;
         W->p4est = p4est;
+
+        /* set callback functions for various applications */
         W->init_fn = init_fn;
         W->coarsen_fn = coarsen_fn;
         W->refine_fn = refine_fn;
