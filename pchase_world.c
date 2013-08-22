@@ -166,6 +166,11 @@ pchase_world_insert_particles(pchase_world_t * W)
          */
         p4est_search(W->p4est, W->search_fn, points);
 
+        /* start from the beginning */
+        particle_it = W->particle_push_list->first;
+                /* resolve miniQuad and associated particle */
+                miniQuad = (p4est_quadrant_t *) sc_array_index(points, i);
+                p = (pchase_particle_t *) particle_it->data;
 
         for (i = 0; i < W->particle_push_list->elem_count; i++) {
                 /* if the miniQuad is not flagged, it's lying on this proc */
