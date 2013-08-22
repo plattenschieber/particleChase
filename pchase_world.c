@@ -72,8 +72,8 @@ pchase_world_simulate(pchase_world_t * W)
 #endif
                 /* update the position of all particles on all quads */
                 p4est_iterate(W->p4est, NULL, W, W->update_x_fn, NULL, NULL);
-                while (W->particle_push_list->elem_count > 0)
-                        pchase_world_insert_particles(W);
+                /* insert all particles which left into their new quad */
+                pchase_world_insert_particles(W);
 
                 if (W->step % 1 == 0) {
                         /* refine every quad containing more than 5 particles */
