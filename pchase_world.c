@@ -138,9 +138,9 @@ pchase_world_insert_particles(pchase_world_t * W)
         p4est_quadrant_t   *miniQuad;
         sc_array_t         *points;
         int                 owner;
+        /* get place for as many points as particles waiting to be inserted */
+        points = sc_array_new_size(sizeof(p4est_quadrant_t), W->particle_push_list->elem_count);
 
-        /* get place for as many points as particles */
-        points = sc_array_new_size(sizeof(p4est_quadrant_t), 1);
         miniQuad = (p4est_quadrant_t *) sc_array_index(points, 0);
 
         /* create mini quadrant that is enclosing the given particle p */
