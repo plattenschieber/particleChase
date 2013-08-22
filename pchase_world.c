@@ -168,11 +168,12 @@ pchase_world_insert_particles(pchase_world_t * W)
 
         /* start from the beginning */
         particle_it = W->particle_push_list->first;
+
+        for (i = 0; i < W->particle_push_list->elem_count; i++, particle_it = particle_it->next) {
                 /* resolve miniQuad and associated particle */
                 miniQuad = (p4est_quadrant_t *) sc_array_index(points, i);
                 p = (pchase_particle_t *) particle_it->data;
 
-        for (i = 0; i < W->particle_push_list->elem_count; i++) {
                 /* if the miniQuad is not flagged, it's lying on this proc */
                 if (miniQuad->p.piggy3.local_num != -1) {
                         /* extract enclosing quad from miniQuad.piggy3 */
