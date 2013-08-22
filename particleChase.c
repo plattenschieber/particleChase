@@ -60,8 +60,9 @@ main(int argc, char **argv)
 #endif
                 p->x[0] = i * 0.0001 + 0.55;
                 p->x[1] = 0.5;
-                pchase_world_insert_particle(W, p);
+                sc_list_insert(W->particle_push_list, W->particle_push_list->last, p);
         }
+        pchase_world_insert_particles(W);
 
         /* let this particle move */
         pchase_world_simulate(W);

@@ -64,12 +64,11 @@ void                pchase_world_update_x(pchase_world_t * W);
  */
 pchase_particle_t  *pchase_world_random_particle(pchase_world_t * W);
 
-/** insert a particle into its belonging quadrant
+/** insert all particles int the particle_push_list into their belonging quadrants
  *
  * \param [in] W	the world into which we are operating
- * \param [in] p	the particle to be inserted
  */
-void                pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p);
+void                pchase_world_insert_particles(pchase_world_t * W);
 
 /** prints out all particles into a XYZ file
  *

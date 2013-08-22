@@ -131,7 +131,7 @@ pchase_world_random_particle(pchase_world_t * W)
 }
 
 void
-pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p)
+pchase_world_insert_particles(pchase_world_t * W)
 {
         p4est_quadrant_t   *miniQuad;
         sc_array_t         *points;
