@@ -28,6 +28,9 @@ pchase_world_init(p4est_t * p4est)
         W->destroy_fn = destroy_fn;
         W->print_fn = print_fn;
         W->update_x_fn = update_x_fn;
+
+        /* take care of all particles which left the cell after update_x */
+        W->particle_push_list = sc_list_new(NULL);
 #ifdef PRINTXYZ
         pchase_output = fopen("pchase_particles.xyz", "w");
 #elif defined(PRINTGNUPLOT)
@@ -375,7 +378,13 @@ update_x_fn(p4est_iter_volume_info_t * info, void *user_data)
                         printf("[pchase %i updateX] particle[%i](%lf,%lf) left quad(0x%08X,0x%08X)\n",
                                info->p4est->mpirank, quadData->p[i]->ID, quadData->p[i]->x[0], quadData->p[i]->x[1], info->quad->x, info->quad->y);
 #endif
-                        pchase_world_insert_particle(W, quadData->p[i]);
+                        /* before, every particle was inserted itself */
+                        /* pchase_world_insert_particle(W, quadData->p[i]); */
+                        /*
+                         * now, we collect all particles in one update_x pass
+                         * and insert them afterwards
+                         */
+                        sc_list_insert(W->particle_push_list, W->particle_push_list->last, quadData->p[i]);
 
                         /* if it's not the last particle in the array */
                         if (i != quadData->nParticles - 1) {

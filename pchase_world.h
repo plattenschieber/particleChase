@@ -34,6 +34,7 @@ typedef struct {
         p4est_iter_volume_t destroy_fn;
         p4est_iter_volume_t print_fn;
         p4est_iter_volume_t update_x_fn;
+        sc_list_t          *particle_push_list;
 }
                     pchase_world_t;
 
