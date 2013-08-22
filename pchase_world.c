@@ -141,6 +141,8 @@ pchase_world_insert_particles(pchase_world_t * W)
         /* get place for as many points as particles waiting to be inserted */
         points = sc_array_new_size(sizeof(p4est_quadrant_t), W->particle_push_list->elem_count);
 
+        /* calculate a miniQuad for every particle in particle_push_list */
+        for (i = 0; i < W->particle_push_list->elem_count; i++, particle_it = particle_it->next;) {
                 /* resolve to be filled miniQuad and particle */
                 miniQuad = (p4est_quadrant_t *) sc_array_index(points, i);
 
@@ -151,6 +153,8 @@ pchase_world_insert_particles(pchase_world_t * W)
         printf("[pchase %i insertPart] Translated Particle[%i](%lf,%lf) to miniQuad (0x%08X,0x%08X)\n",
                W->p4est->mpirank, p->ID, p->x[0], p->x[1], miniQuad->x, miniQuad->y);
 #endif
+        }
+
         /*
          * find most deepest quadrant which encloses the mini quad in points
          * and save its data in points.piggy3
