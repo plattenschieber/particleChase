@@ -536,3 +536,12 @@ replace_fn(p4est_t * p4est, p4est_topidx_t which_tree,
                 }
         }
 }
+
+void
+pchase_world_destroy(pchase_world_t * W)
+{
+        /* destroy allocated list */
+        sc_list_destroy(W->particle_push_list);
+        /* and free all particles */
+        p4est_iterate(W->p4est, NULL, NULL, W->destroy_fn, NULL, NULL);
+}

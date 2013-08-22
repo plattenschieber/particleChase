@@ -73,7 +73,7 @@ main(int argc, char **argv)
 #endif
 
         /* destroy all particles, p4est and its connectivity structure */
-        p4est_iterate(W->p4est, NULL, NULL, W->destroy_fn, NULL, NULL);
+        pchase_world_destroy(W);
         p4est_destroy(p4est);
         p4est_connectivity_destroy(connectivity);
 

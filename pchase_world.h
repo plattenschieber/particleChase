@@ -137,4 +137,8 @@ static void
 replace_fn(p4est_t * p4est, p4est_topidx_t which_tree,
            int num_outgoing, p4est_quadrant_t * outgoing[],
            int num_incoming, p4est_quadrant_t * incoming[]);
+
+/* destroys all allocated data */
+        void
+                            pchase_world_destroy(pchase_world_t * W);
 #endif
