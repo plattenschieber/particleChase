@@ -186,7 +186,7 @@ pchase_world_insert_particles(pchase_world_t * W)
                         /* too many particles in quad */
                         else {
                                 printf("[pchase %i insertPart] Too many (%i) particles ", W->p4est->mpirank, enclQuadData->nParticles);
-                                if (enclQuad->level < P4EST_QMAXLEVEL) {
+                                if (0) {
                                         printf("- refining enclQuad and inserting particle afterwards\n");
                                         p4est_refine_ext(W->p4est, 0, -1, W->refine_fn, W->init_fn, W->replace_fn);
                                         /*
@@ -197,7 +197,7 @@ pchase_world_insert_particles(pchase_world_t * W)
                                          */
                                         sc_list_insert(W->particle_push_list, W->particle_push_list->last, p);
                                 } else {
-                                        printf("- enclQuad is not refinable - we have to dissmiss this particle\n");
+                                        printf("- we have to dissmiss this particle\n");
                                         P4EST_FREE(p);
                                 }
                         }
