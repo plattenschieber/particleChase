@@ -51,8 +51,7 @@ main(int argc, char **argv)
         /* don't forget to assign newly allocated p4est to the world */
         W->p4est = p4est;
 
-        /* add one particle to the world */
-        //pchase_world_insert_particle(W, pchase_world_random_particle(W));
+        /* add a bunch of particles to the world */
         for (i = 0; i < 400; i++) {
                 pchase_particle_t  *p = P4EST_ALLOC(pchase_particle_t, 1);
 #ifdef DEBUG

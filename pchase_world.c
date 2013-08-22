@@ -72,6 +72,8 @@ pchase_world_simulate(pchase_world_t * W)
 #endif
                 /* update the position of all particles on all quads */
                 p4est_iterate(W->p4est, NULL, W, W->update_x_fn, NULL, NULL);
+                while (W->particle_push_list->elem_count > 0)
+                        pchase_world_insert_particles(W);
 
                 if (W->step % 1 == 0) {
                         /* refine every quad containing more than 5 particles */
@@ -177,7 +179,12 @@ pchase_world_insert_particles(pchase_world_t * W)
                         if (enclQuad->level < P4EST_QMAXLEVEL) {
                                 printf("- refining enclQuad and inserting particle afterwards\n");
                                 p4est_refine_ext(W->p4est, 0, -1, W->refine_fn, W->init_fn, W->replace_fn);
-                                pchase_world_insert_particle(W, p);
+                                /*
+                                 * this can be done even in this special
+                                 * case, since we are inserting as long as
+                                 * this list is not empty
+                                 */
+                                sc_list_insert(W->particle_push_list, W->particle_push_list->last, p);
                         } else {
                                 printf("- enclQuad is not refinable - we have to dissmiss this particle\n");
                                 P4EST_FREE(p);
@@ -380,8 +387,6 @@ update_x_fn(p4est_iter_volume_info_t * info, void *user_data)
                         printf("[pchase %i updateX] particle[%i](%lf,%lf) left quad(0x%08X,0x%08X)\n",
                                info->p4est->mpirank, quadData->p[i]->ID, quadData->p[i]->x[0], quadData->p[i]->x[1], info->quad->x, info->quad->y);
 #endif
-                        /* before, every particle was inserted itself */
-                        /* pchase_world_insert_particle(W, quadData->p[i]); */
                         /*
                          * now, we collect all particles in one update_x pass
                          * and insert them afterwards
