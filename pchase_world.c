@@ -62,6 +62,8 @@ pchase_world_simulate(pchase_world_t * W)
         char                VTKData3[100] = ".pvtu\"/>\n";
         char                VTKData[200] = "";
         char                fileNumber[10];
+
+        printf("[pchase %i simulate] starting simulation with %i particles\n", W->p4est->mpirank, W->n_particles);
         /* simulate until the end has come */
         while (W->t <= W->t_end) {
 #ifdef PRINTXYZ
@@ -78,8 +80,11 @@ pchase_world_simulate(pchase_world_t * W)
                 if (W->step % 1 == 0) {
                         /* refine every quad containing more than 5 particles */
                         p4est_refine_ext(W->p4est, 0, -1, W->refine_fn, W->init_fn, W->replace_fn);
+                        /* coarsen non recursively */
                         p4est_coarsen_ext(W->p4est, 0, W->coarsen_fn, W->init_fn, W->replace_fn);
+                        /* balancing the tree */
                         p4est_balance_ext(W->p4est, P4EST_CONNECT_FULL, W->init_fn, W->replace_fn);
+                        /* the flag one allows coarsening for one level on own proc */
                         p4est_partition_ext(W->p4est, 1, NULL);
 
                         /*
@@ -106,7 +111,7 @@ pchase_world_simulate(pchase_world_t * W)
                 W->t += W->delta_t;
                 W->step++;
         }
-        printf("simulation over\n");
+        printf("[pchase %i simulate] simulation over with %i particles\n", W->p4est->mpirank, W->n_particles);
         fprintf(vtk_timeseries, "      </Collection>\n");
         fprintf(vtk_timeseries, "</VTKFile>\n");
         fclose(vtk_timeseries);
