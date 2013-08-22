@@ -151,18 +151,18 @@ pchase_world_insert_particles(pchase_world_t * W)
                 miniQuad = (p4est_quadrant_t *) sc_array_index(points, i);
                 p = (pchase_particle_t *) particle_it->data;
 
-        /* create mini quadrant that is enclosing the given particle p */
-        pchase_translate_particle_to_p4est(W, p, miniQuad);
+                /* create miniQuad that is enclosing the given particle p */
+                pchase_translate_particle_to_p4est(W, p, miniQuad);
 
 #ifdef DEBUG
-        printf("[pchase %i insertPart] Translated Particle[%i](%lf,%lf) to miniQuad (0x%08X,0x%08X)\n",
-               W->p4est->mpirank, p->ID, p->x[0], p->x[1], miniQuad->x, miniQuad->y);
+                printf("[pchase %i insertPart] Translated Particle[%i](%lf,%lf) to miniQuad (0x%08X,0x%08X)\n",
+                       W->p4est->mpirank, p->ID, p->x[0], p->x[1], miniQuad->x, miniQuad->y);
 #endif
         }
 
         /*
-         * find most deepest quadrant which encloses the mini quad in points
-         * and save its data in points.piggy3
+         * find all quadrants enclosing the mini quads and save their data in
+         * piggy3
          */
         p4est_search(W->p4est, W->search_fn, points);
 
