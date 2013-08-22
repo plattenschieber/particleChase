@@ -234,6 +234,8 @@ pchase_world_insert_particles(pchase_world_t * W)
 #endif
                 }
         }
+        /* get rid of all particle pointer and miniQuads */
+        sc_list_reset(W->particle_push_list);
         sc_array_destroy(points);
 }
 
