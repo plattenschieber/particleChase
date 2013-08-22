@@ -136,15 +136,20 @@ void
 pchase_world_insert_particles(pchase_world_t * W)
 {
         p4est_quadrant_t   *miniQuad;
+        pchase_particle_t  *p;
         sc_array_t         *points;
-        int                 owner;
+        int                 owner, i;
+
         /* get place for as many points as particles waiting to be inserted */
         points = sc_array_new_size(sizeof(p4est_quadrant_t), W->particle_push_list->elem_count);
+        /* set the particle iterator */
+        sc_link_t          *particle_it = W->particle_push_list->first;
 
         /* calculate a miniQuad for every particle in particle_push_list */
         for (i = 0; i < W->particle_push_list->elem_count; i++, particle_it = particle_it->next;) {
                 /* resolve to be filled miniQuad and particle */
                 miniQuad = (p4est_quadrant_t *) sc_array_index(points, i);
+                p = (pchase_particle_t *) particle_it->data;
 
         /* create mini quadrant that is enclosing the given particle p */
         pchase_translate_particle_to_p4est(W, p, miniQuad);
