@@ -243,10 +243,7 @@ pchase_world_insert_particles(pchase_world_t * W)
 #ifdef DEBUG
                         printf("[pchase %i insertPart] Sending Particle not implemented yet\n", W->p4est->mpirank);
 #endif
-                        /*
-                         * use find_owner to pigeon-hole particle into the
-                         * right proc
-                         */
+                        /* resolving particles' owner */
                         owner = p4est_comm_find_owner(W->p4est, miniQuad->p.piggy3.which_tree, miniQuad, W->p4est->mpirank);
 
                         /*
