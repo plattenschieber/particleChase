@@ -50,7 +50,7 @@ main(int argc, char **argv)
         /* initialize everything depending on p4est */
         pchase_world_init_p4est(W, p4est);
 
-        if(W->p4est->mpirank == 0) {
+        if (W->p4est->mpirank == 0) {
                 pchase_particle_t  *p = P4EST_ALLOC(pchase_particle_t, 1);
                 p->x[0] = 0.3;
                 p->x[1] = 0.3;
