@@ -50,26 +50,29 @@ main(int argc, char **argv)
         /* initialize everything depending on p4est */
         pchase_world_init_p4est(W, p4est);
 
-        pchase_particle_t  *p = P4EST_ALLOC(pchase_particle_t, 1);
-        p->x[0] = 0.3;
-        p->x[1] = 0.3;
-        sc_list_append(W->particle_push_list, p);
-        W->n_particles++;
-        pchase_particle_t  *p2 = P4EST_ALLOC(pchase_particle_t, 1);
-        p2->x[0] = 0.4;
-        p2->x[1] = 0.4;
-        sc_list_append(W->particle_push_list, p2);
-        W->n_particles++;
-        pchase_particle_t  *p3 = P4EST_ALLOC(pchase_particle_t, 1);
-        p3->x[0] = 0.9;
-        p3->x[1] = 0.5;
-        sc_list_append(W->particle_push_list, p3);
-        W->n_particles++;
-        pchase_particle_t  *p4 = P4EST_ALLOC(pchase_particle_t, 1);
-        p4->x[0] = 0.1;
-        p4->x[1] = 0.5;
-        sc_list_append(W->particle_push_list, p4);
-        W->n_particles++;
+        if(W->p4est->mpirank == 0) {
+                pchase_particle_t  *p = P4EST_ALLOC(pchase_particle_t, 1);
+                p->x[0] = 0.3;
+                p->x[1] = 0.3;
+                sc_list_append(W->particle_push_list, p);
+                W->n_particles++;
+                pchase_particle_t  *p2 = P4EST_ALLOC(pchase_particle_t, 1);
+                p2->x[0] = 0.4;
+                p2->x[1] = 0.4;
+                sc_list_append(W->particle_push_list, p2);
+                W->n_particles++;
+                pchase_particle_t  *p3 = P4EST_ALLOC(pchase_particle_t, 1);
+                p3->x[0] = 0.9;
+                p3->x[1] = 0.5;
+                sc_list_append(W->particle_push_list, p3);
+                W->n_particles++;
+                pchase_particle_t  *p4 = P4EST_ALLOC(pchase_particle_t, 1);
+                p4->x[0] = 0.1;
+                p4->x[1] = 0.6;
+                sc_list_append(W->particle_push_list, p4);
+                W->n_particles++;
+        }
+        /* this has to be done for each proc */
         pchase_world_insert_particles(W);
 
         /* /1* add a bunch of particles to the world *1/ */
