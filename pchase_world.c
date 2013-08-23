@@ -155,7 +155,7 @@ pchase_world_insert_particles(pchase_world_t * W)
         sc_link_t          *particle_it = W->particle_push_list->first;
 
         /* calculate a miniQuad for every particle in particle_push_list */
-        for (i = 0; i < W->particle_push_list->elem_count; i++, particle_it = particle_it->next) {
+        for (i = 0; i < points->elem_count; i++, particle_it = particle_it->next) {
                 /* resolve to be filled miniQuad and particle */
                 miniQuad = (p4est_quadrant_t *) sc_array_index(points, i);
                 p = (pchase_particle_t *) particle_it->data;
@@ -178,7 +178,7 @@ pchase_world_insert_particles(pchase_world_t * W)
         /* start from the beginning */
         particle_it = W->particle_push_list->first;
 
-        for (i = 0; i < W->particle_push_list->elem_count; i++, particle_it = particle_it->next) {
+        for (i = 0; i < points->elem_count; i++, particle_it = particle_it->next) {
                 /* resolve miniQuad and associated particle */
                 miniQuad = (p4est_quadrant_t *) sc_array_index(points, i);
                 p = (pchase_particle_t *) particle_it->data;
