@@ -46,7 +46,6 @@ main(int argc, char **argv)
         /* build uniform tree and get space for 25 particles each */
         p4est = p4est_new_ext(mpi->mpicomm, connectivity, 0, 12, 1,
                           sizeof(pchase_quadrant_data_t), W->init_fn, NULL);
-        //p4est_vtk_write_file(p4est, NULL, "pchase_new");
 
         /* initialize everything depending on p4est */
         pchase_world_init_p4est(W, p4est);

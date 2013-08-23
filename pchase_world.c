@@ -18,7 +18,6 @@ pchase_world_init(p4est_t * p4est)
         W->t_end = 0.500;
         W->n_particles = 0;
         W->step = 0;
-        W->p4est = p4est;
 
         /* set callback functions for various applications */
         W->init_fn = init_fn;
@@ -38,6 +37,7 @@ pchase_world_init(p4est_t * p4est)
 #elif defined(PRINTGNUPLOT)
         pchase_output = fopen("pchase_particles.plot", "w");
 #endif
+        /* set world length */
         for (i = 0; i < DIM; i++)
                 W->length[i] = 1.0;
         /* reset seed */
