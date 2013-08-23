@@ -55,7 +55,7 @@ pchase_world_init_p4est(pchase_world_t * W, p4est_t * p4est)
         /* initialize particle send list */
         W->particles_to = sc_array_new_size(sizeof(sc_list_t), W->p4est->mpisize);
         /* reserve some space for send lists */
-        for (i = 0; i < W->particles_to->elem_count; i++) {
+        for (i = 0; i < W->p4est->mpisize; i++) {
                 tmp = sc_array_index(W->particles_to, i);
                 tmp = sc_list_new(NULL);
         }
