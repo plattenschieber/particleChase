@@ -51,17 +51,18 @@ main(int argc, char **argv)
         /* don't forget to assign newly allocated p4est to the world */
         W->p4est = p4est;
 
-        /* add one particle to the world */
-        //pchase_world_insert_particle(W, pchase_world_random_particle(W));
+        /* add a bunch of particles to the world */
         for (i = 0; i < 400; i++) {
                 pchase_particle_t  *p = P4EST_ALLOC(pchase_particle_t, 1);
 #ifdef DEBUG
                 p->ID = i;
 #endif
-                p->x[0] =  rand() / (RAND_MAX + 1.);
-                p->x[1] =  rand() / (RAND_MAX + 1.);
-                pchase_world_insert_particle(W, p);
+                p->x[0] = i * 0.0001 + 0.55;
+                p->x[1] = 0.5;
+                sc_list_append(W->particle_push_list, p);
+                W->n_particles++;
         }
+        pchase_world_insert_particles(W);
 
         /* let this particle move */
         pchase_world_simulate(W);
@@ -72,7 +73,7 @@ main(int argc, char **argv)
 #endif
 
         /* destroy all particles, p4est and its connectivity structure */
-        p4est_iterate(W->p4est, NULL, NULL, W->destroy_fn, NULL, NULL);
+        pchase_world_destroy(W);
         p4est_destroy(p4est);
         p4est_connectivity_destroy(connectivity);
 
