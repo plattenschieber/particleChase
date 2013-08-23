@@ -1,6 +1,6 @@
 #ifndef PCHASE_WORLD_H
 #define PCHASE_WORLD_H
-/* #define DEBUG */
+#define DEBUG
 #define PRINTGNUPLOT
 /* #define PRINTXYZ */
 #define DIM 2

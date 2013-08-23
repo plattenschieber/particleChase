@@ -44,24 +44,46 @@ main(int argc, char **argv)
         /* store connectivity for a unitsquare */
         connectivity = p4est_connectivity_new_unitsquare();
         /* build uniform tree and get space for 25 particles each */
-        p4est = p4est_new_ext(mpi->mpicomm, connectivity, 0, 12, 1,
+        p4est = p4est_new_ext(mpi->mpicomm, connectivity, 0, 1, 1,
                           sizeof(pchase_quadrant_data_t), W->init_fn, NULL);
 
         /* initialize everything depending on p4est */
         pchase_world_init_p4est(W, p4est);
 
-        /* add a bunch of particles to the world */
-        for (i = 0; i < 400; i++) {
-                pchase_particle_t  *p = P4EST_ALLOC(pchase_particle_t, 1);
-#ifdef DEBUG
-                p->ID = i;
-#endif
-                p->x[0] = i * 0.0001 + 0.55;
-                p->x[1] = 0.5;
-                sc_list_append(W->particle_push_list, p);
-                W->n_particles++;
-        }
+        pchase_particle_t  *p = P4EST_ALLOC(pchase_particle_t, 1);
+        p->x[0] = 0.3;
+        p->x[1] = 0.3;
+        sc_list_append(W->particle_push_list, p);
+        W->n_particles++;
+        pchase_particle_t  *p2 = P4EST_ALLOC(pchase_particle_t, 1);
+        p2->x[0] = 0.4;
+        p2->x[1] = 0.4;
+        sc_list_append(W->particle_push_list, p2);
+        W->n_particles++;
+        pchase_particle_t  *p3 = P4EST_ALLOC(pchase_particle_t, 1);
+        p3->x[0] = 0.9;
+        p3->x[1] = 0.5;
+        sc_list_append(W->particle_push_list, p3);
+        W->n_particles++;
+        pchase_particle_t  *p4 = P4EST_ALLOC(pchase_particle_t, 1);
+        p4->x[0] = 0.1;
+        p4->x[1] = 0.5;
+        sc_list_append(W->particle_push_list, p4);
+        W->n_particles++;
         pchase_world_insert_particles(W);
+
+        /* /1* add a bunch of particles to the world *1/ */
+        /* for (i = 0; i < 400; i++) { */
+        /* pchase_particle_t  *p = P4EST_ALLOC(pchase_particle_t, 1); */
+        /* #ifdef DEBUG */
+        /* p->ID = i; */
+        /* #endif */
+        /* p->x[0] = i * 0.0001 + 0.55; */
+        /* p->x[1] = 0.5; */
+        /* sc_list_append(W->particle_push_list, p); */
+        /* W->n_particles++; */
+        /* } */
+        /* pchase_world_insert_particles(W); */
 
         /* let this particle move */
         pchase_world_simulate(W);
