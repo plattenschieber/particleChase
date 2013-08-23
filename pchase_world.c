@@ -48,8 +48,17 @@ pchase_world_init(p4est_t * p4est)
 void
 pchase_world_init_p4est(pchase_world_t * W, p4est_t * p4est)
 {
+        int                 i;
+        sc_list_t          *tmp;
         /* don't forget to assign newly allocated p4est to the world */
         W->p4est = p4est;
+        /* initialize particle send list */
+        W->particles_to = sc_array_new_size(sizeof(sc_list_t), W->p4est->mpisize);
+        /* reserve some space for send lists */
+        for (i = 0; i < W->particles_to->elem_count; i++) {
+                tmp = sc_array_index(W->particles_to, i);
+                tmp = sc_list_new(NULL);
+        }
 }
 
 void
