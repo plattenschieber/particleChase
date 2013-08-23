@@ -44,7 +44,7 @@ main(int argc, char **argv)
         /* store connectivity for a unitsquare */
         connectivity = p4est_connectivity_new_unitsquare();
         /* build uniform tree and get space for 25 particles each */
-        p4est = p4est_new_ext(mpi->mpicomm, connectivity, 0, 3, 1,
+        p4est = p4est_new_ext(mpi->mpicomm, connectivity, 0, 12, 1,
                           sizeof(pchase_quadrant_data_t), W->init_fn, NULL);
         //p4est_vtk_write_file(p4est, NULL, "pchase_new");
 
@@ -58,8 +58,8 @@ main(int argc, char **argv)
 #ifdef DEBUG
                 p->ID = i;
 #endif
-                p->x[0] = i * 0.0001 + 0.55;
-                p->x[1] = 0.5;
+                p->x[0] =  rand() / (RAND_MAX + 1.);
+                p->x[1] =  rand() / (RAND_MAX + 1.);
                 pchase_world_insert_particle(W, p);
         }
 
