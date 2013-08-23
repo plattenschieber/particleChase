@@ -260,14 +260,11 @@ pchase_world_insert_particles(pchase_world_t * W)
                         mpiret = sc_notify(receivers, num_receivers,
                                   senders, &num_senders, W->p4est->mpicomm);
                         SC_CHECK_MPI(mpiret);
-#ifdef DEBUG
-                        printf("[pchase %i insertPart] particle[%i] sent to proc %i\n", W->p4est->mpirank, p->ID, owner);
-#endif
                         /* moving particle into sent list for proc 'owner' */
                         sc_list_t * tmp = sc_array_index(W->particles_to, owner);
                         sc_list_append(tmp, p);
 #ifdef DEBUG
-                        printf("[pchase %i insertPart] freed particle\n", W->p4est->mpirank);
+                        printf("[pchase %i insertPart] particle[%i] pushed to send list for proc %i\n", W->p4est->mpirank, p->ID, owner);
 #endif
                 }
         }
