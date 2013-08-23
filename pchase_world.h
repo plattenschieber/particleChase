@@ -1,6 +1,8 @@
 #ifndef PCHASE_WORLD_H
 #define PCHASE_WORLD_H
-#define DEBUG
+/* #define DEBUG */
+#define PRINTGNUPLOT
+/* #define PRINTXYZ */
 #define DIM 2
 
 #include "pchase_particle.h"
@@ -12,6 +14,7 @@
 #include "p4est_iterate.h"
 #include "p4est_communication.h"
 #include "sc_notify.h"
+#include "p4est_vtk.h"
 
 /* pchase_world_t holds the entire information of our simulation */
 typedef struct {
@@ -30,6 +33,9 @@ typedef struct {
         p4est_search_query_t search_fn;
         p4est_iter_volume_t viter_fn;
         p4est_iter_volume_t destroy_fn;
+        p4est_iter_volume_t print_fn;
+        p4est_iter_volume_t update_x_fn;
+        sc_list_t          *particle_push_list;
 }
                     pchase_world_t;
 
@@ -59,12 +65,11 @@ void                pchase_world_update_x(pchase_world_t * W);
  */
 pchase_particle_t  *pchase_world_random_particle(pchase_world_t * W);
 
-/** insert a particle into its belonging quadrant
+/** insert all particles int the particle_push_list into their belonging quadrants
  *
  * \param [in] W	the world into which we are operating
- * \param [in] p	the particle to be inserted
  */
-void                pchase_world_insert_particle(pchase_world_t * W, pchase_particle_t * p);
+void                pchase_world_insert_particles(pchase_world_t * W);
 
 /** prints out all particles into a XYZ file
  *
@@ -108,10 +113,33 @@ init_fn(p4est_t * p4est, p4est_topidx_t which_tree,
 static int
 refine_fn(p4est_t * p4est, p4est_topidx_t which_tree,
           p4est_quadrant_t * quadrant);
+static int
+                    coarsen_fn(p4est_t * p4est, p4est_topidx_t which_tree, p4est_quadrant_t * q[]);
+
 /* prints all x,y data and pointers */
 static void
                     viter_fn(p4est_iter_volume_info_t * info, void *Data);
 /* frees all arrays from particles */
 static void
                     destroy_fn(p4est_iter_volume_info_t * info, void *Data);
+/* prints all particles in a xyz manner */
+static void
+                    print_fn(p4est_iter_volume_info_t * info, void *user_data);
+/* moves all particles according to a given velocity field */
+static void
+                    update_x_fn(p4est_iter_volume_info_t * info, void *user_data);
+
+/* returns true if particle lies in quad */
+int
+                    pchase_particle_lies_in_quad(const pchase_particle_t * p, p4est_quadrant_t * q);
+
+/* move particles from parent to children or vice versa */
+static void
+replace_fn(p4est_t * p4est, p4est_topidx_t which_tree,
+           int num_outgoing, p4est_quadrant_t * outgoing[],
+           int num_incoming, p4est_quadrant_t * incoming[]);
+
+/* destroys all allocated data */
+        void
+                            pchase_world_destroy(pchase_world_t * W);
 #endif
