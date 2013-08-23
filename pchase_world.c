@@ -229,20 +229,26 @@ pchase_world_insert_particles(pchase_world_t * W)
 #ifdef DEBUG
                         printf("[pchase %i insertPart] Sending Particle not implemented yet\n", W->p4est->mpirank);
 #endif
-                        /* use find_owner to pigeon-hole particle into the right proc */
+                        /*
+                         * use find_owner to pigeon-hole particle into the
+                         * right proc
+                         */
                         owner = p4est_comm_find_owner(W->p4est, miniQuad->p.piggy3.which_tree, miniQuad, W->p4est->mpirank);
 
-                        /* retrieving #recv should be done more efficiently, when sending a lot of particles */
+                        /*
+                         * retrieving #recv should be done more efficiently,
+                         * when sending a lot of particles
+                         */
                         num_receivers = points->elem_count;
                         receivers = SC_ALLOC(int, num_receivers);
-                        for (i=0; i<num_receivers; i++) {
+                        for (i = 0; i < num_receivers; i++) {
                                 receivers[i] = owner;
                         }
-                        qsort (receivers, num_receivers, sizeof (int), sc_int_compare);
-                        senders = SC_ALLOC (int, W->p4est->mpisize);
-                        mpiret = sc_notify (receivers, num_receivers,
-                                        senders, &num_senders, W->p4est->mpicomm);
-                        SC_CHECK_MPI (mpiret);
+                        qsort(receivers, num_receivers, sizeof(int), sc_int_compare);
+                        senders = SC_ALLOC(int, W->p4est->mpisize);
+                        mpiret = sc_notify(receivers, num_receivers,
+                                  senders, &num_senders, W->p4est->mpicomm);
+                        SC_CHECK_MPI(mpiret);
 #ifdef DEBUG
                         printf("[pchase %i insertPart] particle[%i] sent to proc %i\n", W->p4est->mpirank, p->ID, owner);
 #endif
