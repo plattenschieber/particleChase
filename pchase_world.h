@@ -41,10 +41,16 @@ typedef struct {
 
 /** initialize a world with static parameter
  *
- * \param[in] p4est a forest we want to integrate into our world
  * \return	        a ready to use world
  */
-pchase_world_t     *pchase_world_init(p4est_t * p4est);
+pchase_world_t     *pchase_world_init();
+
+/** initialize everything depending on p4est
+ *
+ * \param[in] the world we are acting on
+ * \param[in] p4est a forest we want to integrate into our world
+ */
+void                pchase_world_init_p4est(pchase_world_t * W, p4est_t * p4est);
 
 /** start the simulation
  *

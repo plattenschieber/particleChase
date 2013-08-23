@@ -46,6 +46,13 @@ pchase_world_init(p4est_t * p4est)
 }
 
 void
+pchase_world_init_p4est(pchase_world_t * W, p4est_t * p4est)
+{
+        /* don't forget to assign newly allocated p4est to the world */
+        W->p4est = p4est;
+}
+
+void
 pchase_world_simulate(pchase_world_t * W)
 {
         int                 i = 0;

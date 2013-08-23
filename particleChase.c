@@ -39,7 +39,7 @@ main(int argc, char **argv)
         /* Registers p4est with the SC Library and sets the logging behavior */
         p4est_init(NULL, SC_LP_DEFAULT);
         /* build up the world */
-        W = pchase_world_init(p4est);
+        W = pchase_world_init();
 
         /* store connectivity for a unitsquare */
         connectivity = p4est_connectivity_new_unitsquare();
@@ -48,8 +48,8 @@ main(int argc, char **argv)
                           sizeof(pchase_quadrant_data_t), W->init_fn, NULL);
         //p4est_vtk_write_file(p4est, NULL, "pchase_new");
 
-        /* don't forget to assign newly allocated p4est to the world */
-        W->p4est = p4est;
+        /* initialize everything depending on p4est */
+        pchase_world_init_p4est(W, p4est);
 
         /* add a bunch of particles to the world */
         for (i = 0; i < 400; i++) {
