@@ -568,6 +568,7 @@ pchase_world_destroy(pchase_world_t * W)
 {
         /* destroy allocated list */
         sc_list_destroy(W->particle_push_list);
+        sc_array_destroy(W->particles_to);
         /* and free all particles */
         p4est_iterate(W->p4est, NULL, NULL, W->destroy_fn, NULL, NULL);
 }
