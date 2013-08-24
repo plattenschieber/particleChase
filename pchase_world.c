@@ -125,7 +125,7 @@ pchase_world_simulate(pchase_world_t * W)
                         strcat(fileName, fileNumber);
                         strcat(VTKData, fileName);
                         strcat(VTKData, VTKData3);
-                        fprintf(vtk_timeseries, VTKData);
+                        fprintf(vtk_timeseries, "%s", VTKData);
                         p4est_vtk_write_file(W->p4est, NULL, fileName);
 
                         i++;
