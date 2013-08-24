@@ -608,11 +608,14 @@ pchase_world_destroy(pchase_world_t * W)
         int                 i;
         sc_list_t          *tmp;
         sc_list_destroy(W->particle_push_list);
+        printf("[pchase %i world_destroy] destroyed particle_push_list\n", W->p4est->mpirank);
         for (i = 0; i < W->particles_to->elem_count; i++) {
-                tmp = sc_array_index(W->particles_to, i);
+                tmp = *((sc_list_t **) sc_array_index_int(W->particles_to, i));
                 sc_list_destroy(tmp);
+                printf("[pchase %i world_destroy] destroyed particles_to[%i] list\n", W->p4est->mpirank, i);
         }
-        SC_FREE(W->particles_to);
+        sc_array_destroy(W->particles_to);
+        printf("[pchase %i world_destroy] destroyed particles_to_proc array\n", W->p4est->mpirank);
         /* and free all particles */
         p4est_iterate(W->p4est, NULL, NULL, W->destroy_fn, NULL, NULL);
 }
