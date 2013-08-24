@@ -294,7 +294,7 @@ pchase_world_insert_particles(pchase_world_t * W)
                 printf("[pchase %i insertPart] list %i with %lld particles\n", W->p4est->mpirank, i, (long long)tmp->elem_count);
                 if (tmp->elem_count > 0) {
                         sc_link_t          *it;
-                        for (it = tmp->first; it->next != NULL; it = it->next) {
+                        for (it = tmp->first; it != NULL; it = it->next) {
                                 pchase_particle_t  *tmpParticle = it->data;
                                 printf("[pchase %i insertPart] Particle[%i] in list %i\n", W->p4est->mpirank, tmpParticle->ID, i);
                         }
