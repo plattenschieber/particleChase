@@ -58,6 +58,9 @@ pchase_world_init_p4est(pchase_world_t * W, p4est_t * p4est)
         /* reserve some space for send lists */
         for (i = 0; i < W->p4est->mpisize; i++)
                 *((sc_list_t **) sc_array_index_int(W->particles_to, i)) = sc_list_new(NULL);
+#ifdef DEBUG
+        printf("[pchase %i init] reserved space for %lld lists\n", W->p4est->mpirank, (long long)W->particles_to->elem_count);
+#endif
 }
 
 void
