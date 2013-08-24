@@ -310,8 +310,6 @@ pchase_world_insert_particles(pchase_world_t * W)
         printf("[pchase %i insertPart] sc_notify done num_receivers %i, num_senders %i\n", W->p4est->mpirank, num_receivers, num_senders);
 #endif
         /* do something with senders */
-        if (W->p4est->mpirank > -1)
-                scanf("%i", NULL);
 
         SC_FREE(receivers);
         SC_FREE(senders);
