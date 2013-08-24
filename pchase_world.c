@@ -49,7 +49,7 @@ void
 pchase_world_init_p4est(pchase_world_t * W, p4est_t * p4est)
 {
         int                 i;
-        sc_list_t          *tmp,*tmp2;
+        sc_list_t          *tmp, *tmp2;
         /* don't forget to assign newly allocated p4est to the world */
         W->p4est = p4est;
         /* initialize particle send list */
@@ -87,7 +87,9 @@ pchase_world_simulate(pchase_world_t * W)
         char                VTKData[200] = "";
         char                fileNumber[10];
 
+#ifdef DEBUG
         printf("[pchase %i simulate] starting simulation with %i particles\n", W->p4est->mpirank, W->n_particles);
+#endif
         /* simulate until the end has come */
         while (W->t <= W->t_end) {
 #ifdef PRINTXYZ
@@ -98,6 +100,10 @@ pchase_world_simulate(pchase_world_t * W)
 #endif
                 /* update the position of all particles on all quads */
                 p4est_iterate(W->p4est, NULL, W, W->update_x_fn, NULL, NULL);
+#ifdef DEBUG
+                printf("[pchase %i simulate] update x done - starting insertion of particle\n", W->p4est->mpirank, W->n_particles);
+#endif
+
                 /* insert all particles which left into their new quad */
                 pchase_world_insert_particles(W);
 
@@ -136,7 +142,9 @@ pchase_world_simulate(pchase_world_t * W)
                 W->t += W->delta_t;
                 W->step++;
         }
+#ifdef DEBUG
         printf("[pchase %i simulate] simulation over with %i particles\n", W->p4est->mpirank, W->n_particles);
+#endif
         fprintf(vtk_timeseries, "      </Collection>\n");
         fprintf(vtk_timeseries, "</VTKFile>\n");
         fclose(vtk_timeseries);
@@ -199,6 +207,8 @@ pchase_world_insert_particles(pchase_world_t * W)
          */
         p4est_search(W->p4est, W->search_fn, points);
 
+        printf("[pchase %i insertPart] %i particles in push list\n", W->p4est->mpirank, W->particle_push_list->elem_count);
+
         /* move all particles either into their enclQuads or to another proc */
         for (i = 0, particle_it = W->particle_push_list->first; i < points->elem_count; i++, particle_it = particle_it->next) {
                 /* resolve miniQuad and associated particle */
@@ -219,6 +229,8 @@ pchase_world_insert_particles(pchase_world_t * W)
                                  */
                                 enclQuadData->p[enclQuadData->nParticles] = p;
                                 enclQuadData->nParticles++;
+                                printf("[pchase %i insertPart] particle[%i](%lf,%lf) inserted into enclQuad(%lld,%lld) (had already %i particles - now %i)\n",
+                                       W->p4est->mpirank, p->ID, p->x[0], p->x[1], enclQuad->x, enclQuad->y, enclQuadData->nParticles - 1, enclQuadData->nParticles);
                         }
                         /* too many particles in quad */
                         else {
@@ -240,17 +252,9 @@ pchase_world_insert_particles(pchase_world_t * W)
                                         W->n_particles--;
                                 }
                         }
-#ifdef DEBUG
-                        /* print number of particles in quad */
-                        printf("[pchase %i insertPart] #Particles in enclQuad: %d \n", W->p4est->mpirank, enclQuadData->nParticles);
-#endif
                 }
                 /* particle lies on another proc */
                 else {
-                        /* send particle to its belonging proc */
-#ifdef DEBUG
-                        printf("[pchase %i insertPart] Sending Particle not implemented yet\n", W->p4est->mpirank);
-#endif
                         /* resolving particles' owner */
                         owner = p4est_comm_find_owner(W->p4est, miniQuad->p.piggy3.which_tree, miniQuad, W->p4est->mpirank);
 
@@ -272,7 +276,7 @@ pchase_world_insert_particles(pchase_world_t * W)
                         sc_list_t * tmp = sc_array_index(W->particles_to, owner);
                         sc_list_append(tmp, p);
 #ifdef DEBUG
-                        printf("[pchase %i insertPart] particle[%i] pushed to send list for proc %i\n", W->p4est->mpirank, p->ID, owner);
+                        printf("[pchase %i insertPart] num_receivers %i updated, owner is %i\n", W->p4est->mpirank, num_receivers, i);
 #endif
                 }
         }
@@ -340,7 +344,6 @@ search_fn(p4est_t * p4est, p4est_topidx_t which_tree,
                        "with local_num %d in level: %d is_leaf: %d\n", p4est->mpirank,
                     miniQuad->p.piggy3.local_num, quadrant->level, is_leaf);
 #endif
-
                 return 1;
         } else
                 return 0;
@@ -411,7 +414,6 @@ print_fn(p4est_iter_volume_info_t * info, void *user_data)
 #else
                 printf("%lf\t%lf\n", quadData->p[i]->x[0], quadData->p[i]->x[1]);
 #endif
-
 }
 
 void
