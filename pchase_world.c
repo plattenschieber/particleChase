@@ -257,7 +257,6 @@ pchase_world_insert_particles(pchase_world_t * W)
                 else {
                         /* resolving particles' owner */
                         owner = p4est_comm_find_owner(W->p4est, miniQuad->p.piggy3.which_tree, miniQuad, W->p4est->mpirank);
-                        qsort(receivers, num_receivers, sizeof(int), sc_int_compare);
                         senders = SC_ALLOC(int, W->p4est->mpisize);
                         mpiret = sc_notify(receivers, num_receivers,
                                   senders, &num_senders, W->p4est->mpicomm);
