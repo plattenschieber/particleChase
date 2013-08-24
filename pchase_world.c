@@ -257,16 +257,6 @@ pchase_world_insert_particles(pchase_world_t * W)
                 else {
                         /* resolving particles' owner */
                         owner = p4est_comm_find_owner(W->p4est, miniQuad->p.piggy3.which_tree, miniQuad, W->p4est->mpirank);
-
-                        /*
-                         * retrieving #recv should be done more efficiently,
-                         * when sending a lot of particles
-                         */
-                        num_receivers = points->elem_count;
-                        receivers = SC_ALLOC(int, num_receivers);
-                        for (i = 0; i < num_receivers; i++) {
-                                receivers[i] = owner;
-                        }
                         qsort(receivers, num_receivers, sizeof(int), sc_int_compare);
                         senders = SC_ALLOC(int, W->p4est->mpisize);
                         mpiret = sc_notify(receivers, num_receivers,
@@ -275,6 +265,19 @@ pchase_world_insert_particles(pchase_world_t * W)
                         /* moving particle into sent list for proc 'owner' */
                         sc_list_t * tmp = sc_array_index(W->particles_to, owner);
                         sc_list_append(tmp, p);
+        /*
+         * get enough space for receivers and senders array - this may be not
+         * memory optimal, but it's the fastest solution
+         */
+        receivers = SC_ALLOC(int, W->p4est->mpisize);
+        senders = SC_ALLOC(int, W->p4est->mpisize);
+        /* resolve receiver count */
+        for (i = 0, num_receivers = 0; i < W->p4est->mpisize; i++) {
+                sc_list_t          *tmp = sc_array_index(W->particles_to, i);
+                /* add i to receiver list and update receiver count */
+                if (tmp->elem_count) {
+                        receivers[num_receivers] = i;
+                        num_receivers++;
 #ifdef DEBUG
                         printf("[pchase %i insertPart] num_receivers %i updated, owner is %i\n", W->p4est->mpirank, num_receivers, i);
 #endif
