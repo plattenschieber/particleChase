@@ -259,13 +259,23 @@ pchase_world_insert_particles(pchase_world_t * W)
                         owner = p4est_comm_find_owner(W->p4est, miniQuad->p.piggy3.which_tree, miniQuad, W->p4est->mpirank);
                         /* moving particle into sent list for proc 'owner' */
                         sc_list_t          *tmp = sc_array_index(W->particles_to, owner);
+#ifdef DEBUG
+                        printf("[pchase %i insertPart] particle[%i](%lf,%lf) pushed to send list for proc %i (had already %i particles - ",
+                               W->p4est->mpirank, p->ID, p->x[0], p->x[1], owner, tmp->elem_count);
+#endif
                         sc_list_append(tmp, p);
+#ifdef DEBUG
+                        printf("now %i)\n", tmp->elem_count);
+#endif
         /*
          * get enough space for receivers and senders array - this may be not
          * memory optimal, but it's the fastest solution
          */
         receivers = SC_ALLOC(int, W->p4est->mpisize);
         senders = SC_ALLOC(int, W->p4est->mpisize);
+#ifdef DEBUG
+        printf("[pchase %i insertPart] into resolve receive count\n", W->p4est->mpirank, num_receivers, i);
+#endif
         /* resolve receiver count */
         for (i = 0, num_receivers = 0; i < W->p4est->mpisize; i++) {
                 sc_list_t          *tmp = sc_array_index(W->particles_to, i);
@@ -283,6 +293,10 @@ pchase_world_insert_particles(pchase_world_t * W)
                            senders, &num_senders, W->p4est->mpicomm);
         SC_CHECK_MPI(mpiret);
 
+#ifdef DEBUG
+        printf("[pchase %i insertPart] sc_notify done\n", W->p4est->mpirank);
+        printf("[pchase %i insertPart] num_receivers %i, num_senders %i done\n", num_receivers, num_senders);
+#endif
         SC_FREE(receivers);
         SC_FREE(senders);
         /* get rid of all particle pointer and miniQuads */
