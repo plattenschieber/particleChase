@@ -75,6 +75,12 @@ main(int argc, char **argv)
                 p4->x[1] = 0.6;
                 sc_list_append(W->particle_push_list, p4);
                 W->n_particles++;
+                pchase_particle_t  *p5 = P4EST_ALLOC(pchase_particle_t, 1);
+                p5->ID = 5;
+                p5->x[0] = 0.1;
+                p5->x[1] = 0.7;
+                sc_list_append(W->particle_push_list, p5);
+                W->n_particles++;
         }
         /* this has to be done for each proc */
         pchase_world_insert_particles(W);
