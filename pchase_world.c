@@ -258,7 +258,7 @@ pchase_world_insert_particles(pchase_world_t * W)
                         /* resolving particles' owner */
                         owner = p4est_comm_find_owner(W->p4est, miniQuad->p.piggy3.which_tree, miniQuad, W->p4est->mpirank);
                         /* moving particle into sent list for proc 'owner' */
-                        sc_list_t * tmp = sc_array_index(W->particles_to, owner);
+                        sc_list_t          *tmp = sc_array_index(W->particles_to, owner);
                         sc_list_append(tmp, p);
         /*
          * get enough space for receivers and senders array - this may be not
