@@ -316,6 +316,10 @@ pchase_world_insert_particles(pchase_world_t * W)
         printf("[pchase %i insertPart] sc_notify done\n", W->p4est->mpirank);
         printf("[pchase %i insertPart] num_receivers %i, num_senders %i done\n", num_receivers, num_senders);
 #endif
+        /* do something with senders */
+        if (W->p4est->mpirank > -1)
+                scanf("%i", NULL);
+
         SC_FREE(receivers);
         SC_FREE(senders);
         /* get rid of all particle pointer and miniQuads */
