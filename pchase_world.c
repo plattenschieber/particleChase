@@ -288,6 +288,22 @@ pchase_world_insert_particles(pchase_world_t * W)
 #endif
                 }
         }
+#ifdef DEBUG
+        printf("[pchase %i insertPart] Total num_receivers %i \n", W->p4est->mpirank, num_receivers);
+        printf("[pchase %i insertPart] printing all particles to be sent\n", W->p4est->mpirank);
+        /* printing all particles to be sent */
+        for (i = 0; i < W->particles_to->elem_count; i++) {
+                sc_list_t          *tmp = sc_array_index_int(W->particles_to, i);
+                printf("[pchase %i insertPart] list %i with %i particles\n", W->p4est->mpirank, i, tmp->elem_count);
+                if (tmp->elem_count > 0) {
+                        sc_link_t          *it;
+                        for (it = tmp->first; it->next != NULL; it = it->next) {
+                                pchase_particle_t  *tmpParticle = it->data;
+                                printf("[pchase %i insertPart] Particle[%i] in list %i\n", W->p4est->mpirank, tmpParticle->ID, i);
+                        }
+                }
+        }
+#endif
         /* notify only the first num_receivers part of the receivers array */
         mpiret = sc_notify(receivers, num_receivers,
                            senders, &num_senders, W->p4est->mpicomm);
