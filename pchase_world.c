@@ -280,14 +280,11 @@ pchase_world_insert_particles(pchase_world_t * W)
                 if (tmp->elem_count) {
                         receivers[num_receivers] = i;
                         num_receivers++;
-#ifdef DEBUG
-                        printf("[pchase %i insertPart] num_receivers %i updated, owner is %i\n", W->p4est->mpirank, num_receivers, i);
-#endif
                 }
         }
 #ifdef DEBUG
-        printf("[pchase %i insertPart] Total num_receivers %i \n", W->p4est->mpirank, num_receivers);
-        printf("[pchase %i insertPart] printing all particles to be sent\n", W->p4est->mpirank);
+        printf("[pchase %i insertPart] resolving receive count done - total num_receivers %i \n", W->p4est->mpirank, num_receivers);
+        printf("[pchase %i insertPart] printing all particles to be sent and delete them\n", W->p4est->mpirank);
         /* printing all particles to be sent */
         for (i = 0; i < W->particles_to->elem_count; i++) {
                 sc_list_t          *tmp = *((sc_list_t **)sc_array_index(W->particles_to, i));
