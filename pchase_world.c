@@ -252,7 +252,7 @@ pchase_world_insert_particles(pchase_world_t * W)
                         /* resolving particles' owner */
                         owner = p4est_comm_find_owner(W->p4est, miniQuad->p.piggy3.which_tree, miniQuad, W->p4est->mpirank);
                         /* moving particle into sent list for proc 'owner' */
-                        sc_list_t          *tmp = sc_array_index(W->particles_to, owner);
+                        sc_list_t          *tmp = *((sc_list_t **)sc_array_index(W->particles_to, owner));
 #ifdef DEBUG
                         printf("[pchase %i insertPart] particle[%i](%lf,%lf) pushed to send list for proc %i (had already %lld particles - ",
                                W->p4est->mpirank, p->ID, p->x[0], p->x[1], owner, (long long)tmp->elem_count);
@@ -275,7 +275,7 @@ pchase_world_insert_particles(pchase_world_t * W)
 #endif
         /* resolve receiver count */
         for (i = 0, num_receivers = 0; i < W->p4est->mpisize; i++) {
-                sc_list_t          *tmp = sc_array_index(W->particles_to, i);
+                sc_list_t          *tmp = *((sc_list_t **)sc_array_index(W->particles_to, i));
                 /* add i to receiver list and update receiver count */
                 if (tmp->elem_count) {
                         receivers[num_receivers] = i;
@@ -290,7 +290,7 @@ pchase_world_insert_particles(pchase_world_t * W)
         printf("[pchase %i insertPart] printing all particles to be sent\n", W->p4est->mpirank);
         /* printing all particles to be sent */
         for (i = 0; i < W->particles_to->elem_count; i++) {
-                sc_list_t          *tmp = sc_array_index_int(W->particles_to, i);
+                sc_list_t          *tmp = *((sc_list_t **)sc_array_index(W->particles_to, i));
                 printf("[pchase %i insertPart] list %i with %lld particles\n", W->p4est->mpirank, i, (long long)tmp->elem_count);
                 if (tmp->elem_count > 0) {
                         sc_link_t          *it;
