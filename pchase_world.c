@@ -201,7 +201,7 @@ pchase_world_insert_particles(pchase_world_t * W)
          */
         p4est_search(W->p4est, W->search_fn, points);
 
-        printf("[pchase %i insertPart] %i particles in push list\n", W->p4est->mpirank, W->particle_push_list->elem_count);
+        printf("[pchase %i insertPart] %lld particles in push list\n", W->p4est->mpirank, (long long)W->particle_push_list->elem_count);
 
         /* move all particles either into their enclQuads or to another proc */
         for (i = 0, particle_it = W->particle_push_list->first; i < points->elem_count; i++, particle_it = particle_it->next) {
@@ -224,7 +224,7 @@ pchase_world_insert_particles(pchase_world_t * W)
                                 enclQuadData->p[enclQuadData->nParticles] = p;
                                 enclQuadData->nParticles++;
                                 printf("[pchase %i insertPart] particle[%i](%lf,%lf) inserted into enclQuad(%lld,%lld) (had already %i particles - now %i)\n",
-                                       W->p4est->mpirank, p->ID, p->x[0], p->x[1], enclQuad->x, enclQuad->y, enclQuadData->nParticles - 1, enclQuadData->nParticles);
+                                       W->p4est->mpirank, p->ID, p->x[0], p->x[1], (long long)enclQuad->x, (long long)enclQuad->y, enclQuadData->nParticles - 1, enclQuadData->nParticles);
                         }
                         /* too many particles in quad */
                         else {
@@ -254,12 +254,12 @@ pchase_world_insert_particles(pchase_world_t * W)
                         /* moving particle into sent list for proc 'owner' */
                         sc_list_t          *tmp = sc_array_index(W->particles_to, owner);
 #ifdef DEBUG
-                        printf("[pchase %i insertPart] particle[%i](%lf,%lf) pushed to send list for proc %i (had already %i particles - ",
-                               W->p4est->mpirank, p->ID, p->x[0], p->x[1], owner, tmp->elem_count);
+                        printf("[pchase %i insertPart] particle[%i](%lf,%lf) pushed to send list for proc %i (had already %lld particles - ",
+                               W->p4est->mpirank, p->ID, p->x[0], p->x[1], owner, (long long)tmp->elem_count);
 #endif
                         sc_list_append(tmp, p);
 #ifdef DEBUG
-                        printf("now %i)\n", tmp->elem_count);
+                        printf("now %lld)\n", (long long)tmp->elem_count);
 #endif
                 }
         }
@@ -291,7 +291,7 @@ pchase_world_insert_particles(pchase_world_t * W)
         /* printing all particles to be sent */
         for (i = 0; i < W->particles_to->elem_count; i++) {
                 sc_list_t          *tmp = sc_array_index_int(W->particles_to, i);
-                printf("[pchase %i insertPart] list %i with %i particles\n", W->p4est->mpirank, i, tmp->elem_count);
+                printf("[pchase %i insertPart] list %i with %lld particles\n", W->p4est->mpirank, i, (long long)tmp->elem_count);
                 if (tmp->elem_count > 0) {
                         sc_link_t          *it;
                         for (it = tmp->first; it->next != NULL; it = it->next) {
@@ -307,8 +307,7 @@ pchase_world_insert_particles(pchase_world_t * W)
         SC_CHECK_MPI(mpiret);
 
 #ifdef DEBUG
-        printf("[pchase %i insertPart] sc_notify done\n", W->p4est->mpirank);
-        printf("[pchase %i insertPart] num_receivers %i, num_senders %i done\n", num_receivers, num_senders);
+        printf("[pchase %i insertPart] sc_notify done num_receivers %i, num_senders %i\n", W->p4est->mpirank, num_receivers, num_senders);
 #endif
         /* do something with senders */
         if (W->p4est->mpirank > -1)
@@ -389,7 +388,7 @@ static void
 init_fn(p4est_t * p4est, p4est_topidx_t which_tree, p4est_quadrant_t * quadrant)
 {
 #ifdef DEBUG
-        printf("[pchase %i init_fn] quad(0x%08X,0x%08X) in tree: %lld\n", p4est->mpirank, quadrant->x, quadrant->y, which_tree);
+        printf("[pchase %i init_fn] quad(0x%08X,0x%08X) in tree: %lld\n", p4est->mpirank, quadrant->x, quadrant->y, (long long)which_tree);
 #endif
         ((pchase_quadrant_data_t *) quadrant->p.user_data)->nParticles = 0;
 }
@@ -477,7 +476,7 @@ update_x_fn(p4est_iter_volume_info_t * info, void *user_data)
 
 #ifdef DEBUG
                 printf("[pchase %i updateX] particle[%i](%lf,%lf) in quad(%lld) with %i particles\n",
-                       info->p4est->mpirank, quadData->p[i]->ID, quadData->p[i]->x[0], quadData->p[i]->x[1], info->quadid, quadData->nParticles);
+                       info->p4est->mpirank, quadData->p[i]->ID, quadData->p[i]->x[0], quadData->p[i]->x[1], (long long)info->quadid, quadData->nParticles);
 #endif
 #ifdef PRINTXYZ
                 fprintf(pchase_output, "H\t%lf\t%lf\t0\n", quadData->p[i]->x[0], quadData->p[i]->x[1]);
@@ -522,7 +521,7 @@ pchase_particle_lies_in_quad(const pchase_particle_t * p, p4est_quadrant_t * q)
             p->x[1] * root_len < q->y || p->x[1] * root_len >= q->y + quadrant_length) {
 #ifdef DEBUG
                 printf("particle[%i] at p4est_coord(%09lld,%09lld) left Quad(0x%08X, 0x%08X)\n",
-                       p->ID, (int)(p->x[0] * root_len), (int)(p->x[1] * root_len), q->x, q->y);
+                       p->ID, (long long)(p->x[0] * root_len), (long long)(p->x[1] * root_len), q->x, q->y);
 #endif
                 return 0;
         } else
