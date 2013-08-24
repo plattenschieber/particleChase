@@ -257,10 +257,6 @@ pchase_world_insert_particles(pchase_world_t * W)
                 else {
                         /* resolving particles' owner */
                         owner = p4est_comm_find_owner(W->p4est, miniQuad->p.piggy3.which_tree, miniQuad, W->p4est->mpirank);
-                        senders = SC_ALLOC(int, W->p4est->mpisize);
-                        mpiret = sc_notify(receivers, num_receivers,
-                                  senders, &num_senders, W->p4est->mpicomm);
-                        SC_CHECK_MPI(mpiret);
                         /* moving particle into sent list for proc 'owner' */
                         sc_list_t * tmp = sc_array_index(W->particles_to, owner);
                         sc_list_append(tmp, p);
@@ -282,6 +278,13 @@ pchase_world_insert_particles(pchase_world_t * W)
 #endif
                 }
         }
+        /* notify only the first num_receivers part of the receivers array */
+        mpiret = sc_notify(receivers, num_receivers,
+                           senders, &num_senders, W->p4est->mpicomm);
+        SC_CHECK_MPI(mpiret);
+
+        SC_FREE(receivers);
+        SC_FREE(senders);
         /* get rid of all particle pointer and miniQuads */
         sc_list_reset(W->particle_push_list);
         sc_array_destroy(points);
