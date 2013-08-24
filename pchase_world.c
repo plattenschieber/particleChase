@@ -267,6 +267,9 @@ pchase_world_insert_particles(pchase_world_t * W)
 #ifdef DEBUG
                         printf("now %i)\n", tmp->elem_count);
 #endif
+                }
+        }
+
         /*
          * get enough space for receivers and senders array - this may be not
          * memory optimal, but it's the fastest solution
