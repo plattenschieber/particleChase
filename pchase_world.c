@@ -291,10 +291,8 @@ pchase_world_insert_particles(pchase_world_t * W)
         for (i = 0, num_receivers = 0; i < W->p4est->mpisize; i++) {
                 sc_list_t          *tmp = *((sc_list_t **) sc_array_index(W->particles_to, i));
                 /* add i to receiver list and update receiver count */
-                if (tmp->elem_count) {
-                        receivers[num_receivers] = i;
-                        num_receivers++;
-                }
+                if (tmp->elem_count)
+                        receivers[num_receivers++] = i;
         }
 #ifdef DEBUG
         printf("[pchase %i insertPart] resolving receive count done - total num_receivers %i \n", W->p4est->mpirank, num_receivers);
