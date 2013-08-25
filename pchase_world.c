@@ -113,7 +113,11 @@ pchase_world_simulate(pchase_world_t * W)
                 /*
                  * the flag allows coarsening for one level on own proc
                  */
-                p4est_partition_ext(W->p4est, 1, NULL);
+
+                /* p4est_tree_t * tree = W->p4est->first_local_tree; */
+                /* p4est_quadrant_t * quad = tree->quadrants */
+                /* if() */
+                /* p4est_partition_ext(W->p4est, 1, NULL); */
 
                 if (W->step % 1000 == 0) {
                         /*
