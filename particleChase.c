@@ -19,7 +19,7 @@ typedef struct {
 int
 main(int argc, char **argv)
 {
-        int                 mpiret, i;
+        int                 mpiret;
         mpi_context_t       mpi_context, *mpi = &mpi_context;
         p4est_t            *p4est;
         p4est_connectivity_t *connectivity;

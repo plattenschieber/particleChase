@@ -49,7 +49,6 @@ void
 pchase_world_init_p4est(pchase_world_t * W, p4est_t * p4est)
 {
         int                 i;
-        sc_list_t          *tmp, *tmp2;
         /* don't forget to assign newly allocated p4est to the world */
         W->p4est = p4est;
         /* initialize particle send list */
@@ -93,12 +92,12 @@ pchase_world_simulate(pchase_world_t * W)
                 }
 #endif
 #ifdef DEBUG
-                printf("[pchase %i simulate] start update x \n", W->p4est->mpirank, W->n_particles);
+                printf("[pchase %i simulate] start update x \n", W->p4est->mpirank);
 #endif
                 /* update the position of all particles on all quads */
                 p4est_iterate(W->p4est, NULL, W, W->update_x_fn, NULL, NULL);
 #ifdef DEBUG
-                printf("[pchase %i simulate] update x done - starting insertion of particle\n", W->p4est->mpirank, W->n_particles);
+                printf("[pchase %i simulate] update x done - starting insertion of particle\n", W->p4est->mpirank);
 #endif
 
                 /* insert all particles which left into their new quad */
@@ -287,7 +286,7 @@ pchase_world_insert_particles(pchase_world_t * W)
         receivers = SC_ALLOC(int, W->p4est->mpisize);
         senders = SC_ALLOC(int, W->p4est->mpisize);
 #ifdef DEBUG
-        printf("[pchase %i insertPart] into resolve receive count\n", W->p4est->mpirank, num_receivers, i);
+        printf("[pchase %i insertPart] into resolve receive count\n", W->p4est->mpirank);
 #endif
         /* resolve receiver count */
         for (i = 0, num_receivers = 0; i < W->p4est->mpisize; i++) {
