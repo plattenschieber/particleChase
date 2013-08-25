@@ -380,20 +380,17 @@ search_fn(p4est_t * p4est, p4est_topidx_t which_tree,
             miniQuad->y >= quadrant->y && miniQuad->y <= quadrant->y + quadrant_length) {
                 /* remember current tree (needed to identify proc) */
                 miniQuad->p.piggy3.which_tree = which_tree;
-                /*
-                 * if it's a leaf, it holds it's position in the tree and can
-                 * only exist on this proc.
-                 */
-                if (is_leaf)
+                if (is_leaf) {
+                        /* miniQuad lies on this proc, local num holds info */
                         miniQuad->p.piggy3.local_num = quadrant->p.piggy3.local_num;
-                /* flag the quad in the other case */
-                else
-                        miniQuad->p.piggy3.local_num = -1;
 #ifdef DEBUG
-                printf("[pchase %i search] found quad (holding miniQuad) " \
-                       "with local_num %d in level: %d is_leaf: %d\n", p4est->mpirank,
-                    miniQuad->p.piggy3.local_num, quadrant->level, is_leaf);
+                        printf("[pchase %i search] found quad (holding miniQuad) with local_num %d on level: %d is_leaf: %d\n",
+                               p4est->mpirank, miniQuad->p.piggy3.local_num, quadrant->level, is_leaf);
 #endif
+                } else
+                        /* flag the quad - it's lying on another proc */
+                        /* (or still not the leaf, but keep flagging) */
+                        miniQuad->p.piggy3.local_num = -1;
                 return 1;
         } else
                 return 0;
