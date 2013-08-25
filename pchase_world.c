@@ -116,8 +116,11 @@ pchase_world_simulate(pchase_world_t * W)
 
                 /* p4est_tree_t * tree = W->p4est->first_local_tree; */
                 /* p4est_quadrant_t * quad = tree->quadrants */
-                /* if() */
-                /* p4est_partition_ext(W->p4est, 1, NULL); */
+                if(W->p4est->global_num_quadrants > 1){
+                        printf("[pchase %i simulate] there are more (%lld) than one quadrants in the world - partitioning takes place\n",
+                                W->p4est->mpirank, W->p4est->global_num_quadrants);
+                        p4est_partition_ext(W->p4est, 1, NULL);
+                }
 
                 if (W->step % 1000 == 0) {
                         /*
