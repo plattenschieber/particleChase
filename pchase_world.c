@@ -460,6 +460,9 @@ pchase_world_velocity(pchase_world_t * W, pchase_particle_t * p)
         norm = sqrt(x * x + y * y);
         p->x[0] += W->delta_t * x / norm;
         p->x[1] += W->delta_t * y / norm;
+
+        if(!pchase_particle_lies_in_world(W, p))
+                sc_abort_collective("Particle is lying inside the World");
 }
 
 static void
@@ -507,6 +510,20 @@ update_x_fn(p4est_iter_volume_info_t * info, void *user_data)
                         quadData->nParticles--;
                 }
         }
+}
+
+int
+pchase_particle_lies_in_world(pchase_world_t * W, const pchase_particle_t * p)
+{
+        printf("particle[%i](%lf,%lf) check if it lies World\n", p->ID, p->x[0], p->x[1]);
+        if (p->x[0] < 0 || p->x[0] >= W->length[0] ||
+            p->x[1] < 0 || p->x[1] >= W->length[1] ) {
+#ifdef DEBUG
+                printf("particle[%i](%lf,%lf) left World\n", p->ID, p->x[0], p->x[1]);
+#endif
+                return 0;
+        } else
+                return 1;
 }
 
 int

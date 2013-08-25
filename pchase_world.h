@@ -140,6 +140,10 @@ static void
 int
                     pchase_particle_lies_in_quad(const pchase_particle_t * p, p4est_quadrant_t * q);
 
+/* returns true if particle lies in world */
+int
+pchase_particle_lies_in_world(pchase_world_t * W, const pchase_particle_t * p);
+
 /* move particles from parent to children or vice versa */
 static void
 replace_fn(p4est_t * p4est, p4est_topidx_t which_tree,
