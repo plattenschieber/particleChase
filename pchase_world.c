@@ -484,18 +484,11 @@ pchase_world_velocity(pchase_world_t * W, pchase_particle_t * p)
 static void
 update_x_fn(p4est_iter_volume_info_t * info, void *user_data)
 {
-#ifdef DEBUG
-        printf("[pchase %i updateX] touched quad quad[%lld](0x%08X,0x%08X)\n",
-               info->p4est->mpirank, (long long)info->quadid, info->quad->x, info->quad->y);
-#endif
         int                 i;
         pchase_quadrant_data_t *quadData = (pchase_quadrant_data_t *) info->quad->p.user_data;
         pchase_world_t     *W = (pchase_world_t *) user_data;
 
         for (i = 0; i < quadData->nParticles; i++) {
-                printf("[pchase %i updateX] particle[%i](%lf,%lf) in quad[%lld](0x%08X,0x%08X) with %i particles (before updating x)\n",
-                       info->p4est->mpirank, quadData->p[i]->ID, quadData->p[i]->x[0], quadData->p[i]->x[1], (long long)info->quadid,
-                       info->quad->x, info->quad->y, quadData->nParticles);
                 /* update particles' velocity */
                 pchase_world_velocity(W, quadData->p[i]);
 
@@ -539,9 +532,6 @@ update_x_fn(p4est_iter_volume_info_t * info, void *user_data)
 int
 pchase_particle_lies_in_world(pchase_world_t * W, const pchase_particle_t * p)
 {
-#ifdef DEBUG
-        printf("particle[%i](%lf,%lf) check if it lies inside the world\n", p->ID, p->x[0], p->x[1]);
-#endif
         if (p->x[0] < 0 || p->x[0] >= W->length[0] ||
             p->x[1] < 0 || p->x[1] >= W->length[1]) {
 #ifdef DEBUG
