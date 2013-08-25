@@ -92,6 +92,9 @@ pchase_world_simulate(pchase_world_t * W)
                         fprintf(pchase_output, "Time: %f\n", W->t);
                 }
 #endif
+#ifdef DEBUG
+                printf("[pchase %i simulate] start update x \n", W->p4est->mpirank, W->n_particles);
+#endif
                 /* update the position of all particles on all quads */
                 p4est_iterate(W->p4est, NULL, W, W->update_x_fn, NULL, NULL);
 #ifdef DEBUG
@@ -461,7 +464,7 @@ pchase_world_velocity(pchase_world_t * W, pchase_particle_t * p)
         p->x[0] += W->delta_t * x / norm;
         p->x[1] += W->delta_t * y / norm;
 
-        if(!pchase_particle_lies_in_world(W, p))
+        if (!pchase_particle_lies_in_world(W, p))
                 sc_abort_collective("Particle is lying inside the World");
 }
 
@@ -473,6 +476,8 @@ update_x_fn(p4est_iter_volume_info_t * info, void *user_data)
         pchase_world_t     *W = (pchase_world_t *) user_data;
 
         for (i = 0; i < quadData->nParticles; i++) {
+                printf("[pchase %i updateX] particle[%i](%lf,%lf) in quad(%lld) with %i particles (before updating x)\n",
+                       info->p4est->mpirank, quadData->p[i]->ID, quadData->p[i]->x[0], quadData->p[i]->x[1], (long long)info->quadid, quadData->nParticles);
                 /* update particles' velocity */
                 pchase_world_velocity(W, quadData->p[i]);
 
@@ -517,7 +522,7 @@ pchase_particle_lies_in_world(pchase_world_t * W, const pchase_particle_t * p)
 {
         printf("particle[%i](%lf,%lf) check if it lies World\n", p->ID, p->x[0], p->x[1]);
         if (p->x[0] < 0 || p->x[0] >= W->length[0] ||
-            p->x[1] < 0 || p->x[1] >= W->length[1] ) {
+            p->x[1] < 0 || p->x[1] >= W->length[1]) {
 #ifdef DEBUG
                 printf("particle[%i](%lf,%lf) left World\n", p->ID, p->x[0], p->x[1]);
 #endif

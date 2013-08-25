@@ -142,7 +142,7 @@ int
 
 /* returns true if particle lies in world */
 int
-pchase_particle_lies_in_world(pchase_world_t * W, const pchase_particle_t * p);
+                    pchase_particle_lies_in_world(pchase_world_t * W, const pchase_particle_t * p);
 
 /* move particles from parent to children or vice versa */
 static void
