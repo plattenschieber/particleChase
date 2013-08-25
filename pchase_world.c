@@ -203,9 +203,9 @@ pchase_world_insert_particles(pchase_world_t * W)
          * miniQuads' piggy3
          */
         p4est_search(W->p4est, W->search_fn, points);
-
+#ifdef DEBUG
         printf("[pchase %i insertPart] %lld particles in push list\n", W->p4est->mpirank, (long long)W->particle_push_list->elem_count);
-
+#endif
         /* move all particles either into their enclQuads or to another proc */
         for (i = 0, particle_it = W->particle_push_list->first; i < points->elem_count; i++, particle_it = particle_it->next) {
                 /* resolve miniQuad and associated particle */
@@ -226,12 +226,16 @@ pchase_world_insert_particles(pchase_world_t * W)
                                  */
                                 enclQuadData->p[enclQuadData->nParticles] = p;
                                 enclQuadData->nParticles++;
+#ifdef DEBUG
                                 printf("[pchase %i insertPart] particle[%i](%lf,%lf) inserted into enclQuad(0x%08X,0x%08X) (had already %i particles - now %i)\n",
                                        W->p4est->mpirank, p->ID, p->x[0], p->x[1], enclQuad->x, enclQuad->y, enclQuadData->nParticles - 1, enclQuadData->nParticles);
+#endif
                         }
                         /* too many particles in quad */
                         else {
+#ifdef DEBUG
                                 printf("[pchase %i insertPart] Too many (%i) particles ",
+#endif
                                 W->p4est->mpirank, enclQuadData->nParticles);
                                 if (0) {
                                         printf("- refining enclQuad and inserting particle afterwards\n");
@@ -244,7 +248,9 @@ pchase_world_insert_particles(pchase_world_t * W)
                                          */
                                         sc_list_append(W->particle_push_list, p);
                                 } else {
+#ifdef DEBUG
                                         printf("- we have to dissmiss this particle\n");
+#endif
                                         P4EST_FREE(p);
                                         W->n_particles--;
                                 }
@@ -295,7 +301,7 @@ pchase_world_insert_particles(pchase_world_t * W)
                 if (tmpList->elem_count > 0) {
                         printf(": ");
                         pchase_particle_t  *tmpParticle;
-                        while(tmpList->first != NULL) {
+                        while (tmpList->first != NULL) {
                                 tmpParticle = sc_list_pop(tmpList);
                                 printf("Particle[%i] ", tmpParticle->ID);
                                 W->n_particles--;
@@ -304,9 +310,9 @@ pchase_world_insert_particles(pchase_world_t * W)
                 }
                 printf("\n");
         }
+        printf("[pchase %i insertPart] deletion done\n", W->p4est->mpirank);
 #endif
 
-        printf("[pchase %i insertPart] deletion done\n", W->p4est->mpirank);
         /* notify only the first num_receivers part of the receivers array */
         mpiret = sc_notify(receivers, num_receivers,
                            senders, &num_senders, W->p4est->mpicomm);
@@ -473,6 +479,10 @@ pchase_world_velocity(pchase_world_t * W, pchase_particle_t * p)
 static void
 update_x_fn(p4est_iter_volume_info_t * info, void *user_data)
 {
+#ifdef DEBUG
+        printf("[pchase %i updateX] touched quad quad[%lld](0x%08X,0x%08X)\n",
+               info->p4est->mpirank, (long long)info->quadid, info->quad->x, info->quad->y);
+#endif
         int                 i;
         pchase_quadrant_data_t *quadData = (pchase_quadrant_data_t *) info->quad->p.user_data;
         pchase_world_t     *W = (pchase_world_t *) user_data;
@@ -480,11 +490,12 @@ update_x_fn(p4est_iter_volume_info_t * info, void *user_data)
         for (i = 0; i < quadData->nParticles; i++) {
                 printf("[pchase %i updateX] particle[%i](%lf,%lf) in quad[%lld](0x%08X,0x%08X) with %i particles (before updating x)\n",
                        info->p4est->mpirank, quadData->p[i]->ID, quadData->p[i]->x[0], quadData->p[i]->x[1], (long long)info->quadid,
+                       info->quad->x, info->quad->y, quadData->nParticles);
                 /* update particles' velocity */
                 pchase_world_velocity(W, quadData->p[i]);
 
 #ifdef DEBUG
-                printf("[pchase %i updateX] particle[%i](%lf,%lf) in quad(%lld) with %i particles\n",
+                printf("[pchase %i updateX] updated position of particle[%i] (new pos:(%lf,%lf)) in quad(%lld) with %i particles\n",
                        info->p4est->mpirank, quadData->p[i]->ID, quadData->p[i]->x[0], quadData->p[i]->x[1], (long long)info->quadid, quadData->nParticles);
 #endif
 #ifdef PRINTXYZ
@@ -522,7 +533,9 @@ update_x_fn(p4est_iter_volume_info_t * info, void *user_data)
 int
 pchase_particle_lies_in_world(pchase_world_t * W, const pchase_particle_t * p)
 {
-        printf("particle[%i](%lf,%lf) check if it lies World\n", p->ID, p->x[0], p->x[1]);
+#ifdef DEBUG
+        printf("particle[%i](%lf,%lf) check if it lies inside the world\n", p->ID, p->x[0], p->x[1]);
+#endif
         if (p->x[0] < 0 || p->x[0] >= W->length[0] ||
             p->x[1] < 0 || p->x[1] >= W->length[1]) {
 #ifdef DEBUG
@@ -636,14 +649,20 @@ pchase_world_destroy(pchase_world_t * W)
         int                 i;
         sc_list_t          *tmp;
         sc_list_destroy(W->particle_push_list);
+#ifdef DEBUG
         printf("[pchase %i world_destroy] destroyed particle_push_list\n", W->p4est->mpirank);
+#endif
         for (i = 0; i < W->particles_to->elem_count; i++) {
                 tmp = *((sc_list_t **) sc_array_index_int(W->particles_to, i));
                 sc_list_destroy(tmp);
+#ifdef DEBUG
                 printf("[pchase %i world_destroy] destroyed particles_to[%i] list\n", W->p4est->mpirank, i);
+#endif
         }
         sc_array_destroy(W->particles_to);
+#ifdef DEBUG
         printf("[pchase %i world_destroy] destroyed particles_to_proc array\n", W->p4est->mpirank);
+#endif
         /* and free all particles */
         p4est_iterate(W->p4est, NULL, NULL, W->destroy_fn, NULL, NULL);
 }
