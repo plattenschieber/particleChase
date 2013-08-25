@@ -326,6 +326,25 @@ pchase_world_insert_particles(pchase_world_t * W)
 #endif
         /* do something with senders */
 
+        /* send all particles to their belonging procs */
+        for (i = 0; i < num_receivers; i++) {
+                /* resolve particle list for proc i */
+                sc_list_t          *tmpList = *((sc_list_t **) sc_array_index(W->particles_to, receivers[i]));
+                sc_link_t          *tmpLink;
+
+                /* get space for the particles to be sent */
+                pchase_particle_t  *send_buf = P4EST_ALLOC(pchase_particle_t, tmpList->elem_count);
+
+                /* copy all particles into the send buffer */
+                for (tmpLink = tmpList->first; tmpLink != NULL; tmpLink = tmpLink->next)
+                        memcpy(send_buf + i * sizeof(pchase_particle_t), tmpLink->data, sizeof(pchase_particle_t));
+                /* send particles to right owner */
+                mpiret = MPI_Isend(send_buf, 2 * tmpList->elem_count, MPI_DOUBLE,
+                                   receivers[i], 0,
+                                   W->p4est->mpicomm, &send_request[i]);
+                SC_CHECK_MPI(mpiret);
+        }
+
         SC_FREE(receivers);
         SC_FREE(senders);
         /* get rid of all particle pointer and miniQuads */
