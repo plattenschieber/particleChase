@@ -352,6 +352,25 @@ pchase_world_insert_particles(pchase_world_t * W)
                 SC_CHECK_MPI(mpiret);
         }
 
+        /* wait for all procs to finish */
+        if (num_senders > 0) {
+                /* wait for receivers */
+                mpiret = MPI_Waitall(num_senders, send_request, send_status);
+                SC_CHECK_MPI(mpiret);
+                /* free mpi handles */ 
+                P4EST_FREE(send_request);
+                P4EST_FREE(send_status);
+        }
+        if (num_receivers > 0) {
+                /* wait for senders */
+                mpiret = MPI_Waitall(num_receivers, recv_request, recv_status);
+                SC_CHECK_MPI(mpiret);
+                /* free mpi handles */ 
+                P4EST_FREE(recv_request);
+                P4EST_FREE(recv_status);
+        }
+
+        /* free proc lists */
         SC_FREE(receivers);
         SC_FREE(senders);
         /* get rid of all particle pointer and miniQuads */
