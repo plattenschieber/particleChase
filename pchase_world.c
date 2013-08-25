@@ -294,9 +294,11 @@ pchase_world_insert_particles(pchase_world_t * W)
                 printf("[pchase %i insertPart] sent_to_proc[%i] with %lld particles", W->p4est->mpirank, i, (long long)tmpList->elem_count);
                 if (tmpList->elem_count > 0) {
                         printf(": ");
-                        pchase_particle_t  *tmpParticle = sc_list_pop(tmpList);
-                        for (; tmpList->first != NULL; tmpParticle = sc_list_pop(tmpList)) {
+                        pchase_particle_t  *tmpParticle;
+                        while(tmpList->first != NULL) {
+                                tmpParticle = sc_list_pop(tmpList);
                                 printf("Particle[%i] ", tmpParticle->ID);
+                                W->n_particles--;
                                 P4EST_FREE(tmpParticle);
                         }
                 }
