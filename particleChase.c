@@ -44,7 +44,7 @@ main(int argc, char **argv)
         /* store connectivity for a unitsquare */
         connectivity = p4est_connectivity_new_unitsquare();
         /* build uniform tree and get space for 25 particles each */
-        p4est = p4est_new_ext(mpi->mpicomm, connectivity, 0, 1, 1,
+        p4est = p4est_new_ext(mpi->mpicomm, connectivity, 0, 2, 1,
                           sizeof(pchase_quadrant_data_t), W->init_fn, NULL);
 
         /* initialize everything depending on p4est */
