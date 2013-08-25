@@ -316,7 +316,7 @@ pchase_world_insert_particles(pchase_world_t * W)
         printf("[pchase %i insertPart] deletion done\n", W->p4est->mpirank);
 #endif
 
-        /* notify only the first num_receivers part of the receivers array */
+        /* only the first num_receivers receivers are notified */
         mpiret = sc_notify(receivers, num_receivers,
                            senders, &num_senders, W->p4est->mpicomm);
         SC_CHECK_MPI(mpiret);
@@ -382,8 +382,8 @@ search_fn(p4est_t * p4est, p4est_topidx_t which_tree,
                         /* miniQuad lies on this proc, local num holds info */
                         miniQuad->p.piggy3.local_num = quadrant->p.piggy3.local_num;
 #ifdef DEBUG
-                        printf("[pchase %i search] found quad (holding miniQuad) with local_num %d on level: %d is_leaf: %d\n",
-                               p4est->mpirank, miniQuad->p.piggy3.local_num, quadrant->level, is_leaf);
+                        printf("[pchase %i search] found enclQuad[%d] on level: %d\n",
+                               p4est->mpirank, miniQuad->p.piggy3.local_num, quadrant->level);
 #endif
                 } else
                         /* flag the quad - it's lying on another proc */
