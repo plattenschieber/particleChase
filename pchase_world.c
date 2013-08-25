@@ -115,12 +115,11 @@ pchase_world_simulate(pchase_world_t * W)
 
                 /* p4est_tree_t * tree = W->p4est->first_local_tree; */
                 /* p4est_quadrant_t * quad = tree->quadrants */
-                if(W->p4est->global_num_quadrants > 1){
+                if (W->p4est->global_num_quadrants > 1) {
                         printf("[pchase %i simulate] there are more (%lld) than one quadrants in the world - partitioning takes place\n",
-                                W->p4est->mpirank, W->p4est->global_num_quadrants);
+                         W->p4est->mpirank, W->p4est->global_num_quadrants);
                         p4est_partition_ext(W->p4est, 1, NULL);
                 }
-
                 if (W->step % 1000 == 0) {
                         /*
                          * convert current step to filename and write VTK
@@ -501,8 +500,9 @@ update_x_fn(p4est_iter_volume_info_t * info, void *user_data)
                 pchase_world_velocity(W, quadData->p[i]);
 
 #ifdef DEBUG
-                printf("[pchase %i updateX] updated position of particle[%i] (new pos:(%lf,%lf)) in quad(%lld) with %i particles\n",
-                       info->p4est->mpirank, quadData->p[i]->ID, quadData->p[i]->x[0], quadData->p[i]->x[1], (long long)info->quadid, quadData->nParticles);
+                printf("[pchase %i updateX] particle[%i] new pos(%lf,%lf) in quad[%lld](0x%08X,0x%08X) with %i particles\n",
+                       info->p4est->mpirank, quadData->p[i]->ID, quadData->p[i]->x[0], quadData->p[i]->x[1],
+                       (long long)info->quadid, info->quad->x, info->quad->y, quadData->nParticles);
 #endif
 #ifdef PRINTXYZ
                 fprintf(pchase_output, "H\t%lf\t%lf\t0\n", quadData->p[i]->x[0], quadData->p[i]->x[1]);
