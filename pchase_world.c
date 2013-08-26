@@ -714,6 +714,9 @@ pchase_world_destroy(pchase_world_t * W)
 #ifdef DEBUG
         printf("[pchase %i world_destroy] destroyed particles_to_proc array\n", W->p4est->mpirank);
 #endif
+        /* free defined mpi type */
+        MPI_Type_free(&W->MPI_Particle);
+        
         /* and free all particles */
         p4est_iterate(W->p4est, NULL, NULL, W->destroy_fn, NULL, NULL);
 }
