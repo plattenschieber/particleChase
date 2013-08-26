@@ -359,7 +359,7 @@ pchase_world_insert_particles(pchase_world_t * W)
                 /* resolve particle list for proc i */
                 sc_list_t          *tmpList = *((sc_list_t **) sc_array_index(W->particles_to, receivers[i]));
                 pchase_particle_t * tmpParticle;
-                int                 particle_count = 0;
+                int                 send_count = 0;
 
                 /* get space for the particles to be sent */
                 send_buf[i] = P4EST_ALLOC(pchase_particle_t, tmpList->elem_count);
@@ -367,25 +367,25 @@ pchase_world_insert_particles(pchase_world_t * W)
                 /* copy all particles into the send buffer and remove them from this proc */
                 while(tmpList->first != NULL){
                         tmpParticle = sc_list_pop(tmpList);
-                        memcpy(send_buf[i] + particle_count * sizeof(pchase_particle_t), tmpParticle, sizeof(pchase_particle_t));
+                        memcpy(send_buf[i] + send_count * sizeof(pchase_particle_t), tmpParticle, sizeof(pchase_particle_t));
                         /* free particle */
                         P4EST_FREE(tmpParticle);
                         /* update particle counter */ 
-                        particle_count++;
+                        send_count++;
                 }
 #ifdef DEBUG
                 /* print send buffer */
-                for (j = 0; j < tmpList->elem_count; j++) {
+                for (j = 0; j < send_count; j++) {
                         pchase_particle_t  *tmpParticle = send_buf[i] + j * sizeof(pchase_particle_t);
                         printf("[pchase %i sending] particle[%i](%lf,%lf)\n",
                                W->p4est->mpirank, tmpParticle->ID, tmpParticle->x[0], tmpParticle->x[1]);
                 }
 #endif
 
-                printf("[pchase %i sending] particle count: %lld\n",
-                       W->p4est->mpirank, (long long)tmpList->elem_count);
+                printf("[pchase %i sending] particle count: %i\n",
+                       W->p4est->mpirank, send_count);
                 /* send particles to right owner */
-                mpiret = MPI_Isend(send_buf[i], tmpList->elem_count, W->MPI_Particle,
+                mpiret = MPI_Isend(send_buf[i], send_count, W->MPI_Particle,
                                    receivers[i], 13,
                                    W->p4est->mpicomm, &send_request[i]);
                 SC_CHECK_MPI(mpiret);
