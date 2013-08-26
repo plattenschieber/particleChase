@@ -363,8 +363,8 @@ pchase_world_insert_particles(pchase_world_t * W)
                 for (tmpLink = tmpList->first; tmpLink != NULL; tmpLink = tmpLink->next)
                         memcpy(send_buf + i * sizeof(pchase_particle_t), tmpLink->data, sizeof(pchase_particle_t));
                 /* send particles to right owner */
-                mpiret = MPI_Isend(send_buf, 2 * tmpList->elem_count, MPI_DOUBLE,
-                                   receivers[i], 0,
+                mpiret = MPI_Isend(send_buf, tmpList->elem_count, W->MPI_Particle,
+                                   receivers[i], 13,
                                    W->p4est->mpicomm, &send_request[i]);
                 SC_CHECK_MPI(mpiret);
         }
