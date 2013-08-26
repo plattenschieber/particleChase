@@ -343,7 +343,7 @@ pchase_world_insert_particles(pchase_world_t * W)
         MPI_Request        *send_request = P4EST_ALLOC(MPI_Request, W->p4est->mpisize);
         MPI_Status         *recv_status = P4EST_ALLOC(MPI_Status, W->p4est->mpisize);
         pchase_particle_t  *recv_buf, *send_buf;
-        int                 recv_count, recv_length, flag;
+        int                 recv_count = 0, recv_length, flag;
 
         /* send all particles to their belonging procs */
         for (i = 0; i < num_receivers; i++) {
@@ -405,7 +405,6 @@ pchase_world_insert_particles(pchase_world_t * W)
         /* get rid of all particle pointer and miniQuads */
         sc_list_reset(W->particle_push_list);
         sc_array_destroy(points);
-
 }
 
 void
