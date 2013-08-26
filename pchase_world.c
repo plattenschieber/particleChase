@@ -345,8 +345,7 @@ pchase_world_insert_particles(pchase_world_t * W)
         MPI_Status         *recv_status = P4EST_ALLOC(MPI_Status, W->p4est->mpisize);
         MPI_Status         *send_status = P4EST_ALLOC(MPI_Status, W->p4est->mpisize);
         pchase_particle_t  *recv_buf, *send_buf;
-        int                 recv_count, recv_length,
-                            send_count, flag;
+        int                 recv_count, recv_length, flag;
 
         /* send all particles to their belonging procs */
         for (i = 0; i < num_receivers; i++) {
