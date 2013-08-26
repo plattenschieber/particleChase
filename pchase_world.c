@@ -326,8 +326,8 @@ pchase_world_insert_particles(pchase_world_t * W)
         MPI_Request        *send_request = P4EST_ALLOC(MPI_Request, W->p4est->mpisize);
         MPI_Status         *recv_status = P4EST_ALLOC(MPI_Status, W->p4est->mpisize);
         /* setup send/recv buffers */
-        pchase_particle_t **recv_buf = P4EST_ALLOC(pchase_particle_t *, num_senders);
-        pchase_particle_t **send_buf = P4EST_ALLOC(pchase_particle_t *, num_receivers);
+        double **recv_buf = P4EST_ALLOC(double *, num_senders);
+        double **send_buf = P4EST_ALLOC(double *, num_receivers);
         int                 recv_count = 0, recv_length, flag, j;
 
         /* send all particles to their belonging procs */
@@ -338,7 +338,7 @@ pchase_world_insert_particles(pchase_world_t * W)
                 int                 send_count = 0;
 
                 /* get space for the particles to be sent */
-                send_buf[i] = P4EST_ALLOC(pchase_particle_t, tmpList->elem_count);
+                send_buf[i] = P4EST_ALLOC(double, 2*tmpList->elem_count);
 
                 /*
                  * copy all particles into the send buffer and remove them
@@ -346,7 +346,8 @@ pchase_world_insert_particles(pchase_world_t * W)
                  */
                 while (tmpList->first != NULL) {
                         tmpParticle = sc_list_pop(tmpList);
-                        memcpy(send_buf[i] + send_count * sizeof(pchase_particle_t), tmpParticle, sizeof(pchase_particle_t));
+                        memcpy(&send_buf[i] + send_count * 2*sizeof(double), &tmpParticle->x[0], sizeof(double));
+                        memcpy(&send_buf[i] + send_count * 2*sizeof(double) + sizeof(double), &tmpParticle->x[1], sizeof(double));
                         /* free particle */
                         P4EST_FREE(tmpParticle);
                         /* update particle counter */
@@ -355,7 +356,9 @@ pchase_world_insert_particles(pchase_world_t * W)
 #ifdef DEBUG
                 /* print send buffer */
                 for (j = 0; j < send_count; j++) {
-                        pchase_particle_t  *tmpParticle = send_buf[i] + j * sizeof(pchase_particle_t);
+                        pchase_particle_t  *tmpParticle = P4EST_ALLOC(pchase_particle_t, 1);
+                        tmpParticle->x[0] = **(&send_buf[i] + j * 2*sizeof(double));
+                        tmpParticle->x[1] = **(&send_buf[i] + j * 2*sizeof(double) + sizeof(double));
                         printf("[pchase %i sending] particle(%lf,%lf)\n",
                                W->p4est->mpirank, tmpParticle->x[0], tmpParticle->x[1]);
                 }
@@ -383,7 +386,7 @@ pchase_world_insert_particles(pchase_world_t * W)
                                 printf("[pchase %i receiving message] %i particles arrived from sender %i with tag %i\n",
                                        W->p4est->mpirank, recv_length, recv_status[i].MPI_SOURCE, recv_status[i].MPI_TAG);
                                 /* get space for the particles to be sent */
-                                recv_buf[recv_count] = P4EST_ALLOC(pchase_particle_t, recv_length);
+                                recv_buf[recv_count] = P4EST_ALLOC(double, recv_length);
                                 /* receive a list with recv_length particles */
                                 mpiret = MPI_Recv(recv_buf[recv_count], recv_length, MPI_DOUBLE, recv_status[i].MPI_SOURCE,
                                                   recv_status[i].MPI_TAG, W->p4est->mpicomm, &recv_status[i]);
