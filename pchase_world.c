@@ -299,8 +299,8 @@ pchase_world_insert_particles(pchase_world_t * W)
          * get enough space for receivers and senders array - this may be not
          * memory optimal, but it's the fastest solution
          */
-        receivers = SC_ALLOC(int, W->p4est->mpisize);
-        senders = SC_ALLOC(int, W->p4est->mpisize);
+        receivers = P4EST_ALLOC(int, W->p4est->mpisize);
+        senders = P4EST_ALLOC(int, W->p4est->mpisize);
         /* resolve receiver count */
         for (i = 0, num_receivers = 0; i < W->p4est->mpisize; i++) {
                 sc_list_t          *tmp = *((sc_list_t **) sc_array_index(W->particles_to, i));
@@ -424,13 +424,14 @@ pchase_world_insert_particles(pchase_world_t * W)
                 /* wait for receivers to collect all messages */
                 mpiret = MPI_Waitall(num_receivers, send_request, MPI_STATUSES_IGNORE);
                 SC_CHECK_MPI(mpiret);
+                P4EST_FREE(receivers);
         }
         /* free mpi handles */
         P4EST_FREE(send_request);
         P4EST_FREE(recv_status);
         /* free proc lists */
-        SC_FREE(receivers);
-        SC_FREE(senders);
+        if(num_receivers>0)
+                P4EST_FREE(senders);
         /* get rid of all particle pointer and miniQuads */
         P4EST_FREE(recv_buf);
         P4EST_FREE(send_buf);
