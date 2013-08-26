@@ -397,10 +397,10 @@ pchase_world_insert_particles(pchase_world_t * W)
                 /* wait for receivers to collect all messages */
                 mpiret = MPI_Waitall(num_receivers, send_request, MPI_STATUSES_IGNORE);
                 SC_CHECK_MPI(mpiret);
-                /* free mpi handles */
-                P4EST_FREE(recv_request);
-                P4EST_FREE(recv_status);
         }
+        /* free mpi handles */
+        P4EST_FREE(send_request);
+        P4EST_FREE(recv_status);
         /* free proc lists */
         SC_FREE(receivers);
         SC_FREE(senders);
