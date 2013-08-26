@@ -37,6 +37,7 @@ typedef struct {
         p4est_iter_volume_t update_x_fn;
         sc_list_t          *particle_push_list;
         sc_array_t         *particles_to;
+        MPI_Datatype        MPI_Particle;
 }
                     pchase_world_t;
 

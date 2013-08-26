@@ -57,9 +57,26 @@ pchase_world_init_p4est(pchase_world_t * W, p4est_t * p4est)
         /* reserve some space for send lists */
         for (i = 0; i < W->p4est->mpisize; i++)
                 *((sc_list_t **) sc_array_index_int(W->particles_to, i)) = sc_list_new(NULL);
+
+        /* create MPI_Datatype for Particle struct */
 #ifdef DEBUG
         printf("[pchase %i init] reserved space for %lld lists\n", W->p4est->mpirank, (long long)W->particles_to->elem_count);
 #endif
+        const int items = 2;
+        int          block_lengths[2] = {1, DIM};
+        MPI_Datatype mpi_types[2] = {MPI_INT, MPI_DOUBLE};
+        MPI_Aint     offsets[2];
+        offsets[0] = offsetof(pchase_particle_t, ID);
+        offsets[1] = offsetof(pchase_particle_t, x);
+#else
+        const int items = 1;
+        int          block_lengths[1] = {DIM};
+        MPI_Datatype mpi_types[1] = {MPI_DOUBLE};
+        MPI_Aint     offsets[1];
+        offsets[0] = offsetof(pchase_particle_t, x);
+#endif
+        MPI_Type_create_struct(items, block_lengths, offsets, mpi_types, &W->MPI_Particle);
+        MPI_Type_commit(&W->MPI_Particle);
 }
 
 void
