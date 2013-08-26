@@ -60,8 +60,6 @@ pchase_world_init_p4est(pchase_world_t * W, p4est_t * p4est)
 
         /* create MPI_Datatype for Particle struct */
 #ifdef DEBUG
-        printf("[pchase %i init] reserved space for %lld lists\n", W->p4est->mpirank, (long long)W->particles_to->elem_count);
-#endif
         const int items = 2;
         int          block_lengths[2] = {1, DIM};
         MPI_Datatype mpi_types[2] = {MPI_INT, MPI_DOUBLE};
