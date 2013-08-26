@@ -349,17 +349,20 @@ pchase_world_insert_particles(pchase_world_t * W)
         for (i = 0; i < num_receivers; i++) {
                 /* resolve particle list for proc i */
                 sc_list_t          *tmpList = *((sc_list_t **) sc_array_index(W->particles_to, receivers[i]));
-                sc_link_t          *tmpLink;
+                pchase_particle_t * tmpParticle;
                 int                 particle_count = 0;
 
                 /* get space for the particles to be sent */
                 send_buf[i] = P4EST_ALLOC(pchase_particle_t, tmpList->elem_count);
 
-                /* copy all particles into the send buffer and free them */
-                for (tmpLink = tmpList->first; tmpLink != NULL; tmpLink = tmpLink->next, particle_count++) {
-                        memcpy(send_buf[i] + particle_count * sizeof(pchase_particle_t), tmpLink->data, sizeof(pchase_particle_t));
+                /* copy all particles into the send buffer and remove them from this proc */
+                while(tmpList->first != NULL){
+                        tmpParticle = sc_list_pop(tmpList);
+                        memcpy(send_buf[i] + particle_count * sizeof(pchase_particle_t), tmpParticle, sizeof(pchase_particle_t));
                         /* free particle */
-                        P4EST_FREE(tmpLink->data);
+                        P4EST_FREE(tmpParticle);
+                        /* update particle counter */ 
+                        particle_count++;
                 }
 #ifdef DEBUG
                 /* print send buffer */
