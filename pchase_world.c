@@ -419,13 +419,18 @@ pchase_world_insert_particles(pchase_world_t * W)
                                          * recv_buf
                                          */
                                         tmpParticle = recv_buf[recv_count] + j * sizeof(pchase_particle_t);
+                                        pchase_particle_t  *addParticle = P4EST_ALLOC(pchase_particle_t, 1);
+                                        addParticle->ID = tmpParticle->ID;
+                                        addParticle->x[0] = tmpParticle->x[0];
+                                        addParticle->x[1] = tmpParticle->x[1];
+
                                         printf("[pchase %i receiving] particle[%i](%lf,%lf)\n",
-                                        sc_list_append(W->particle_push_list, tmpParticle);
                                                W->p4est->mpirank, addParticle->ID, addParticle->x[0], addParticle->x[1]);
                                         /*
                                          * push received particle to push
                                          * list and update world counter
                                          */
+                                        sc_list_append(W->particle_push_list, addParticle);
                                         W->n_particles++;
                                 }
                                 /* we received another particle list */
