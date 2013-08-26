@@ -299,9 +299,6 @@ pchase_world_insert_particles(pchase_world_t * W)
          */
         receivers = SC_ALLOC(int, W->p4est->mpisize);
         senders = SC_ALLOC(int, W->p4est->mpisize);
-#ifdef DEBUG
-        printf("[pchase %i insertPart] into resolve receive count\n", W->p4est->mpirank);
-#endif
         /* resolve receiver count */
         for (i = 0, num_receivers = 0; i < W->p4est->mpisize; i++) {
                 sc_list_t          *tmp = *((sc_list_t **) sc_array_index(W->particles_to, i));
@@ -453,7 +450,9 @@ search_fn(p4est_t * p4est, p4est_topidx_t which_tree,
                 /* remember current tree (needed to identify proc) */
                 miniQuad->p.piggy3.which_tree = which_tree;
                 if (is_leaf) {
-                        /* miniQuad lies on this proc, local num holds info */
+                        /*
+                         * miniQuad lies on this proc, local num holds info
+                         */
                         miniQuad->p.piggy3.local_num = quadrant->p.piggy3.local_num;
 #ifdef DEBUG
                         printf("[pchase %i search] found enclQuad[%d] on level: %d\n",
@@ -583,10 +582,14 @@ update_x_fn(p4est_iter_volume_info_t * info, void *user_data)
                          */
                         sc_list_append(W->particle_push_list, quadData->p[i]);
 
-                        /* move last particle to i'th place to prevent a hole */
+                        /*
+                         * move last particle to i'th place to prevent a hole
+                         */
                         quadData->p[i] = quadData->p[quadData->nParticles - 1];
 #ifdef DEBUG
-                        /* we aren't going to touch this ever, but who knows */
+                        /*
+                         * we aren't going to touch this ever, but who knows
+                         */
                         quadData->p[quadData->nParticles - 1] = NULL;
 #endif
                         /* set iterator accordingly */
@@ -698,7 +701,9 @@ replace_fn(p4est_t * p4est, p4est_topidx_t which_tree,
 #ifdef DEBUG
                                 famJData->p[famJData->nParticles - 1] = NULL;
 #endif
-                                /* reset iterator and particle counter */
+                                /*
+                                 * reset iterator and particle counter
+                                 */
                                 i--;
                                 famJData->nParticles--;
                                 quadData->nParticles++;
