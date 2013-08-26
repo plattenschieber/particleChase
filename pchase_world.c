@@ -117,6 +117,8 @@ pchase_world_simulate(pchase_world_t * W)
 
                 /* insert all particles which left into their new quad */
                 pchase_world_insert_particles(W);
+                /* insert all communicated particles into the world */
+                pchase_world_insert_particles(W);
 
                 /* refine every quad containing more than 5 particles */
                 p4est_refine_ext(W->p4est, 0, -1, W->refine_fn, W->init_fn, W->replace_fn);
