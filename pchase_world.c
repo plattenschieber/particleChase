@@ -436,8 +436,8 @@ search_fn(p4est_t * p4est, p4est_topidx_t which_tree,
         miniQuad = (p4est_quadrant_t *) point;
 
         /* mini quad must lie entirely in quadrant */
-        if (miniQuad->x >= quadrant->x && miniQuad->x <= quadrant->x + quadrant_length &&
-            miniQuad->y >= quadrant->y && miniQuad->y <= quadrant->y + quadrant_length) {
+        if (miniQuad->x >= quadrant->x && miniQuad->x < quadrant->x + quadrant_length &&
+            miniQuad->y >= quadrant->y && miniQuad->y < quadrant->y + quadrant_length) {
                 /* remember current tree (needed to identify proc) */
                 miniQuad->p.piggy3.which_tree = which_tree;
                 if (is_leaf) {
