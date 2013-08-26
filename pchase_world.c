@@ -60,17 +60,17 @@ pchase_world_init_p4est(pchase_world_t * W, p4est_t * p4est)
 
         /* create MPI_Datatype for Particle struct */
 #ifdef DEBUG
-        const int items = 2;
-        int          block_lengths[2] = {1, DIM};
-        MPI_Datatype mpi_types[2] = {MPI_INT, MPI_DOUBLE};
-        MPI_Aint     offsets[2];
+        const int           items = 2;
+        int                 block_lengths[2] = {1, DIM};
+        MPI_Datatype        mpi_types[2] = {MPI_INT, MPI_DOUBLE};
+        MPI_Aint            offsets[2];
         offsets[0] = offsetof(pchase_particle_t, ID);
         offsets[1] = offsetof(pchase_particle_t, x);
 #else
-        const int items = 1;
-        int          block_lengths[1] = {DIM};
-        MPI_Datatype mpi_types[1] = {MPI_DOUBLE};
-        MPI_Aint     offsets[1];
+        const int           items = 1;
+        int                 block_lengths[1] = {DIM};
+        MPI_Datatype        mpi_types[1] = {MPI_DOUBLE};
+        MPI_Aint            offsets[1];
         offsets[0] = offsetof(pchase_particle_t, x);
 #endif
         MPI_Type_create_struct(items, block_lengths, offsets, mpi_types, &W->MPI_Particle);
@@ -374,7 +374,7 @@ pchase_world_insert_particles(pchase_world_t * W)
                 /* wait for receivers */
                 mpiret = MPI_Waitall(num_senders, send_request, send_status);
                 SC_CHECK_MPI(mpiret);
-                /* free mpi handles */ 
+                /* free mpi handles */
                 P4EST_FREE(send_request);
                 P4EST_FREE(send_status);
         }
@@ -382,17 +382,17 @@ pchase_world_insert_particles(pchase_world_t * W)
                 /* wait for senders */
                 mpiret = MPI_Waitall(num_receivers, recv_request, recv_status);
                 SC_CHECK_MPI(mpiret);
-                /* free mpi handles */ 
+                /* free mpi handles */
                 P4EST_FREE(recv_request);
                 P4EST_FREE(recv_status);
         }
-
         /* free proc lists */
         SC_FREE(receivers);
         SC_FREE(senders);
         /* get rid of all particle pointer and miniQuads */
         sc_list_reset(W->particle_push_list);
         sc_array_destroy(points);
+
 }
 
 void
@@ -718,7 +718,7 @@ pchase_world_destroy(pchase_world_t * W)
 #endif
         /* free defined mpi type */
         MPI_Type_free(&W->MPI_Particle);
-        
+
         /* and free all particles */
         p4est_iterate(W->p4est, NULL, NULL, W->destroy_fn, NULL, NULL);
 }
