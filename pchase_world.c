@@ -384,6 +384,23 @@ pchase_world_insert_particles(pchase_world_t * W)
                                 mpiret = MPI_Recv(recv_buf[recv_count], recv_length, W->MPI_Particle, recv_status[i].MPI_SOURCE,
                                                   recv_status[i].MPI_TAG, W->p4est->mpicomm, &recv_status[i]);
                                 SC_CHECK_MPI(mpiret);
+
+                                /*
+                                 * insert all received particles into the
+                                 * push list
+                                 */
+                                pchase_particle_t  *tmpParticle;
+                                for (j = 0; j < recv_length; j++) {
+                                        /*
+                                         * retrieve all particle details from
+                                         * recv_buf
+                                         */
+                                        tmpParticle = recv_buf[recv_count] + j * sizeof(pchase_particle_t);
+                                        printf("[pchase %i receiving] particle[%i](%lf,%lf)\n",
+                                               W->p4est->mpirank, tmpParticle->ID, tmpParticle->x[0], tmpParticle->x[1]);
+                                        sc_list_append(W->particle_push_list, tmpParticle);
+                                        W->n_particles++;
+                                }
                                 /* we received another particle list */
                                 recv_count++;
                         }
