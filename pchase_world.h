@@ -1,6 +1,6 @@
 #ifndef PCHASE_WORLD_H
 #define PCHASE_WORLD_H
-/* #define DEBUG */
+#define DEBUG
 #define PRINTGNUPLOT
 /* #define PRINTXYZ */
 #define DIM 2
@@ -13,6 +13,7 @@
 #include "p4est_search.h"
 #include "p4est_iterate.h"
 #include "p4est_communication.h"
+#include "sc_notify.h"
 #include "p4est_vtk.h"
 
 /* pchase_world_t holds the entire information of our simulation */
@@ -35,15 +36,23 @@ typedef struct {
         p4est_iter_volume_t print_fn;
         p4est_iter_volume_t update_x_fn;
         sc_list_t          *particle_push_list;
+        sc_array_t         *particles_to;
+        MPI_Datatype        MPI_Particle;
 }
                     pchase_world_t;
 
 /** initialize a world with static parameter
  *
- * \param[in] p4est a forest we want to integrate into our world
  * \return	        a ready to use world
  */
-pchase_world_t     *pchase_world_init(p4est_t * p4est);
+pchase_world_t     *pchase_world_init();
+
+/** initialize everything depending on p4est
+ *
+ * \param[in] the world we are acting on
+ * \param[in] p4est a forest we want to integrate into our world
+ */
+void                pchase_world_init_p4est(pchase_world_t * W, p4est_t * p4est);
 
 /** start the simulation
  *
@@ -131,6 +140,10 @@ static void
 /* returns true if particle lies in quad */
 int
                     pchase_particle_lies_in_quad(const pchase_particle_t * p, p4est_quadrant_t * q);
+
+/* returns true if particle lies in world */
+int
+                    pchase_particle_lies_in_world(pchase_world_t * W, const pchase_particle_t * p);
 
 /* move particles from parent to children or vice versa */
 static void
