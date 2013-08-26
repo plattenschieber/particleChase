@@ -53,7 +53,16 @@ pchase_world_init_p4est(pchase_world_t * W, p4est_t * p4est)
         W->p4est = p4est;
         /* initialize particle send list */
         W->particles_to = sc_array_new_size(sizeof(sc_list_t *), W->p4est->mpisize);
+#ifdef PRINTXYZ
+        pchase_output = fopen("pchase_particles.xyz", "w");
+#elif defined(PRINTGNUPLOT)
+        if(W->p4est->mpirank == 0)
+                pchase_output = fopen("pchase_particles.plot", "w");
+        else 
+                pchase_output = fopen("pchase_particles2.plot", "w");
 
+
+#endif
         /* reserve some space for send lists */
         for (i = 0; i < W->p4est->mpisize; i++)
                 *((sc_list_t **) sc_array_index_int(W->particles_to, i)) = sc_list_new(NULL);
