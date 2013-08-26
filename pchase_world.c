@@ -364,7 +364,7 @@ pchase_world_insert_particles(pchase_world_t * W)
                 printf("[pchase %i sending] particle count: %i\n",
                        W->p4est->mpirank, send_count);
                 /* send particles to right owner */
-                mpiret = MPI_Isend(send_buf[i], send_count, W->MPI_Particle,
+                mpiret = MPI_Isend(send_buf[i], 2*send_count, MPI_DOUBLE,
                                    receivers[i], 13,
                                    W->p4est->mpicomm, &send_request[i]);
                 SC_CHECK_MPI(mpiret);
@@ -379,13 +379,13 @@ pchase_world_insert_particles(pchase_world_t * W)
                                    &flag, &recv_status[i]);
                         if (flag) {
                                 /* resolve number of particles receiving */
-                                MPI_Get_count(&recv_status[i], W->MPI_Particle, &recv_length);
+                                MPI_Get_count(&recv_status[i], MPI_DOUBLE, &recv_length);
                                 printf("[pchase %i receiving message] %i particles arrived from sender %i with tag %i\n",
                                        W->p4est->mpirank, recv_length, recv_status[i].MPI_SOURCE, recv_status[i].MPI_TAG);
                                 /* get space for the particles to be sent */
                                 recv_buf[recv_count] = P4EST_ALLOC(pchase_particle_t, recv_length);
                                 /* receive a list with recv_length particles */
-                                mpiret = MPI_Recv(recv_buf[recv_count], recv_length, W->MPI_Particle, recv_status[i].MPI_SOURCE,
+                                mpiret = MPI_Recv(recv_buf[recv_count], recv_length, MPI_DOUBLE, recv_status[i].MPI_SOURCE,
                                                   recv_status[i].MPI_TAG, W->p4est->mpicomm, &recv_status[i]);
                                 SC_CHECK_MPI(mpiret);
 
@@ -771,9 +771,6 @@ pchase_world_destroy(pchase_world_t * W)
 #ifdef DEBUG
         printf("[pchase %i world_destroy] destroyed particles_to_proc array\n", W->p4est->mpirank);
 #endif
-        /* free defined mpi type */
-        MPI_Type_free(&W->MPI_Particle);
-
         /* and free all particles */
         p4est_iterate(W->p4est, NULL, NULL, W->destroy_fn, NULL, NULL);
 }
