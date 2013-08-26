@@ -61,24 +61,6 @@ pchase_world_init_p4est(pchase_world_t * W, p4est_t * p4est)
         /* reserve some space for send lists */
         for (i = 0; i < W->p4est->mpisize; i++)
                 *((sc_list_t **) sc_array_index_int(W->particles_to, i)) = sc_list_new(NULL);
-
-        /* create MPI_Datatype for Particle struct */
-#ifdef DEBUG
-        const int           items = 2;
-        int                 block_lengths[2] = {1, DIM};
-        MPI_Datatype        mpi_types[2] = {MPI_INT, MPI_DOUBLE};
-        MPI_Aint            offsets[2];
-        offsets[0] = offsetof(pchase_particle_t, ID);
-        offsets[1] = offsetof(pchase_particle_t, x);
-#else
-        const int           items = 1;
-        int                 block_lengths[1] = {DIM};
-        MPI_Datatype        mpi_types[1] = {MPI_DOUBLE};
-        MPI_Aint            offsets[1];
-        offsets[0] = offsetof(pchase_particle_t, x);
-#endif
-        MPI_Type_create_struct(items, block_lengths, offsets, mpi_types, &W->MPI_Particle);
-        MPI_Type_commit(&W->MPI_Particle);
 }
 
 void
@@ -184,7 +166,6 @@ pchase_world_random_particle(pchase_world_t * W)
                 p->x[i] = W->length[i] * rand() / (RAND_MAX + 1.);
 #ifdef DEBUG
         printf("[pchase %i randPart] ", W->p4est->mpirank);
-        p->ID = W->n_particles;
         for (i = 0; i < DIM; i++)
                 printf("p->x[%d]=%lf,\t", i, p->x[i]);
         printf("\n");
@@ -219,8 +200,8 @@ pchase_world_insert_particles(pchase_world_t * W)
                 pchase_translate_particle_to_p4est(W, p, miniQuad);
 
 #ifdef DEBUG
-                printf("[pchase %i insertPart] Translated Particle[%i](%lf,%lf) to miniQuad (0x%08X,0x%08X)\n",
-                       W->p4est->mpirank, p->ID, p->x[0], p->x[1], miniQuad->x, miniQuad->y);
+                printf("[pchase %i insertPart] Translated Particle(%lf,%lf) to miniQuad (0x%08X,0x%08X)\n",
+                       W->p4est->mpirank, p->x[0], p->x[1], miniQuad->x, miniQuad->y);
 #endif
         }
 
@@ -253,8 +234,8 @@ pchase_world_insert_particles(pchase_world_t * W)
                                 enclQuadData->p[enclQuadData->nParticles] = p;
                                 enclQuadData->nParticles++;
 #ifdef DEBUG
-                                printf("[pchase %i insertPart] particle[%i](%lf,%lf) inserted into enclQuad(0x%08X,0x%08X) (had already %i particles - now %i)\n",
-                                       W->p4est->mpirank, p->ID, p->x[0], p->x[1], enclQuad->x, enclQuad->y, enclQuadData->nParticles - 1, enclQuadData->nParticles);
+                                printf("[pchase %i insertPart] particle(%lf,%lf) inserted into enclQuad(0x%08X,0x%08X) (had already %i particles - now %i)\n",
+                                       W->p4est->mpirank, p->x[0], p->x[1], enclQuad->x, enclQuad->y, enclQuadData->nParticles - 1, enclQuadData->nParticles);
 #endif
                         }
                         /* too many particles in quad */
@@ -289,8 +270,8 @@ pchase_world_insert_particles(pchase_world_t * W)
                         /* moving particle into sent list for proc 'owner' */
                         sc_list_t          *tmp = *((sc_list_t **) sc_array_index(W->particles_to, owner));
 #ifdef DEBUG
-                        printf("[pchase %i insertPart] particle[%i](%lf,%lf) pushed to send list for proc %i (had already %lld particles - ",
-                               W->p4est->mpirank, p->ID, p->x[0], p->x[1], owner, (long long)tmp->elem_count);
+                        printf("[pchase %i insertPart] particle(%lf,%lf) pushed to send list for proc %i (had already %lld particles - ",
+                               W->p4est->mpirank, p->x[0], p->x[1], owner, (long long)tmp->elem_count);
 #endif
                         sc_list_append(tmp, p);
 #ifdef DEBUG
@@ -324,7 +305,7 @@ pchase_world_insert_particles(pchase_world_t * W)
                         pchase_particle_t  *tmpParticle;
                         while (tmpLink != NULL) {
                                 tmpParticle = tmpLink->data;
-                                printf("Particle[%i] ", tmpParticle->ID);
+                                printf("Particle(%lf,%lf) ", tmpParticle->x[0], tmpParticle->x[1]);
                                 tmpLink = tmpLink->next;
                         }
                 }
@@ -375,8 +356,8 @@ pchase_world_insert_particles(pchase_world_t * W)
                 /* print send buffer */
                 for (j = 0; j < send_count; j++) {
                         pchase_particle_t  *tmpParticle = send_buf[i] + j * sizeof(pchase_particle_t);
-                        printf("[pchase %i sending] particle[%i](%lf,%lf)\n",
-                               W->p4est->mpirank, tmpParticle->ID, tmpParticle->x[0], tmpParticle->x[1]);
+                        printf("[pchase %i sending] particle(%lf,%lf)\n",
+                               W->p4est->mpirank, tmpParticle->x[0], tmpParticle->x[1]);
                 }
 #endif
 
@@ -420,12 +401,11 @@ pchase_world_insert_particles(pchase_world_t * W)
                                          */
                                         tmpParticle = recv_buf[recv_count] + j * sizeof(pchase_particle_t);
                                         pchase_particle_t  *addParticle = P4EST_ALLOC(pchase_particle_t, 1);
-                                        addParticle->ID = tmpParticle->ID;
                                         addParticle->x[0] = tmpParticle->x[0];
                                         addParticle->x[1] = tmpParticle->x[1];
 
-                                        printf("[pchase %i receiving] particle[%i](%lf,%lf)\n",
-                                               W->p4est->mpirank, addParticle->ID, addParticle->x[0], addParticle->x[1]);
+                                        printf("[pchase %i receiving] particle(%lf,%lf)\n",
+                                               W->p4est->mpirank, addParticle->x[0], addParticle->x[1]);
                                         /*
                                          * push received particle to push
                                          * list and update world counter
@@ -566,7 +546,7 @@ destroy_fn(p4est_iter_volume_info_t * info, void *Data)
                 p = qData->p[i];
                 P4EST_FREE(p);
 #ifdef DEBUG
-                printf("[pchase %i destroy_fn] freed particle[%i](%lf,%lf)\n", info->p4est->mpirank, p->ID, p->x[0], p->x[1]);
+                printf("[pchase %i destroy_fn] freed particle(%lf,%lf)\n", info->p4est->mpirank, p->x[0], p->x[1]);
 #endif
         }
         return;
@@ -586,7 +566,7 @@ print_fn(p4est_iter_volume_info_t * info, void *user_data)
 
         for (i = 0; i < quadData->nParticles; i++)
 #ifdef DEBUG
-                printf("%i\t%lf\t%lf\n", quadData->p[i]->ID, quadData->p[i]->x[0], quadData->p[i]->x[1]);
+                printf("\t%lf\t%lf\n", quadData->p[i]->x[0], quadData->p[i]->x[1]);
 #else
                 printf("%lf\t%lf\n", quadData->p[i]->x[0], quadData->p[i]->x[1]);
 #endif
@@ -619,8 +599,8 @@ update_x_fn(p4est_iter_volume_info_t * info, void *user_data)
                 pchase_world_velocity(W, quadData->p[i]);
 
 #ifdef DEBUG
-                printf("[pchase %i updateX] particle[%i] new pos(%lf,%lf) in quad[%lld](0x%08X,0x%08X) with %i particles\n",
-                       info->p4est->mpirank, quadData->p[i]->ID, quadData->p[i]->x[0], quadData->p[i]->x[1],
+                printf("[pchase %i updateX] particle new pos(%lf,%lf) in quad[%lld](0x%08X,0x%08X) with %i particles\n",
+                       info->p4est->mpirank, quadData->p[i]->x[0], quadData->p[i]->x[1],
                        (long long)info->quadid, info->quad->x, info->quad->y, quadData->nParticles);
 #endif
 #ifdef PRINTXYZ
@@ -631,8 +611,8 @@ update_x_fn(p4est_iter_volume_info_t * info, void *user_data)
                 /* move particle if it has left the quad */
                 if (!pchase_particle_lies_in_quad(quadData->p[i], info->quad)) {
 #ifdef DEBUG
-                        printf("[pchase %i updateX] particle[%i](%lf,%lf) left quad(0x%08X,0x%08X)\n",
-                               info->p4est->mpirank, quadData->p[i]->ID, quadData->p[i]->x[0], quadData->p[i]->x[1], info->quad->x, info->quad->y);
+                        printf("[pchase %i updateX] particle(%lf,%lf) left quad(0x%08X,0x%08X)\n",
+                               info->p4est->mpirank, quadData->p[i]->x[0], quadData->p[i]->x[1], info->quad->x, info->quad->y);
 #endif
                         /*
                          * now, we collect all particles in one update_x pass
@@ -665,7 +645,7 @@ pchase_particle_lies_in_world(pchase_world_t * W, const pchase_particle_t * p)
         if (p->x[0] < 0 || p->x[0] >= W->length[0] ||
             p->x[1] < 0 || p->x[1] >= W->length[1]) {
 #ifdef DEBUG
-                printf("particle[%i](%lf,%lf) left World\n", p->ID, p->x[0], p->x[1]);
+                printf("particle(%lf,%lf) left World\n", p->x[0], p->x[1]);
 #endif
                 return 0;
         } else
@@ -682,8 +662,8 @@ pchase_particle_lies_in_quad(const pchase_particle_t * p, p4est_quadrant_t * q)
         if (p->x[0] * root_len < q->x || p->x[0] * root_len >= q->x + quadrant_length ||
             p->x[1] * root_len < q->y || p->x[1] * root_len >= q->y + quadrant_length) {
 #ifdef DEBUG
-                printf("particle[%i] at p4est_coord(0x%08X,0x%08X) left Quad(0x%08X,0x%08X)\n",
-                       p->ID, (unsigned)(p->x[0] * root_len), (unsigned)(p->x[1] * root_len), q->x, q->y);
+                printf("particle at p4est_coord(0x%08X,0x%08X) left Quad(0x%08X,0x%08X)\n",
+                       (unsigned)(p->x[0] * root_len), (unsigned)(p->x[1] * root_len), q->x, q->y);
 #endif
                 return 0;
         } else
