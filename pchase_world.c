@@ -342,11 +342,13 @@ pchase_world_insert_particles(pchase_world_t * W)
         /* do something with senders */
 
         /* handle all requests */
-        MPI_Request        *send_request = P4EST_ALLOC(MPI_Request, W->p4est->mpisize);
         MPI_Request        *recv_request = P4EST_ALLOC(MPI_Request, W->p4est->mpisize);
-        MPI_Status         *send_status = P4EST_ALLOC(MPI_Status, W->p4est->mpisize);
+        MPI_Request        *send_request = P4EST_ALLOC(MPI_Request, W->p4est->mpisize);
         MPI_Status         *recv_status = P4EST_ALLOC(MPI_Status, W->p4est->mpisize);
-        int                 recv_count, send_count;
+        MPI_Status         *send_status = P4EST_ALLOC(MPI_Status, W->p4est->mpisize);
+        pchase_particle_t  *recv_buf, *send_buf;
+        int                 recv_count, recv_length,
+                            send_count, flag;
 
         /* send all particles to their belonging procs */
         for (i = 0; i < num_receivers; i++) {
