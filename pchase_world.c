@@ -359,7 +359,14 @@ pchase_world_insert_particles(pchase_world_t * W)
                         /* free particle */
                         P4EST_FREE(tmpLink->data);
                 }
+                for (j = 0; j < tmpList->elem_count; j++) {
+                        pchase_particle_t  *tmpParticle = send_buf[i] + j * sizeof(pchase_particle_t);
+                        printf("[pchase %i sending] particle[%i](%lf,%lf)\n",
+                               W->p4est->mpirank, tmpParticle->ID, tmpParticle->x[0], tmpParticle->x[1]);
+                }
 
+                printf("[pchase %i sending] particle count: %lld\n",
+                       W->p4est->mpirank, (long long)tmpList->elem_count);
                 /* send particles to right owner */
                 mpiret = MPI_Isend(send_buf[i], tmpList->elem_count, W->MPI_Particle,
                                    receivers[i], 13,
