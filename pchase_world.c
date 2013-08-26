@@ -357,7 +357,7 @@ pchase_world_insert_particles(pchase_world_t * W)
                 sc_link_t          *tmpLink;
 
                 /* get space for the particles to be sent */
-                pchase_particle_t  *send_buf = P4EST_ALLOC(pchase_particle_t, tmpList->elem_count);
+                send_buf = P4EST_ALLOC(pchase_particle_t, tmpList->elem_count);
 
                 /* copy all particles into the send buffer */
                 for (tmpLink = tmpList->first; tmpLink != NULL; tmpLink = tmpLink->next)
