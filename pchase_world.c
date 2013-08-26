@@ -32,11 +32,6 @@ pchase_world_init(p4est_t * p4est)
 
         /* take care of all particles which left the cell after update_x */
         W->particle_push_list = sc_list_new(NULL);
-#ifdef PRINTXYZ
-        pchase_output = fopen("pchase_particles.xyz", "w");
-#elif defined(PRINTGNUPLOT)
-        pchase_output = fopen("pchase_particles.plot", "w");
-#endif
         /* set world length */
         for (i = 0; i < DIM; i++)
                 W->length[i] = 1.0;
@@ -53,6 +48,13 @@ pchase_world_init_p4est(pchase_world_t * W, p4est_t * p4est)
         W->p4est = p4est;
         /* initialize particle send list */
         W->particles_to = sc_array_new_size(sizeof(sc_list_t *), W->p4est->mpisize);
+#ifdef PRINTXYZ
+        pchase_output = fopen("pchase_particles.xyz", "w");
+#elif defined(PRINTGNUPLOT)
+        if (W->p4est->mpirank == 0)
+                pchase_output = fopen("pchase_particles.plot", "w");
+        else
+                pchase_output = fopen("pchase_particles2.plot", "w");
 
         /* reserve some space for send lists */
         for (i = 0; i < W->p4est->mpisize; i++)
@@ -349,19 +351,22 @@ pchase_world_insert_particles(pchase_world_t * W)
         for (i = 0; i < num_receivers; i++) {
                 /* resolve particle list for proc i */
                 sc_list_t          *tmpList = *((sc_list_t **) sc_array_index(W->particles_to, receivers[i]));
-                pchase_particle_t * tmpParticle;
+                pchase_particle_t  *tmpParticle;
                 int                 send_count = 0;
 
                 /* get space for the particles to be sent */
                 send_buf[i] = P4EST_ALLOC(pchase_particle_t, tmpList->elem_count);
 
-                /* copy all particles into the send buffer and remove them from this proc */
-                while(tmpList->first != NULL){
+                /*
+                 * copy all particles into the send buffer and remove them
+                 * from this proc
+                 */
+                while (tmpList->first != NULL) {
                         tmpParticle = sc_list_pop(tmpList);
                         memcpy(send_buf[i] + send_count * sizeof(pchase_particle_t), tmpParticle, sizeof(pchase_particle_t));
                         /* free particle */
                         P4EST_FREE(tmpParticle);
-                        /* update particle counter */ 
+                        /* update particle counter */
                         send_count++;
                 }
 #ifdef DEBUG
@@ -396,7 +401,7 @@ pchase_world_insert_particles(pchase_world_t * W)
                                        W->p4est->mpirank, recv_length, recv_status[i].MPI_SOURCE, recv_status[i].MPI_TAG);
                                 /* get space for the particles to be sent */
                                 recv_buf[recv_count] = P4EST_ALLOC(pchase_particle_t, recv_length);
-                                /* receive a list with recv_length particles */ 
+                                /* receive a list with recv_length particles */
                                 mpiret = MPI_Recv(recv_buf[recv_count], recv_length, W->MPI_Particle, recv_status[i].MPI_SOURCE,
                                                   recv_status[i].MPI_TAG, W->p4est->mpicomm, &recv_status[i]);
                                 SC_CHECK_MPI(mpiret);
@@ -413,9 +418,12 @@ pchase_world_insert_particles(pchase_world_t * W)
                                          */
                                         tmpParticle = recv_buf[recv_count] + j * sizeof(pchase_particle_t);
                                         printf("[pchase %i receiving] particle[%i](%lf,%lf)\n",
-                                               W->p4est->mpirank, tmpParticle->ID, tmpParticle->x[0], tmpParticle->x[1]);
-                                        /* push received particle to push list and update world counter */
                                         sc_list_append(W->particle_push_list, tmpParticle);
+                                               W->p4est->mpirank, addParticle->ID, addParticle->x[0], addParticle->x[1]);
+                                        /*
+                                         * push received particle to push
+                                         * list and update world counter
+                                         */
                                         W->n_particles++;
                                 }
                                 /* we received another particle list */
@@ -438,7 +446,7 @@ pchase_world_insert_particles(pchase_world_t * W)
         P4EST_FREE(send_request);
         P4EST_FREE(recv_status);
         /* free proc lists */
-        if(num_receivers>0)
+        if (num_receivers > 0)
                 P4EST_FREE(senders);
         /* get rid of all particle pointer and miniQuads */
         P4EST_FREE(recv_buf);
