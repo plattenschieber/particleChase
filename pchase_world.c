@@ -388,18 +388,14 @@ pchase_world_insert_particles(pchase_world_t * W)
                         }
                 }
         }
-        /* wait for all procs to finish */
-        if (num_senders > 0) {
-                /* wait for receivers */
-                mpiret = MPI_Waitall(num_senders, send_request, send_status);
-                SC_CHECK_MPI(mpiret);
-                /* free mpi handles */
-                P4EST_FREE(send_request);
-                P4EST_FREE(send_status);
-        }
+
+        /*
+         * wait for all procs to finish sending (recieve is blocking, so no
+         * need to wait here)
+         */
         if (num_receivers > 0) {
-                /* wait for senders */
-                mpiret = MPI_Waitall(num_receivers, recv_request, recv_status);
+                /* wait for receivers to collect all messages */
+                mpiret = MPI_Waitall(num_receivers, send_request, MPI_STATUSES_IGNORE);
                 SC_CHECK_MPI(mpiret);
                 /* free mpi handles */
                 P4EST_FREE(recv_request);
