@@ -311,24 +311,22 @@ pchase_world_insert_particles(pchase_world_t * W)
         }
 #ifdef DEBUG
         printf("[pchase %i insertPart] resolving receive count done - total num_receivers %i \n", W->p4est->mpirank, num_receivers);
-        printf("[pchase %i insertPart] printing all particles to be sent and delete them\n", W->p4est->mpirank);
         /* printing all particles to be sent */
         for (i = 0; i < W->particles_to->elem_count; i++) {
                 sc_list_t          *tmpList = *((sc_list_t **) sc_array_index(W->particles_to, i));
-                printf("[pchase %i insertPart] sent_to_proc[%i] with %lld particles", W->p4est->mpirank, i, (long long)tmpList->elem_count);
+                printf("[pchase %i insertPart] sending %lld particles to proc %i", W->p4est->mpirank, (long long)tmpList->elem_count, i);
                 if (tmpList->elem_count > 0) {
                         printf(": ");
+                        sc_link_t          *tmpLink = tmpList->first;
                         pchase_particle_t  *tmpParticle;
-                        while (tmpList->first != NULL) {
-                                tmpParticle = sc_list_pop(tmpList);
+                        while (tmpLink != NULL) {
+                                tmpParticle = tmpLink->data;
                                 printf("Particle[%i] ", tmpParticle->ID);
-                                W->n_particles--;
-                                P4EST_FREE(tmpParticle);
+                                tmpLink = tmpLink->next;
                         }
                 }
                 printf("\n");
         }
-        printf("[pchase %i insertPart] deletion done\n", W->p4est->mpirank);
 #endif
 
         /* only the first num_receivers receivers are notified */
