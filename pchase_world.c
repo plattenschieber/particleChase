@@ -400,7 +400,6 @@ pchase_world_insert_particles(pchase_world_t * W)
         if (num_receivers > 0) {
                 /* wait for senders */
                 mpiret = MPI_Waitall(num_receivers, recv_request, recv_status);
-        while (1==1);
                 SC_CHECK_MPI(mpiret);
                 /* free mpi handles */
                 P4EST_FREE(recv_request);
