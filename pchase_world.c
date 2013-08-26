@@ -366,6 +366,28 @@ pchase_world_insert_particles(pchase_world_t * W)
                 SC_CHECK_MPI(mpiret);
         }
 
+        recv_count = 0;
+        /* check for messages until all arrived */
+        while (recv_count < num_senders) {
+                /* probe if any of the sender has already sent his message */
+                for (i = 0; i < num_senders; i++) {
+                        MPI_Iprobe(senders[i], MPI_ANY_TAG, W->p4est->mpicomm,
+                                   &flag, &send_status[i]);
+                        if (flag) {
+                                /* resolve number of particles receiving */
+                                MPI_Get_count(&send_status[i], W->MPI_Particle, &recv_length);
+                                printf("[pchase %i receiving message] HOOOORAAAY - WE GOT A MESSAGE: length: %i, sender: %i, tag:%i\n",
+                                       W->p4est->mpirank, recv_length, send_status[i].MPI_SOURCE, send_status[i].MPI_TAG);
+                                /* get space for the particles to be sent */
+                                recv_buf = P4EST_ALLOC(pchase_particle_t, recv_length);
+                                mpiret = MPI_Recv(recv_buf, recv_length, W->MPI_Particle, send_status[i].MPI_SOURCE,
+                                                  send_status[i].MPI_TAG, W->p4est->mpicomm, &send_status[i]);
+                                SC_CHECK_MPI(mpiret);
+                                /* we received another particle list */
+                                recv_count++;
+                        }
+                }
+        }
         /* wait for all procs to finish */
         if (num_senders > 0) {
                 /* wait for receivers */
@@ -378,6 +400,7 @@ pchase_world_insert_particles(pchase_world_t * W)
         if (num_receivers > 0) {
                 /* wait for senders */
                 mpiret = MPI_Waitall(num_receivers, recv_request, recv_status);
+        while (1==1);
                 SC_CHECK_MPI(mpiret);
                 /* free mpi handles */
                 P4EST_FREE(recv_request);
