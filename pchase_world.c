@@ -398,7 +398,7 @@ pchase_world_insert_particles(pchase_world_t * W)
                                 MPI_Get_count(&recv_status[i], W->MPI_Particle, &recv_length);
                                 printf("[pchase %i receiving message] %i particles arrived from sender %i with tag %i\n",
                                        W->p4est->mpirank, recv_length, recv_status[i].MPI_SOURCE, recv_status[i].MPI_TAG);
-                                /* get space for the particles to be sent */
+                                /* get space for the particles to be received */
                                 recv_buf[recv_count] = P4EST_ALLOC(pchase_particle_t, recv_length);
                                 /* receive a list with recv_length particles */
                                 mpiret = MPI_Recv(recv_buf[recv_count], recv_length, W->MPI_Particle, recv_status[i].MPI_SOURCE,
