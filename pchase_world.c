@@ -93,25 +93,35 @@ pchase_world_simulate(pchase_world_t * W)
                 }
 #endif
 #ifdef DEBUG
-                printf("[pchase %i simulate] start update x \n", W->p4est->mpirank);
+                printf("[pchase %i simulate] start new simulation step and print particles\n", W->p4est->mpirank);
+                p4est_iterate(W->p4est, NULL, W, W->print_fn, NULL, NULL);
+                printf("[pchase %i simulate] into update_x\n", W->p4est->mpirank);
 #endif
                 /* update the position of all particles on all quads */
                 p4est_iterate(W->p4est, NULL, W, W->update_x_fn, NULL, NULL);
 #ifdef DEBUG
-                printf("[pchase %i simulate] update x done - starting insertion of particle\n", W->p4est->mpirank);
+                printf("[pchase %i simulate] update_x done - starting insertion of particle\n", W->p4est->mpirank);
 #endif
 
                 /* insert all particles which left into their new quad */
                 pchase_world_insert_particles(W);
+                printf("[pchase %i print] after first insertion\n", W->p4est->mpirank);
+                p4est_iterate(W->p4est, NULL, W, W->print_fn, NULL, NULL);
                 /* insert all communicated particles into the world */
                 pchase_world_insert_particles(W);
+                printf("[pchase %i print] after second insertion\n", W->p4est->mpirank);
+                p4est_iterate(W->p4est, NULL, W, W->print_fn, NULL, NULL);
 
                 /* refine every quad containing more than 5 particles */
                 p4est_refine_ext(W->p4est, 0, -1, W->refine_fn, W->init_fn, W->replace_fn);
                 /* coarsen non recursively */
                 p4est_coarsen_ext(W->p4est, 0, W->coarsen_fn, W->init_fn, W->replace_fn);
+                printf("[pchase %i print] after coarsening\n", W->p4est->mpirank);
+                p4est_iterate(W->p4est, NULL, W, W->print_fn, NULL, NULL);
                 /* balancing the tree */
                 p4est_balance_ext(W->p4est, P4EST_CONNECT_FULL, W->init_fn, W->replace_fn);
+                printf("[pchase %i print] after balancing \n", W->p4est->mpirank);
+                p4est_iterate(W->p4est, NULL, W, W->print_fn, NULL, NULL);
                 /*
                  * the flag allows coarsening for one level on own proc
                  */
@@ -122,6 +132,9 @@ pchase_world_simulate(pchase_world_t * W)
                         printf("[pchase %i simulate] there are more (%lld) than one quadrants in the world - partitioning takes place\n",
                          W->p4est->mpirank, W->p4est->global_num_quadrants);
                         p4est_partition_ext(W->p4est, 1, NULL);
+                        printf("[pchase %i print] after partitioning \n", W->p4est->mpirank);
+                        p4est_iterate(W->p4est, NULL, W, W->viter_fn, NULL, NULL);
+                        p4est_iterate(W->p4est, NULL, W, W->print_fn, NULL, NULL);
                 }
                 if (W->step % 1000 == 0) {
                         /*
