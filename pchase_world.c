@@ -55,6 +55,7 @@ pchase_world_init_p4est(pchase_world_t * W, p4est_t * p4est)
                 pchase_output = fopen("pchase_particles.plot", "w");
         else
                 pchase_output = fopen("pchase_particles2.plot", "w");
+#endif
 
         /* reserve some space for send lists */
         for (i = 0; i < W->p4est->mpisize; i++)
@@ -128,15 +129,13 @@ pchase_world_simulate(pchase_world_t * W)
                 p4est_coarsen_ext(W->p4est, 0, W->coarsen_fn, W->init_fn, W->replace_fn);
                 /* balancing the tree */
                 p4est_balance_ext(W->p4est, P4EST_CONNECT_FULL, W->init_fn, W->replace_fn);
-                /*
-                 * the flag allows coarsening for one level on own proc
-                 */
 
-                /* p4est_tree_t * tree = W->p4est->first_local_tree; */
-                /* p4est_quadrant_t * quad = tree->quadrants */
                 if (W->p4est->global_num_quadrants > 1) {
                         printf("[pchase %i simulate] there are more (%lld) than one quadrants in the world - partitioning takes place\n",
                          W->p4est->mpirank, W->p4est->global_num_quadrants);
+                        /*
+                         * the flag allows coarsening for one level on own proc
+                         */
                         p4est_partition_ext(W->p4est, 1, NULL);
                 }
                 if (W->step % 1000 == 0) {
@@ -248,7 +247,7 @@ pchase_world_insert_particles(pchase_world_t * W)
                                  * insert particle data into quad and update
                                  * particle counter
                                  */
-                                enclQuadData->p[enclQuadData->nParticles] = p;
+                                enclQuadData->p[enclQuadData->nParticles] = *p;
                                 enclQuadData->nParticles++;
 #ifdef DEBUG
                                 printf("[pchase %i insertPart] particle[%i](%lf,%lf) inserted into enclQuad(0x%08X,0x%08X) (had already %i particles - now %i)\n",
@@ -418,8 +417,8 @@ pchase_world_insert_particles(pchase_world_t * W)
                                          */
                                         tmpParticle = recv_buf[recv_count] + j * sizeof(pchase_particle_t);
                                         printf("[pchase %i receiving] particle[%i](%lf,%lf)\n",
+                                               W->p4est->mpirank, tmpParticle->ID, tmpParticle->x[0], tmpParticle->x[1]);
                                         sc_list_append(W->particle_push_list, tmpParticle);
-                                               W->p4est->mpirank, addParticle->ID, addParticle->x[0], addParticle->x[1]);
                                         /*
                                          * push received particle to push
                                          * list and update world counter
@@ -556,7 +555,7 @@ destroy_fn(p4est_iter_volume_info_t * info, void *Data)
         pchase_particle_t  *p;
         pchase_quadrant_data_t *qData = (pchase_quadrant_data_t *) info->quad->p.user_data;
         for (i = 0; i < qData->nParticles; i++) {
-                p = qData->p[i];
+                p = &qData->p[i];
                 P4EST_FREE(p);
 #ifdef DEBUG
                 printf("[pchase %i destroy_fn] freed particle[%i](%lf,%lf)\n", info->p4est->mpirank, p->ID, p->x[0], p->x[1]);
@@ -579,10 +578,12 @@ print_fn(p4est_iter_volume_info_t * info, void *user_data)
 
         for (i = 0; i < quadData->nParticles; i++)
 #ifdef DEBUG
-                printf("%i\t%lf\t%lf\n", quadData->p[i]->ID, quadData->p[i]->x[0], quadData->p[i]->x[1]);
+                printf("P[%i](%lf,%lf) ", quadData->p[i].ID, quadData->p[i].x[0], quadData->p[i].x[1]);
 #else
-                printf("%lf\t%lf\n", quadData->p[i]->x[0], quadData->p[i]->x[1]);
+                printf("%lf\t%lf\n", quadData->p[i].x[0], quadData->p[i].x[1]);
 #endif
+        printf("\n");
+        fflush(stdout);
 }
 
 void
@@ -609,29 +610,29 @@ update_x_fn(p4est_iter_volume_info_t * info, void *user_data)
 
         for (i = 0; i < quadData->nParticles; i++) {
                 /* update particles' velocity */
-                pchase_world_velocity(W, quadData->p[i]);
+                pchase_world_velocity(W, &quadData->p[i]);
 
 #ifdef DEBUG
                 printf("[pchase %i updateX] particle[%i] new pos(%lf,%lf) in quad[%lld](0x%08X,0x%08X) with %i particles\n",
-                       info->p4est->mpirank, quadData->p[i]->ID, quadData->p[i]->x[0], quadData->p[i]->x[1],
+                       info->p4est->mpirank, quadData->p[i].ID, quadData->p[i].x[0], quadData->p[i].x[1],
                        (long long)info->quadid, info->quad->x, info->quad->y, quadData->nParticles);
 #endif
 #ifdef PRINTXYZ
                 fprintf(pchase_output, "H\t%lf\t%lf\t0\n", quadData->p[i]->x[0], quadData->p[i]->x[1]);
 #elif defined(PRINTGNUPLOT)
-                fprintf(pchase_output, "%lf\t%lf\n", quadData->p[i]->x[0], quadData->p[i]->x[1]);
+                fprintf(pchase_output, "%lf\t%lf\n", quadData->p[i].x[0], quadData->p[i].x[1]);
 #endif
                 /* move particle if it has left the quad */
-                if (!pchase_particle_lies_in_quad(quadData->p[i], info->quad)) {
+                if (!pchase_particle_lies_in_quad(&quadData->p[i], info->quad)) {
 #ifdef DEBUG
                         printf("[pchase %i updateX] particle[%i](%lf,%lf) left quad(0x%08X,0x%08X)\n",
-                               info->p4est->mpirank, quadData->p[i]->ID, quadData->p[i]->x[0], quadData->p[i]->x[1], info->quad->x, info->quad->y);
+                              info->p4est->mpirank, quadData->p[i].ID, quadData->p[i].x[0], quadData->p[i].x[1], info->quad->x, info->quad->y);
 #endif
                         /*
                          * now, we collect all particles in one update_x pass
                          * and insert them afterwards
                          */
-                        sc_list_append(W->particle_push_list, quadData->p[i]);
+                        sc_list_append(W->particle_push_list, &quadData->p[i]);
 
                         /*
                          * move last particle to i'th place to prevent a hole
@@ -641,7 +642,7 @@ update_x_fn(p4est_iter_volume_info_t * info, void *user_data)
                         /*
                          * we aren't going to touch this ever, but who knows
                          */
-                        quadData->p[quadData->nParticles - 1] = NULL;
+                        /* quadData->p[quadData->nParticles - 1] = NULL; */
 #endif
                         /* set iterator accordingly */
                         i--;
@@ -703,7 +704,7 @@ replace_fn(p4est_t * p4est, p4est_topidx_t which_tree,
                 fam = incoming;
                 for (i = 0; i < quadData->nParticles; i++)
                         for (j = 0; j < P4EST_CHILDREN; j++) {
-                                if (pchase_particle_lies_in_quad(quadData->p[i], fam[j])) {
+                                if (pchase_particle_lies_in_quad(&quadData->p[i], fam[j])) {
                                         /*
                                          * move particle to this quad(fam[j])
                                          */
@@ -715,7 +716,7 @@ replace_fn(p4est_t * p4est, p4est_topidx_t which_tree,
                                          */
                                         quadData->p[i] = quadData->p[quadData->nParticles - 1];
 #ifdef DEBUG
-                                        quadData->p[quadData->nParticles - 1] = NULL;
+                                        /* quadData->p[quadData->nParticles - 1] = NULL; */
 #endif
                                         /*
                                          * reset iterator and particle
@@ -750,7 +751,7 @@ replace_fn(p4est_t * p4est, p4est_topidx_t which_tree,
                                  */
                                 famJData->p[i] = famJData->p[famJData->nParticles - 1];
 #ifdef DEBUG
-                                famJData->p[famJData->nParticles - 1] = NULL;
+                                /* famJData->p[famJData->nParticles - 1] = NULL; */
 #endif
                                 /*
                                  * reset iterator and particle counter
