@@ -52,31 +52,41 @@ main(int argc, char **argv)
 
         if (W->p4est->mpirank == 0) {
                 pchase_particle_t  *p = P4EST_ALLOC(pchase_particle_t, 1);
+#ifdef DEBUG
                 p->ID = 1;
+#endif
                 p->x[0] = 0.3;
                 p->x[1] = 0.3;
                 sc_list_append(W->particle_push_list, p);
                 W->n_particles++;
                 pchase_particle_t  *p2 = P4EST_ALLOC(pchase_particle_t, 1);
+#ifdef DEBUG
                 p2->ID = 2;
+#endif
                 p2->x[0] = 0.4;
                 p2->x[1] = 0.4;
                 sc_list_append(W->particle_push_list, p2);
                 W->n_particles++;
                 pchase_particle_t  *p3 = P4EST_ALLOC(pchase_particle_t, 1);
+#ifdef DEBUG
                 p3->ID = 3;
+#endif
                 p3->x[0] = 0.9;
                 p3->x[1] = 0.5;
                 sc_list_append(W->particle_push_list, p3);
                 W->n_particles++;
                 pchase_particle_t  *p4 = P4EST_ALLOC(pchase_particle_t, 1);
+#ifdef DEBUG
                 p4->ID = 4;
+#endif
                 p4->x[0] = 0.4;
                 p4->x[1] = 0.9;
                 sc_list_append(W->particle_push_list, p4);
                 W->n_particles++;
                 pchase_particle_t  *p5 = P4EST_ALLOC(pchase_particle_t, 1);
+#ifdef DEBUG
                 p5->ID = 5;
+#endif
                 p5->x[0] = 0.8;
                 p5->x[1] = 0.6;
                 sc_list_append(W->particle_push_list, p5);
