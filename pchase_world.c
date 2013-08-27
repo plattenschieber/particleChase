@@ -280,6 +280,11 @@ pchase_world_insert_particles(pchase_world_t * W)
                 }
         }
 
+        /* WE ARE DONE WITH ALL LOCAL STUFF */
+
+        /* reset push list - we need this for saving incomming particles */
+        sc_list_reset(W->particle_push_list);
+
         /*
          * get enough space for receivers and senders array - this may be not
          * memory optimal, but it's the fastest solution
@@ -437,7 +442,6 @@ pchase_world_insert_particles(pchase_world_t * W)
         /* get rid of all particle pointer and miniQuads */
         P4EST_FREE(recv_buf);
         P4EST_FREE(send_buf);
-        sc_list_reset(W->particle_push_list);
         sc_array_destroy(points);
 }
 
