@@ -134,7 +134,8 @@ pchase_world_simulate(pchase_world_t * W)
                         printf("[pchase %i simulate] there are more (%lld) than one quadrants in the world - partitioning takes place\n",
                          W->p4est->mpirank, W->p4est->global_num_quadrants);
                         /*
-                         * the flag allows coarsening for one level on own proc
+                         * the flag allows coarsening for one level on own
+                         * proc
                          */
                         p4est_partition_ext(W->p4est, 1, NULL);
                 }
@@ -626,7 +627,7 @@ update_x_fn(p4est_iter_volume_info_t * info, void *user_data)
                 if (!pchase_particle_lies_in_quad(&quadData->p[i], info->quad)) {
 #ifdef DEBUG
                         printf("[pchase %i updateX] particle[%i](%lf,%lf) left quad(0x%08X,0x%08X)\n",
-                              info->p4est->mpirank, quadData->p[i].ID, quadData->p[i].x[0], quadData->p[i].x[1], info->quad->x, info->quad->y);
+                               info->p4est->mpirank, quadData->p[i].ID, quadData->p[i].x[0], quadData->p[i].x[1], info->quad->x, info->quad->y);
 #endif
                         /*
                          * now, we collect all particles in one update_x pass
@@ -716,7 +717,10 @@ replace_fn(p4est_t * p4est, p4est_topidx_t which_tree,
                                          */
                                         quadData->p[i] = quadData->p[quadData->nParticles - 1];
 #ifdef DEBUG
-                                        /* quadData->p[quadData->nParticles - 1] = NULL; */
+                                        /*
+                                         * quadData->p[quadData->nParticles -
+                                         * 1] = NULL;
+                                         */
 #endif
                                         /*
                                          * reset iterator and particle
@@ -751,7 +755,10 @@ replace_fn(p4est_t * p4est, p4est_topidx_t which_tree,
                                  */
                                 famJData->p[i] = famJData->p[famJData->nParticles - 1];
 #ifdef DEBUG
-                                /* famJData->p[famJData->nParticles - 1] = NULL; */
+                                /*
+                                 * famJData->p[famJData->nParticles - 1] =
+                                 * NULL;
+                                 */
 #endif
                                 /*
                                  * reset iterator and particle counter
