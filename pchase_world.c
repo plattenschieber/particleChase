@@ -244,7 +244,7 @@ pchase_world_insert_particles(pchase_world_t * W)
                                  * insert particle data into quad and update
                                  * particle counter
                                  */
-                                enclQuadData->p[enclQuadData->nParticles] = p;
+                                enclQuadData->p[enclQuadData->nParticles] = *p;
                                 enclQuadData->nParticles++;
 #ifdef DEBUG
                                 printf("[pchase %i insertPart] particle(%lf,%lf) inserted into enclQuad(0x%08X,0x%08X) (had already %i particles - now %i)\n",
@@ -551,7 +551,7 @@ destroy_fn(p4est_iter_volume_info_t * info, void *Data)
         pchase_particle_t  *p;
         pchase_quadrant_data_t *qData = (pchase_quadrant_data_t *) info->quad->p.user_data;
         for (i = 0; i < qData->nParticles; i++) {
-                p = qData->p[i];
+                p = &qData->p[i];
                 P4EST_FREE(p);
 #ifdef DEBUG
                 printf("[pchase %i destroy_fn] freed particle(%lf,%lf)\n", info->p4est->mpirank, p->x[0], p->x[1]);
@@ -573,7 +573,7 @@ print_fn(p4est_iter_volume_info_t * info, void *user_data)
         pchase_quadrant_data_t *quadData = (pchase_quadrant_data_t *) info->quad->p.user_data;
         printf("[pchase %i print] quad[%i](0x%08X,0x%08X)", info->p4est->mpirank, quadData->nParticles, info->quad->x, info->quad->y);
         for (i = 0; i < quadData->nParticles; i++)
-                printf("P(%lf,%lf) ", quadData->p[i]->x[0], quadData->p[i]->x[1]);
+                printf("P(%lf,%lf) ", quadData->p[i].x[0], quadData->p[i].x[1]);
         printf("\n");
         fflush(stdout);
 }
@@ -604,33 +604,33 @@ update_x_fn(p4est_iter_volume_info_t * info, void *user_data)
                W->p4est->mpirank, info->quad->x, info->quad->y, quadData->nParticles);
         for (i = 0; i < quadData->nParticles; i++) {
                 printf("[pchase %i updateX] particle old pos(%lf,%lf)",
-                       info->p4est->mpirank, quadData->p[i]->x[0], quadData->p[i]->x[1]);
+                       info->p4est->mpirank, quadData->p[i].x[0], quadData->p[i].x[1]);
 
                 /* update particles' velocity */
-                pchase_world_velocity(W, quadData->p[i]);
+                pchase_world_velocity(W, &quadData->p[i]);
 
 #ifdef DEBUG
                 printf(" - new pos(%lf,%lf) in quad[%lld](0x%08X,0x%08X) with %i particles\n",
-                       quadData->p[i]->x[0], quadData->p[i]->x[1],
+                       quadData->p[i].x[0], quadData->p[i].x[1],
                        (long long)info->quadid, info->quad->x, info->quad->y, quadData->nParticles);
                 fflush(stdout);
 #endif
 #ifdef PRINTXYZ
                 fprintf(pchase_output, "H\t%lf\t%lf\t0\n", quadData->p[i]->x[0], quadData->p[i]->x[1]);
 #elif defined(PRINTGNUPLOT)
-                fprintf(pchase_output, "%lf\t%lf\n", quadData->p[i]->x[0], quadData->p[i]->x[1]);
+                fprintf(pchase_output, "%lf\t%lf\n", quadData->p[i].x[0], quadData->p[i].x[1]);
 #endif
                 /* move particle if it has left the quad */
-                if (!pchase_particle_lies_in_quad(quadData->p[i], info->quad)) {
+                if (!pchase_particle_lies_in_quad(&quadData->p[i], info->quad)) {
 #ifdef DEBUG
                         printf("[pchase %i updateX] particle(%lf,%lf) left quad(0x%08X,0x%08X)\n",
-                               info->p4est->mpirank, quadData->p[i]->x[0], quadData->p[i]->x[1], info->quad->x, info->quad->y);
+                               info->p4est->mpirank, quadData->p[i].x[0], quadData->p[i].x[1], info->quad->x, info->quad->y);
 #endif
                         /*
                          * now, we collect all particles in one update_x pass
                          * and insert them afterwards
                          */
-                        sc_list_append(W->particle_push_list, quadData->p[i]);
+                        sc_list_append(W->particle_push_list, &quadData->p[i]);
 
                         /*
                          * move last particle to i'th place to prevent a hole
@@ -640,7 +640,7 @@ update_x_fn(p4est_iter_volume_info_t * info, void *user_data)
                         /*
                          * we aren't going to touch this ever, but who knows
                          */
-                        quadData->p[quadData->nParticles - 1] = NULL;
+                        /* quadData->p[quadData->nParticles - 1] = NULL; */
 #endif
                         /* set iterator accordingly */
                         i--;
@@ -702,7 +702,7 @@ replace_fn(p4est_t * p4est, p4est_topidx_t which_tree,
                 fam = incoming;
                 for (i = 0; i < quadData->nParticles; i++)
                         for (j = 0; j < P4EST_CHILDREN; j++) {
-                                if (pchase_particle_lies_in_quad(quadData->p[i], fam[j])) {
+                                if (pchase_particle_lies_in_quad(&quadData->p[i], fam[j])) {
                                         /*
                                          * move particle to this quad(fam[j])
                                          */
@@ -714,7 +714,7 @@ replace_fn(p4est_t * p4est, p4est_topidx_t which_tree,
                                          */
                                         quadData->p[i] = quadData->p[quadData->nParticles - 1];
 #ifdef DEBUG
-                                        quadData->p[quadData->nParticles - 1] = NULL;
+                                        /* quadData->p[quadData->nParticles - 1] = NULL; */
 #endif
                                         /*
                                          * reset iterator and particle
@@ -750,7 +750,7 @@ replace_fn(p4est_t * p4est, p4est_topidx_t which_tree,
                                  */
                                 famJData->p[i] = famJData->p[famJData->nParticles - 1];
 #ifdef DEBUG
-                                famJData->p[famJData->nParticles - 1] = NULL;
+                                /* famJData->p[famJData->nParticles - 1] = NULL; */
 #endif
                                 /*
                                  * reset iterator and particle counter
