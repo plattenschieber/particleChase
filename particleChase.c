@@ -35,9 +35,9 @@ main(int argc, char **argv)
         SC_CHECK_MPI(mpiret);
 
         /* Sets global program identifiers (e.g. the MPIrank) and some flags */
-        sc_init(mpi->mpicomm, 1, 1, NULL, SC_LP_ALWAYS);
+        sc_init(mpi->mpicomm, 1, 1, NULL, SC_LP_SILENT);
         /* Registers p4est with the SC Library and sets the logging behavior */
-        p4est_init(NULL, SC_LP_DEFAULT);
+        p4est_init(NULL, SC_LP_SILENT);
         /* build up the world */
         W = pchase_world_init();
 
