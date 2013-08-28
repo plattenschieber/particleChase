@@ -231,6 +231,7 @@ pchase_world_insert_particles(pchase_world_t * W)
                                 printf("[pchase %i insertPart] P(%lf,%lf) inserted into enclQuad(0x%08X,0x%08X) (had already %i particles - now %i)\n",
                                        W->p4est->mpirank, p->x[0], p->x[1], enclQuad->x, enclQuad->y, enclQuadData->nParticles - 1, enclQuadData->nParticles);
 #endif
+                                P4EST_FREE(p);
                         }
                         /* too many particles in quad */
                         else {
