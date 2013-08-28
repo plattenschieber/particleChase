@@ -5,9 +5,6 @@
 
 /* this is the most basic particle flying through pchase */
 typedef struct {
-#ifdef DEBUG                    /* needed only to follow the particle */
-        int                 ID;
-#endif
         double              x[DIM];
 }
                     pchase_particle_t;
