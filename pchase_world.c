@@ -153,10 +153,16 @@ pchase_particle_t  *
 pchase_world_random_particle(pchase_world_t * W)
 {
         int                 i;
+        double x,y;
         pchase_particle_t  *p = P4EST_ALLOC(pchase_particle_t, 1);
 
-        for (i = 0; i < DIM; i++)
-                p->x[i] = W->length[i] * rand() / (RAND_MAX + 1.);
+        do {
+                for (i = 0; i < DIM; i++)
+                        p->x[i] = W->length[i] * rand() / (RAND_MAX + 1.);
+                x = p->x[0]-0.5;
+                y = p->x[1]-0.5;
+        } while (x*x+y*y >= 0.25 || x*x+y*y<0.05);
+        
 #ifdef DEBUG
         printf("[pchase %i randPart] ", W->p4est->mpirank);
         for (i = 0; i < DIM; i++)
