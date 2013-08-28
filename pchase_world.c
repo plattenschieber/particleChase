@@ -50,10 +50,13 @@ pchase_world_init_p4est(pchase_world_t * W, p4est_t * p4est)
 #ifdef PRINTXYZ
         pchase_output = fopen("pchase_particles.xyz", "w");
 #elif defined(PRINTGNUPLOT)
-        if (W->p4est->mpirank == 0)
-                pchase_output = fopen("pchase_particles.plot", "w");
-        else
-                pchase_output = fopen("pchase_particles2.plot", "w");
+        /* generate extension for proc i and open its file */
+        char plotFileName[50] = "pchase_particles_";
+        char fileNumber[10];
+        sprintf(fileNumber, "%03d", W->p4est->mpirank);
+        strcat(plotFileName, fileNumber);
+        strcat(plotFileName, ".plot");
+        pchase_output = fopen(plotFileName, "w");
 #endif
         /* reserve some space for send lists */
         for (i = 0; i < W->p4est->mpisize; i++)
