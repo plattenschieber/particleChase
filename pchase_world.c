@@ -620,12 +620,6 @@ update_x_fn(p4est_iter_volume_info_t * info, void *user_data)
                          * move last particle to i'th place to prevent a hole
                          */
                         quadData->p[i] = quadData->p[quadData->nParticles - 1];
-#ifdef DEBUG
-                        /*
-                         * we aren't going to touch this ever, but who knows
-                         */
-                        /* quadData->p[quadData->nParticles - 1] = NULL; */
-#endif
                         /* set iterator accordingly */
                         i--;
 
