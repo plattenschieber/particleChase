@@ -52,8 +52,8 @@ pchase_world_init_p4est(pchase_world_t * W, p4est_t * p4est)
         pchase_output = fopen("pchase_particles.xyz", "w");
 #elif defined(PRINTGNUPLOT)
         /* generate extension for proc i and open its file */
-        char plotFileName[50] = "pchase_particles_";
-        char fileNumber[10];
+        char                plotFileName[50] = "pchase_particles_";
+        char                fileNumber[10];
         sprintf(fileNumber, "%03d", W->p4est->mpirank);
         strcat(plotFileName, fileNumber);
         strcat(plotFileName, ".plot");
@@ -237,7 +237,7 @@ pchase_world_insert_particles(pchase_world_t * W)
                         else {
 #ifdef DEBUG
                                 printf("[pchase %i insertPart] Too many (%i) particles ",
-                                                W->p4est->mpirank, enclQuadData->nParticles);
+                                W->p4est->mpirank, enclQuadData->nParticles);
 #endif
                                 if (0) {
                                         printf("- refining enclQuad and inserting particle afterwards\n");
@@ -356,7 +356,7 @@ pchase_world_insert_particles(pchase_world_t * W)
                 /* print send buffer */
                 for (j = 0; j < send_count; j++) {
                         printf("[pchase %i sending] P(%lf,%lf)\n",
-                               W->p4est->mpirank, send_buf[i][2*j], send_buf[i][2*j + 1]);
+                               W->p4est->mpirank, send_buf[i][2 * j], send_buf[i][2 * j + 1]);
                 }
 #endif
                 /* send particles to right owner */
@@ -382,7 +382,10 @@ pchase_world_insert_particles(pchase_world_t * W)
 #endif
                                 /* get space for the particles to be received */
                                 recv_buf[recv_count] = P4EST_ALLOC(double, recv_length);
-                                /* receive a list with recv_length/2 particles */
+                                /*
+                                 * receive a list with recv_length/2
+                                 * particles
+                                 */
                                 mpiret = MPI_Recv(recv_buf[recv_count], recv_length, MPI_DOUBLE, recv_status[i].MPI_SOURCE,
                                                   recv_status[i].MPI_TAG, W->p4est->mpicomm, &recv_status[i]);
                                 SC_CHECK_MPI(mpiret);
@@ -542,11 +545,11 @@ destroy_fn(p4est_iter_volume_info_t * info, void *Data)
         pchase_particle_t  *p;
         pchase_quadrant_data_t *qData = (pchase_quadrant_data_t *) info->quad->p.user_data;
         for (i = 0; i < qData->nParticles; i++) {
-                p = &qData->p[i];
-                P4EST_FREE(p);
 #ifdef DEBUG
-                printf("[pchase %i destroy_fn] freed particle(%lf,%lf)\n", info->p4est->mpirank, p->x[0], p->x[1]);
+                printf("[pchase %i destroy_fn] freed particle(%lf,%lf)\n", info->p4est->mpirank, qData->p[i].x[0], qData->p[i].x[1]);
 #endif
+                pchase_particle_t *tmpParticle = &(qData->p[i]);
+                P4EST_FREE(tmpParticle);
         }
         return;
 }
@@ -555,9 +558,9 @@ viter_fn(p4est_iter_volume_info_t * info, void *user_data)
 {
         pchase_quadrant_data_t *quadData = (pchase_quadrant_data_t *) info->quad->p.user_data;
 #ifdef DEBUG
-        if(quadData->nParticles > 0)
-                printf("[pchase %i main iterate] quad(0x%08X,0x%08X) has %i particles \n", 
-                        info->p4est->mpirank, info->quad->x, info->quad->y, quadData->nParticles);
+        if (quadData->nParticles > 0)
+                printf("[pchase %i main iterate] quad(0x%08X,0x%08X) has %i particles \n",
+                       info->p4est->mpirank, info->quad->x, info->quad->y, quadData->nParticles);
 #endif
         return;
 }
@@ -600,7 +603,7 @@ update_x_fn(p4est_iter_volume_info_t * info, void *user_data)
 #ifdef DEBUG
         if (quadData->nParticles > 0)
                 printf("[pchase %i updateX] quad(0x%08X,0x%08X) with %i P: ",
-                        W->p4est->mpirank, info->quad->x, info->quad->y, quadData->nParticles);
+                       W->p4est->mpirank, info->quad->x, info->quad->y, quadData->nParticles);
 #endif
         for (i = 0; i < quadData->nParticles; i++) {
 #ifdef DEBUG
@@ -773,9 +776,9 @@ pchase_world_destroy(pchase_world_t * W)
 #endif
         for (i = 0; i < W->particles_to->elem_count; i++) {
                 tmp = *((sc_list_t **) sc_array_index_int(W->particles_to, i));
-                /* free every particle in tmp list */ 
-                pchase_particle_t * tmpParticle;
-                while(tmp->first != NULL){
+                /* free every particle in tmp list */
+                pchase_particle_t  *tmpParticle;
+                while (tmp->first != NULL) {
                         tmpParticle = sc_list_pop(tmp);
                         P4EST_FREE(tmpParticle);
                 }
