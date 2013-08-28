@@ -627,10 +627,12 @@ update_x_fn(p4est_iter_volume_info_t * info, void *user_data)
                         printf(" (left quad!)");
 #endif
                         /*
-                         * now, we collect all particles in one update_x pass
-                         * and insert them afterwards
+                         * pop particle and leave a pointer to it in
+                         * particle_push_list
                          */
-                        sc_list_append(W->particle_push_list, &quadData->p[i]);
+                        pchase_particle_t  *tmpParticle = P4EST_ALLOC(pchase_particle_t, 1);
+                        *tmpParticle = quadData->p[i];
+                        sc_list_append(W->particle_push_list, tmpParticle);
 
                         /*
                          * move last particle to i'th place to prevent a hole
