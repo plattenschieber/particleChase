@@ -760,6 +760,12 @@ pchase_world_destroy(pchase_world_t * W)
 #endif
         for (i = 0; i < W->particles_to->elem_count; i++) {
                 tmp = *((sc_list_t **) sc_array_index_int(W->particles_to, i));
+                /* free every particle in tmp list */ 
+                pchase_particle_t * tmpParticle;
+                while(tmp->first != NULL){
+                        tmpParticle = sc_list_pop(tmp);
+                        P4EST_FREE(tmpParticle);
+                }
                 sc_list_destroy(tmp);
 #ifdef DEBUG
                 printf("[pchase %i world_destroy] destroyed particles_to[%i] list\n", W->p4est->mpirank, i);
