@@ -106,17 +106,12 @@ pchase_world_simulate(pchase_world_t * W)
                 /* refine every quad containing more than 5 particles */
                 p4est_refine_ext(W->p4est, 0, -1, W->refine_fn, W->init_fn, W->replace_fn);
                 /* coarsen non recursively */
+                p4est_coarsen_ext(W->p4est, 0, W->coarsen_fn, W->init_fn, W->replace_fn);
                 /* balancing the tree */
                 p4est_balance_ext(W->p4est, P4EST_CONNECT_FULL, W->init_fn, W->replace_fn);
+                /* partition quadrants evenly to all procs */ 
+                p4est_partition_ext(W->p4est, 1, NULL);
 
-                /* partition only if there are at least 4 quads */
-                if (W->p4est->global_num_quadrants > 1) {
-                        /*
-                         * the flag allows coarsening for one level on own
-                         * proc
-                         */
-                        p4est_partition_ext(W->p4est, 1, NULL);
-                }
                 /*
                  * convert current step to filename and write VTK
                  * Data entry
