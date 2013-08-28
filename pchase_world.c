@@ -207,10 +207,11 @@ pchase_world_insert_particles(pchase_world_t * W)
         printf("[pchase %i insertPart] %lld particles in push list\n", W->p4est->mpirank, (long long)W->particle_push_list->elem_count);
 #endif
         /* move all particles either into their enclQuads or to another proc */
-        for (i = 0, particle_it = W->particle_push_list->first; i < points->elem_count; i++, particle_it = particle_it->next) {
+        for (i = 0; i < points->elem_count; i++) {
                 /* resolve miniQuad and associated particle */
                 miniQuad = (p4est_quadrant_t *) sc_array_index(points, i);
-                p = (pchase_particle_t *) particle_it->data;
+
+                p = sc_list_pop(W->particle_push_list);
 
                 /* if the miniQuad is not flagged, it's lying on this proc */
                 if (miniQuad->p.piggy3.local_num != -1) {
