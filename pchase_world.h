@@ -32,7 +32,6 @@ typedef struct {
         p4est_replace_t     replace_fn;
         p4est_search_query_t search_fn;
         p4est_iter_volume_t viter_fn;
-        p4est_iter_volume_t destroy_fn;
         p4est_iter_volume_t print_fn;
         p4est_iter_volume_t update_x_fn;
         sc_list_t          *particle_push_list;
@@ -126,9 +125,6 @@ static int
 /* prints all x,y data and pointers */
 static void
                     viter_fn(p4est_iter_volume_info_t * info, void *Data);
-/* frees all arrays from particles */
-static void
-                    destroy_fn(p4est_iter_volume_info_t * info, void *Data);
 /* prints all particles in a xyz manner */
 static void
                     print_fn(p4est_iter_volume_info_t * info, void *user_data);

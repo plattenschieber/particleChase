@@ -26,7 +26,6 @@ pchase_world_init(p4est_t * p4est)
         W->search_fn = search_fn;
         W->replace_fn = replace_fn;
         W->viter_fn = viter_fn;
-        W->destroy_fn = destroy_fn;
         W->print_fn = print_fn;
         W->update_x_fn = update_x_fn;
 
@@ -545,21 +544,6 @@ coarsen_fn(p4est_t * p4est, p4est_topidx_t which_tree, p4est_quadrant_t * q[])
 }
 
 static void
-destroy_fn(p4est_iter_volume_info_t * info, void *Data)
-{
-        int                 i;
-        pchase_particle_t  *p;
-        pchase_quadrant_data_t *qData = (pchase_quadrant_data_t *) info->quad->p.user_data;
-        for (i = 0; i < qData->nParticles; i++) {
-                p = &qData->p[i];
-                P4EST_FREE(p);
-#ifdef DEBUG
-                printf("[pchase %i destroy_fn] freed particle(%lf,%lf)\n", info->p4est->mpirank, p->x[0], p->x[1]);
-#endif
-        }
-        return;
-}
-static void
 viter_fn(p4est_iter_volume_info_t * info, void *user_data)
 {
         pchase_quadrant_data_t *quadData = (pchase_quadrant_data_t *) info->quad->p.user_data;
@@ -787,6 +771,4 @@ pchase_world_destroy(pchase_world_t * W)
 #ifdef DEBUG
         printf("[pchase %i world_destroy] destroyed particles_to_proc array\n", W->p4est->mpirank);
 #endif
-        /* and free all particles */
-        p4est_iterate(W->p4est, NULL, NULL, W->destroy_fn, NULL, NULL);
 }
