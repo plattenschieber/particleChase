@@ -221,7 +221,7 @@ pchase_world_insert_particles(pchase_world_t * W)
 
                         if (enclQuadData->nParticles < 25) {
                                 /*
-                                 * insert particle data into quad and update
+                                 * copy particle data into quad and update
                                  * particle counter
                                  */
                                 enclQuadData->p[enclQuadData->nParticles] = *p;
