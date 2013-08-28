@@ -172,7 +172,6 @@ pchase_world_random_particle(pchase_world_t * W)
                 printf("p->x[%d]=%lf,\t", i, p->x[i]);
         printf("\n");
 #endif
-        W->n_particles++;
         return p;
 }
 
@@ -235,7 +234,6 @@ pchase_world_insert_particles(pchase_world_t * W)
                                  */
                                 enclQuadData->p[enclQuadData->nParticles] = *p;
                                 enclQuadData->nParticles++;
-                                W->n_particles++;
 #ifdef DEBUG
                                 printf("[pchase %i insertPart] P(%lf,%lf) inserted into enclQuad(0x%08X,0x%08X) (had already %i particles - now %i)\n",
                                        W->p4est->mpirank, p->x[0], p->x[1], enclQuad->x, enclQuad->y, enclQuadData->nParticles - 1, enclQuadData->nParticles);
@@ -262,7 +260,6 @@ pchase_world_insert_particles(pchase_world_t * W)
                                         printf("- we have to dissmiss this particle\n");
 #endif
                                         P4EST_FREE(p);
-                                        W->n_particles--;
                                 }
                         }
                 }
@@ -277,7 +274,6 @@ pchase_world_insert_particles(pchase_world_t * W)
                                W->p4est->mpirank, p->x[0], p->x[1], owner, (long long)tmp->elem_count);
 #endif
                         sc_list_append(tmp, p);
-                        W->n_particles--;
 #ifdef DEBUG
                         printf("now %lld)\n", (long long)tmp->elem_count);
 #endif
