@@ -546,7 +546,9 @@ viter_fn(p4est_iter_volume_info_t * info, void *user_data)
 {
         pchase_quadrant_data_t *quadData = (pchase_quadrant_data_t *) info->quad->p.user_data;
 #ifdef DEBUG
-        printf("[pchase %i main iterate] quad(0x%08X,0x%08X) has %i particles \n", info->p4est->mpirank, info->quad->x, info->quad->y, quadData->nParticles);
+        if(quadData->nParticles > 0)
+                printf("[pchase %i main iterate] quad(0x%08X,0x%08X) has %i particles \n", 
+                        info->p4est->mpirank, info->quad->x, info->quad->y, quadData->nParticles);
 #endif
         return;
 }
@@ -555,11 +557,13 @@ print_fn(p4est_iter_volume_info_t * info, void *user_data)
 {
         int                 i;
         pchase_quadrant_data_t *quadData = (pchase_quadrant_data_t *) info->quad->p.user_data;
-        printf("[pchase %i print] quad[%i](0x%08X,0x%08X)", info->p4est->mpirank, quadData->nParticles, info->quad->x, info->quad->y);
-        for (i = 0; i < quadData->nParticles; i++)
-                printf("P(%lf,%lf) ", quadData->p[i].x[0], quadData->p[i].x[1]);
-        printf("\n");
-        fflush(stdout);
+        if (quadData->nParticles > 0) {
+                printf("[pchase %i print] quad[%i](0x%08X,0x%08X)", info->p4est->mpirank, quadData->nParticles, info->quad->x, info->quad->y);
+                for (i = 0; i < quadData->nParticles; i++)
+                        printf("P(%lf,%lf) ", quadData->p[i].x[0], quadData->p[i].x[1]);
+                printf("\n");
+                fflush(stdout);
+        }
 }
 
 void
@@ -585,23 +589,24 @@ update_x_fn(p4est_iter_volume_info_t * info, void *user_data)
         pchase_world_t     *W = (pchase_world_t *) user_data;
 
 #ifdef DEBUG
-        printf("[pchase %i updateX] touched quad(0x%08X,0x%08X) with %i particles\n",
-               W->p4est->mpirank, info->quad->x, info->quad->y, quadData->nParticles);
+        if (quadData->nParticles > 0)
+                printf("[pchase %i updateX] quad(0x%08X,0x%08X) with %i P: ",
+                        W->p4est->mpirank, info->quad->x, info->quad->y, quadData->nParticles);
 #endif
         for (i = 0; i < quadData->nParticles; i++) {
 #ifdef DEBUG
-                printf("[pchase %i updateX] particle old pos(%lf,%lf)",
-                       info->p4est->mpirank, quadData->p[i].x[0], quadData->p[i].x[1]);
+                /* print old position */
+                printf("P(%lf,%lf)->",
+                       quadData->p[i].x[0], quadData->p[i].x[1]);
 #endif
 
                 /* update particles' velocity */
                 pchase_world_velocity(W, &quadData->p[i]);
 
 #ifdef DEBUG
-                printf(" - new pos(%lf,%lf) in quad[%lld](0x%08X,0x%08X) with %i particles\n",
-                       quadData->p[i].x[0], quadData->p[i].x[1],
-                       (long long)info->quadid, info->quad->x, info->quad->y, quadData->nParticles);
-                fflush(stdout);
+                /* and new position */
+                printf("(%lf,%lf) ",
+                       quadData->p[i].x[0], quadData->p[i].x[1]);
 #endif
 #ifdef PRINTXYZ
                 fprintf(pchase_output, "H\t%lf\t%lf\t0\n", quadData->p[i]->x[0], quadData->p[i]->x[1]);
@@ -611,8 +616,7 @@ update_x_fn(p4est_iter_volume_info_t * info, void *user_data)
                 /* move particle if it has left the quad */
                 if (!pchase_particle_lies_in_quad(&quadData->p[i], info->quad)) {
 #ifdef DEBUG
-                        printf("[pchase %i updateX] P(%lf,%lf) left quad(0x%08X,0x%08X)\n",
-                               info->p4est->mpirank, quadData->p[i].x[0], quadData->p[i].x[1], info->quad->x, info->quad->y);
+                        printf(" (left quad!)");
 #endif
                         /*
                          * now, we collect all particles in one update_x pass
@@ -637,6 +641,8 @@ update_x_fn(p4est_iter_volume_info_t * info, void *user_data)
                         quadData->nParticles--;
                 }
         }
+        if (quadData->nParticles > 0)
+                printf("\n");
 }
 
 int
@@ -661,10 +667,6 @@ pchase_particle_lies_in_quad(const pchase_particle_t * p, p4est_quadrant_t * q)
 
         if (p->x[0] * root_len < q->x || p->x[0] * root_len >= q->x + quadrant_length ||
             p->x[1] * root_len < q->y || p->x[1] * root_len >= q->y + quadrant_length) {
-#ifdef DEBUG
-                printf("P(%lf,%lf) at p4est_coord(0x%08X,0x%08X) left Quad(0x%08X,0x%08X)\n",
-                       p->x[0], p->x[1], (unsigned)(p->x[0] * root_len), (unsigned)(p->x[1] * root_len), q->x, q->y);
-#endif
                 return 0;
         } else
                 return 1;
