@@ -438,9 +438,14 @@ pchase_world_insert_particles(pchase_world_t * W)
         /* free mpi handles */
         P4EST_FREE(send_request);
         P4EST_FREE(recv_status);
-        /* get rid of all particle pointer and miniQuads */
+        /* get rid of receive and sendbuffer */ 
+        for(i=0; i<num_senders; i++)
+                P4EST_FREE(recv_buf[i]);
         P4EST_FREE(recv_buf);
+        for(i=0; i<num_receivers; i++)
+                P4EST_FREE(send_buf[i]);
         P4EST_FREE(send_buf);
+        /* free all miniQuads */ 
         sc_array_destroy(points);
 }
 
