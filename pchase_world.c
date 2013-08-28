@@ -103,19 +103,11 @@ pchase_world_simulate(pchase_world_t * W)
 
                 /* insert all particles which left into their new quad */
                 pchase_world_insert_particles(W);
-                printf("[pchase %i print] after first insertion\n", W->p4est->mpirank);
-                p4est_iterate(W->p4est, NULL, W, W->print_fn, NULL, NULL);
                 /* insert all communicated particles into the world */
                 pchase_world_insert_particles(W);
-                printf("[pchase %i print] after second insertion\n", W->p4est->mpirank);
-                p4est_iterate(W->p4est, NULL, W, W->print_fn, NULL, NULL);
-
                 /* refine every quad containing more than 5 particles */
                 p4est_refine_ext(W->p4est, 0, -1, W->refine_fn, W->init_fn, W->replace_fn);
                 /* coarsen non recursively */
-                p4est_coarsen_ext(W->p4est, 0, W->coarsen_fn, W->init_fn, W->replace_fn);
-                printf("[pchase %i print] after coarsening\n", W->p4est->mpirank);
-                p4est_iterate(W->p4est, NULL, W, W->print_fn, NULL, NULL);
                 /* balancing the tree */
                 p4est_balance_ext(W->p4est, P4EST_CONNECT_FULL, W->init_fn, W->replace_fn);
 
@@ -126,9 +118,6 @@ pchase_world_simulate(pchase_world_t * W)
                          * proc
                          */
                         p4est_partition_ext(W->p4est, 1, NULL);
-                        printf("[pchase %i print] after partitioning \n", W->p4est->mpirank);
-                        p4est_iterate(W->p4est, NULL, W, W->viter_fn, NULL, NULL);
-                        p4est_iterate(W->p4est, NULL, W, W->print_fn, NULL, NULL);
                 }
                 if (W->step % 1000 == 0) {
                         /*
@@ -303,7 +292,6 @@ pchase_world_insert_particles(pchase_world_t * W)
         }
 #ifdef DEBUG
         printf("[pchase %i sending] total num_receivers %i \n", W->p4est->mpirank, num_receivers);
-#endif
         /* printing all particles to be sent */
         for (i = 0; i < W->particles_to->elem_count; i++) {
                 sc_list_t          *tmpList = *((sc_list_t **) sc_array_index(W->particles_to, i));
@@ -319,6 +307,7 @@ pchase_world_insert_particles(pchase_world_t * W)
                         printf("\n");
                 }
         }
+#endif
 
         /* only the first num_receivers receivers are notified */
         mpiret = sc_notify(receivers, num_receivers,
@@ -385,8 +374,10 @@ pchase_world_insert_particles(pchase_world_t * W)
                         if (flag) {
                                 /* resolve number of particles receiving */
                                 MPI_Get_count(&recv_status[i], MPI_DOUBLE, &recv_length);
+#ifdef DEBUG
                                 printf("[pchase %i receiving] %i particles from proc %i: ",
                                        W->p4est->mpirank, recv_length / 2, recv_status[i].MPI_SOURCE);
+#endif
                                 /* get space for the particles to be received */
                                 recv_buf[recv_count] = P4EST_ALLOC(double, recv_length);
                                 /* receive a list with recv_length/2 particles */
@@ -408,16 +399,19 @@ pchase_world_insert_particles(pchase_world_t * W)
                                         tmpParticle->x[0] = recv_buf[recv_count][2 * j];
                                         tmpParticle->x[1] = recv_buf[recv_count][2 * j + 1];
 
+#ifdef DEBUG
                                         printf("Particle(%lf,%lf) ",
                                                tmpParticle->x[0], tmpParticle->x[1]);
+#endif
                                         /*
                                          * push received particle to push
                                          * list and update world counter
                                          */
                                         sc_list_append(W->particle_push_list, tmpParticle);
-                                        W->n_particles++;
                                 }
+#ifdef DEBUG
                                 printf("\n");
+#endif
                                 /* we received another particle list */
                                 recv_count++;
                         }
@@ -640,8 +634,10 @@ update_x_fn(p4est_iter_volume_info_t * info, void *user_data)
                         quadData->nParticles--;
                 }
         }
+#ifdef DEBUG
         if (quadData->nParticles > 0)
                 printf("\n");
+#endif
 }
 
 int
@@ -683,7 +679,7 @@ replace_fn(p4est_t * p4est, p4est_topidx_t which_tree,
         /* refining quad -> spread data to its children */
         if (num_outgoing == 1) {
 #ifdef DEBUG
-                printf("[pchase %i replace] REPLACING QUAD BY %i CHILDREN\n", p4est->mpirank, P4EST_CHILDREN);
+                printf("[pchase %i replace] replacing quad by %i children\n", p4est->mpirank, P4EST_CHILDREN);
 #endif
                 /* set readable names */
                 p = outgoing[0];
@@ -702,9 +698,6 @@ replace_fn(p4est_t * p4est, p4est_topidx_t which_tree,
                                          * place to prevent a hole
                                          */
                                         quadData->p[i] = quadData->p[quadData->nParticles - 1];
-#ifdef DEBUG
-                                        /* quadData->p[quadData->nParticles - 1] = NULL; */
-#endif
                                         /*
                                          * reset iterator and particle
                                          * counter
@@ -740,9 +733,6 @@ replace_fn(p4est_t * p4est, p4est_topidx_t which_tree,
                                  * hole
                                  */
                                 famJData->p[i] = famJData->p[famJData->nParticles - 1];
-#ifdef DEBUG
-                                /* famJData->p[famJData->nParticles - 1] = NULL; */
-#endif
                                 /*
                                  * reset iterator and particle counter
                                  */
