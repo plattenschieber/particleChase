@@ -563,7 +563,7 @@ print_fn(p4est_iter_volume_info_t * info, void *user_data)
         }
 }
 
-void
+int
 pchase_world_velocity(pchase_world_t * W, pchase_particle_t * p)
 {
         double              x, y, norm;
@@ -575,7 +575,8 @@ pchase_world_velocity(pchase_world_t * W, pchase_particle_t * p)
         p->x[1] += W->delta_t * y / norm;
 
         if (!pchase_particle_lies_in_world(W, p))
-                sc_abort_collective("Particle is lying inside the World");
+                return 1;
+        else return 0;
 }
 
 static void
@@ -598,7 +599,17 @@ update_x_fn(p4est_iter_volume_info_t * info, void *user_data)
 #endif
 
                 /* update particles' velocity */
-                pchase_world_velocity(W, &quadData->p[i]);
+                if(pchase_world_velocity(W, &quadData->p[i])){
+                        /* substitute this particle by the last in the array */
+                         quadData->p[i] = quadData->p[quadData->nParticles - 1];
+                        /* set iterator accordingly */
+                        i--;
+                        /* update particle counter in quad array */
+                        quadData->nParticles--;
+                        printf("OHHH NOOOO\n");
+                        getchar();
+                        continue;
+                }
 
 #ifdef DEBUG
                 /* and new position */
