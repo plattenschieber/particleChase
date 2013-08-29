@@ -309,7 +309,7 @@ pchase_world_insert_particles(pchase_world_t * W)
 #endif
 
         /* only the first num_receivers receivers are notified */
-        mpiret = sc_notify(receivers, num_receivers,
+        mpiret = sc_notify_allgather(receivers, num_receivers,
                            senders, &num_senders, W->p4est->mpicomm);
         SC_CHECK_MPI(mpiret);
 
