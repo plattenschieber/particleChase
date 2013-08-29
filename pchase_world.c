@@ -99,6 +99,7 @@ pchase_world_simulate(pchase_world_t * W)
 #ifdef DEBUG
                 printf("[pchase %i simulate] update_x done - starting insertion of particle\n", W->p4est->mpirank);
 #endif
+                printf("[pchase %i] Time: %i",W->p4est->mpirank, W->step);
                 /* insert all particles which left into their new quad */
                 pchase_world_insert_particles(W);
                 /* insert all communicated particles into the world */
