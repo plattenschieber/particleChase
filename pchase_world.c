@@ -261,7 +261,7 @@ pchase_world_insert_particles(pchase_world_t * W)
                         /* moving particle into sent list for proc 'owner' */
                         sc_list_t          *tmp = *((sc_list_t **) sc_array_index(W->particles_to, owner));
 #ifdef DEBUG
-                        printf("[pchase %i insertPart] particle(%lf,%lf) pushed to send list for proc %i (had already %lld particles - ",
+                        printf("[pchase %i insertPart] P(%lf,%lf) pushed to send list for proc %i (had already %lld particles - ",
                                W->p4est->mpirank, p->x[0], p->x[1], owner, (long long)tmp->elem_count);
 #endif
                         sc_list_append(tmp, p);
@@ -402,7 +402,7 @@ pchase_world_insert_particles(pchase_world_t * W)
                                         tmpParticle->x[1] = recv_buf[recv_count][2 * j + 1];
 
 #ifdef DEBUG
-                                        printf("Particle(%lf,%lf) ",
+                                        printf("Pr(%lf,%lf) ",
                                                tmpParticle->x[0], tmpParticle->x[1]);
 #endif
                                         /*
