@@ -56,6 +56,7 @@ main(int argc, char **argv)
         }
         /* this has to be done for each proc */
         pchase_world_insert_particles(W);
+        pchase_world_insert_particles(W);
 
         /* let this particle move */
         pchase_world_simulate(W);
