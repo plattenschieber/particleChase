@@ -157,7 +157,7 @@ pchase_world_random_particle(pchase_world_t * W)
                         p->x[i] = W->length[i] * rand() / (RAND_MAX + 1.);
                 x = p->x[0]-0.5;
                 y = p->x[1]-0.5;
-        } while (x*x+y*y >= 0.15 || x*x+y*y<0.05);
+        } while (x*x+y*y >= 0.24 || x*x+y*y<0.005);
         
 #ifdef DEBUG
         printf("[pchase %i randPart] ", W->p4est->mpirank);
