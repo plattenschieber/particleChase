@@ -1,6 +1,7 @@
 #include "pchase_world.h"
 
 static FILE        *pchase_output;
+double world_time = 0;
 
 pchase_world_t     *
 pchase_world_init(p4est_t * p4est)
@@ -99,7 +100,7 @@ pchase_world_simulate(pchase_world_t * W)
 #ifdef DEBUG
                 printf("[pchase %i simulate] update_x done - starting insertion of particle\n", W->p4est->mpirank);
 #endif
-                printf("[pchase %i] Time: %i\n",W->p4est->mpirank, W->step);
+                /* printf("[pchase %i] Time: %i\n",W->p4est->mpirank, W->step); */
                 /* insert all particles which left into their new quad */
                 pchase_world_insert_particles(W);
                 /* insert all communicated particles into the world */
@@ -136,6 +137,7 @@ pchase_world_simulate(pchase_world_t * W)
                 }
                 W->t += W->delta_t;
                 W->step++;
+                world_time = W->t;
         }
         printf("[pchase %i simulate] simulation over\n", W->p4est->mpirank);
         /* p4est_iterate(W->p4est, NULL, W, W->print_fn, NULL, NULL); */
@@ -622,7 +624,7 @@ update_x_fn(p4est_iter_volume_info_t * info, void *user_data)
 #ifdef PRINTXYZ
                 fprintf(pchase_output, "H\t%lf\t%lf\t0\n", quadData->p[i]->x[0], quadData->p[i]->x[1]);
 #elif defined(PRINTGNUPLOT)
-                fprintf(pchase_output, "%lf\t%lf\n", quadData->p[i].x[0], quadData->p[i].x[1]);
+                fprintf(pchase_output, "%lf\t%lf\t%lf\n", world_time/10, quadData->p[i].x[0], quadData->p[i].x[1]);
 #endif
                 /* move particle if it has left the quad */
                 if (!pchase_particle_lies_in_quad(&quadData->p[i], info->quad)) {
