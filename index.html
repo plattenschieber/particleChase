@@ -1,0 +1,80 @@
+<!doctype html>
+<!-- The Time Machine GitHub pages theme was designed and developed by Jon Rohan, on Feb 7, 2012. -->
+<!-- Follow him for fun. http://twitter.com/jonrohan. Tail his code on http://github.com/jonrohan -->
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <link rel="stylesheet" href="stylesheets/stylesheet.css" media="screen"/>
+  <link rel="stylesheet" href="stylesheets/pygment_trac.css"/>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script type="text/javascript" src="javascripts/script.js"></script>
+
+  <title>particleChase</title>
+  <meta name="description" content="parallel high scalable particle chasing">
+
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+</head>
+
+<body>
+
+  <div class="wrapper">
+    <header>
+      <h1 class="title">particleChase</h1>
+    </header>
+    <div id="container">
+      <p class="tagline">parallel high scalable particle chasing</p>
+      <div id="main" role="main">
+        <div class="download-bar">
+        <div class="inner">
+          <a href="https://github.com/plattenschieber/particleChase/tarball/master" class="download-button tar"><span>Download</span></a>
+          <a href="https://github.com/plattenschieber/particleChase/zipball/master" class="download-button zip"><span>Download</span></a>
+          <a href="https://github.com/plattenschieber/particleChase" class="code">View particleChase on GitHub</a>
+        </div>
+        <span class="blc"></span><span class="trc"></span>
+        </div>
+        <article class="markdown-body">
+          <h3>
+<a name="welcome-to-particlechase---the-parallel-particle-chaser" class="anchor" href="#welcome-to-particlechase---the-parallel-particle-chaser"><span class="octicon octicon-link"></span></a>Welcome to particleChase - the parallel particle chaser</h3>
+
+<p>We provide here the most basic but high scalable version of a particle chaser for a given velocity field.  Due to the underlying amazing fast <a href="https://github.com/cburstedde/p4est">p4est</a> forest of octree structure - which proved to work in peta-scale (e.g. on Jaguar Cray XT5) - this work can easily be adapted to implement more complex algorithms like the Fast Multipole Method.</p>
+
+<hr><h3>
+<a name="installing" class="anchor" href="#installing"><span class="octicon octicon-link"></span></a>Installing</h3>
+
+<p>To test it on your computer, several steps are needed.</p>
+
+<pre><code>$ git clone https://github.com/plattenschieber/p4est "my fork which has only a little change in the vtk output 
+$ cd p4est
+$ git clone https://github.com/plattenschieber/particleChase
+$ ./bootstrap "please make sure that which version of (g)libtoolize you use
+$ ./configure --enable-mpi "--enable-debug
+$ make
+$ make install
+$ mpirun -np 4 particleChase/particleChase 
+</code></pre>
+        </article>
+      </div>
+    </div>
+    <footer>
+      <div class="owner">
+      <p><a href="https://github.com/plattenschieber" class="avatar"><img src="https://1.gravatar.com/avatar/8018d0a43616388b46566ba1fb8b1099?d=https%3A%2F%2Fidenticons.github.com%2F7c9c9407e44fcb800bf94e0a9a8a6886.png&amp;s=30" width="48" height="48"/></a> <a href="https://github.com/plattenschieber">plattenschieber</a> maintains <a href="https://github.com/plattenschieber/particleChase">particleChase</a></p>
+
+
+      </div>
+      <div class="creds">
+        <small>This page generated using <a href="https://pages.github.com/">GitHub Pages</a><br/>theme by <a href="https://twitter.com/jonrohan/">Jon Rohan</a></small>
+      </div>
+    </footer>
+  </div>
+  <div class="current-section">
+    <a href="#top">Scroll to top</a>
+    <a href="https://github.com/plattenschieber/particleChase/tarball/master" class="tar">tar</a><a href="https://github.com/plattenschieber/particleChase/zipball/master" class="zip">zip</a><a href="" class="code">source code</a>
+    <p class="name"></p>
+  </div>
+
+  
+</body>
+</html>
