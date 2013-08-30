@@ -567,10 +567,13 @@ int
 pchase_world_velocity(pchase_world_t * W, pchase_particle_t * p)
 {
         double              x, y, norm;
+        /* center the circulation around (0.5,0.5) */
         x = -p->x[1] + 0.5;
         y = p->x[0] - 0.5;
 
+        /* norm the outcome so that all particles have the same velocity */
         norm = sqrt(x * x + y * y);
+        /* explicit euler step */
         p->x[0] += W->delta_t * x / norm;
         p->x[1] += W->delta_t * y / norm;
 
