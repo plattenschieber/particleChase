@@ -581,6 +581,13 @@ pchase_world_euler(pchase_world_t * W, pchase_particle_t * p)
         p->x[0] += W->delta_t * x / norm;
         p->x[1] += W->delta_t * y / norm;
 
+
+        if (!pchase_particle_lies_in_world(W, p))
+                return 1;
+        else
+                return 0;
+}
+
         if (!pchase_particle_lies_in_world(W, p))
                 return 1;
         else return 0;
