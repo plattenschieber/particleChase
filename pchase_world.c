@@ -644,6 +644,19 @@ pchase_world_RK(pchase_world_t * W, pchase_particle_t * p)
                 return 0;
 }
 
+int
+pchase_world_analytic(pchase_world_t * W, pchase_particle_t * p)
+{
+        /* This is the analytical solution */
+        double              x, y;
+        /* move particle to origin of circulation */
+        p->x[0] -= 0.5;
+        p->x[1] -= 0.5;
+        x = p->x[0] * cos(W->t) - p->x[1] * sin(W->t);
+        y = p->x[0] * sin(W->t) + p->x[1] * cos(W->t);
+        /* move particles back to their origin */
+        p->x[0] = x + 0.5;
+        p->x[1] = y + 0.5;
 }
 
 static void
