@@ -50,10 +50,17 @@ main(int argc, char **argv)
         /* initialize everything depending on p4est */
         pchase_world_init_p4est(W, p4est);
 
-        if (W->p4est->mpirank == 0) {
-                for (i=0; i<1000; i++)
-                        sc_list_append(W->particle_push_list, pchase_world_random_particle(W));
-        }
+        /* if (W->p4est->mpirank == 0) { */
+        /* for (i=0; i<100; i++) */
+        /*
+         * sc_list_append(W->particle_push_list,
+         * pchase_world_random_particle(W));
+         */
+        /* } */
+        pchase_particle_t * p = P4EST_ALLOC(pchase_particle_t, 1);
+        p->x[0] = 0.5;
+        p->x[1] = 0.1;
+        sc_list_append(W->particle_push_list, p);
         /* this has to be done for each proc */
         pchase_world_insert_particles(W);
         pchase_world_insert_particles(W);

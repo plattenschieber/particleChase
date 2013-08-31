@@ -1,7 +1,7 @@
 #include "pchase_world.h"
 
 static FILE        *pchase_output;
-double world_time = 0;
+double              world_time = 0;
 
 pchase_world_t     *
 pchase_world_init(p4est_t * p4est)
@@ -15,8 +15,8 @@ pchase_world_init(p4est_t * p4est)
         }
         /* set all parameters */
         W->t = 0.0;
-        W->delta_t = 0.001;
-        W->t_end = 0.500;
+        W->delta_t = 0.0005;
+        W->t_end = 90.00;
         W->n_particles = 0;
         W->step = 0;
 
@@ -120,7 +120,7 @@ pchase_world_simulate(pchase_world_t * W)
                 /*
                  * convert current step to filename and write VTK Data entry
                  */
-                if (W->step % 50 == 0) {
+                if (W->step % 50000 == 0) {
                         sprintf(fileNumber, "%03d", i);
                         strcat(VTKData, VTKData1);
                         strcat(VTKData, fileNumber);
@@ -679,7 +679,7 @@ update_x_fn(p4est_iter_volume_info_t * info, void *user_data)
 #endif
 
                 /* update particles' velocity */
-                if(pchase_world_velocity(W, &quadData->p[i])){
+                if (pchase_world_RK(W, &quadData->p[i])) {
                         /* substitute this particle by the last in the array */
                         quadData->p[i] = quadData->p[quadData->nParticles - 1];
                         /* set iterator accordingly */
