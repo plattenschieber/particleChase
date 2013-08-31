@@ -568,7 +568,7 @@ print_fn(p4est_iter_volume_info_t * info, void *user_data)
 }
 
 int
-pchase_world_velocity(pchase_world_t * W, pchase_particle_t * p)
+pchase_world_euler(pchase_world_t * W, pchase_particle_t * p)
 {
         double              x, y, norm;
         /* center the circulation around (0.5,0.5) */
