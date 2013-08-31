@@ -613,6 +613,37 @@ pchase_world_heun(pchase_world_t * W, pchase_particle_t * p)
                 return 0;
 }
 
+int
+pchase_world_RK(pchase_world_t * W, pchase_particle_t * p)
+{
+        double              k1[2], k2[2], k3[2], k4[2];
+        p->x[0] -= 0.5;
+        p->x[1] -= 0.5;
+
+        k1[0] = -p->x[1];
+        k1[1] = p->x[0];
+
+        k2[0] = -(p->x[1] + W->delta_t / 2 * k1[0]);
+        k2[1] = p->x[0] + W->delta_t / 2 * k1[1];
+
+        k3[0] = -(p->x[1] + W->delta_t / 2 * k2[0]);
+        k3[1] = p->x[0] + W->delta_t / 2 * k2[1];
+
+        k4[0] = -(p->x[1] + W->delta_t * k3[0]);
+        k4[1] = p->x[0] + W->delta_t * k3[1];
+
+        p->x[0] += W->delta_t / 6 * (k1[0] + 2 * k2[0] + 2 * k3[0] + k4[0]);
+        p->x[1] += W->delta_t / 6 * (k1[1] + 2 * k2[1] + 2 * k3[1] + k4[1]);
+
+        p->x[0] += 0.5;
+        p->x[1] += 0.5;
+
+        if (!pchase_particle_lies_in_world(W, p))
+                return 1;
+        else
+                return 0;
+}
+
 }
 
 static void
