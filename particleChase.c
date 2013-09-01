@@ -8,6 +8,7 @@
 #include <string.h>
 #include "pchase_world.h"
 #include "pchase_particle.h"
+int                 num_particles, num_refines;
 
 typedef struct {
         MPI_Comm            mpicomm;
@@ -24,6 +25,16 @@ main(int argc, char **argv)
         p4est_t            *p4est;
         p4est_connectivity_t *connectivity;
         pchase_world_t     *W;
+
+        if (argc >= 2)  
+                num_particles = pow(2,atoi(argv[1]));
+        else 
+                num_particles = 100;
+        if(argc >= 3)
+                num_refines = atoi(argv[2]);
+        else 
+                num_refines = 1;
+
 
         /* initialize MPI and p4est internals */
         mpiret = MPI_Init(&argc, &argv);
@@ -44,23 +55,27 @@ main(int argc, char **argv)
         /* store connectivity for a unitsquare */
         connectivity = p4est_connectivity_new_unitsquare();
         /* build uniform tree and get space for 25 particles each */
-        p4est = p4est_new_ext(mpi->mpicomm, connectivity, 0, 4, 1,
+        p4est = p4est_new_ext(mpi->mpicomm, connectivity, 0, num_refines, 1,
                           sizeof(pchase_quadrant_data_t), W->init_fn, NULL);
 
         /* initialize everything depending on p4est */
         pchase_world_init_p4est(W, p4est);
 
-        /* if (W->p4est->mpirank == 0) { */
-        /* for (i=0; i<100; i++) */
-        /*
-         * sc_list_append(W->particle_push_list,
-         * pchase_world_random_particle(W));
-         */
-        /* } */
-        pchase_particle_t * p = P4EST_ALLOC(pchase_particle_t, 1);
-        p->x[0] = 0.5;
-        p->x[1] = 0.1;
-        sc_list_append(W->particle_push_list, p);
+        for (i=0; i<num_particles; i++){
+                if (W->p4est->mpirank == 0)
+                        sc_list_append(W->particle_push_list, pchase_world_random_particle(W));
+                /* move particles to their procs every 100000 pieces */
+                if((i+1) % 100000 == 0)
+                {
+                        printf("[pchase %i insertion] Moving 100000 Particles to their procs\n",W->p4est->mpirank);
+                        pchase_world_insert_particles(W);
+                        pchase_world_insert_particles(W);
+                }
+        }
+        /* pchase_particle_t * p = P4EST_ALLOC(pchase_particle_t, 1); */
+        /* p->x[0] = 0.5; */
+        /* p->x[1] = 0.1; */
+        /* sc_list_append(W->particle_push_list, p); */
         /* this has to be done for each proc */
         pchase_world_insert_particles(W);
         pchase_world_insert_particles(W);

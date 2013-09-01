@@ -1,7 +1,10 @@
 #include "pchase_world.h"
 
 static FILE        *pchase_output;
+static FILE        *pchase_output_time;
 double              world_time = 0;
+extern int          num_particles, num_refines;
+int                 particle_count=0;    
 
 pchase_world_t     *
 pchase_world_init(p4est_t * p4est)
@@ -16,7 +19,7 @@ pchase_world_init(p4est_t * p4est)
         /* set all parameters */
         W->t = 0.0;
         W->delta_t = 0.0005;
-        W->t_end = 90.00;
+        W->t_end = 05.00;
         W->n_particles = 0;
         W->step = 0;
 
@@ -53,11 +56,24 @@ pchase_world_init_p4est(pchase_world_t * W, p4est_t * p4est)
 #elif defined(PRINTGNUPLOT)
         /* generate extension for proc i and open its file */
         char                plotFileName[50] = "pchase_particles_";
-        char                fileNumber[10];
-        sprintf(fileNumber, "%03d", W->p4est->mpirank);
-        strcat(plotFileName, fileNumber);
+        char                plotTimeName[50] = "pchase_time_data_";
+        char                fileRank[10];
+        char                fileLevel[10];
+        char                fileParticles[10];
+        sprintf(fileRank, "%03d", W->p4est->mpirank);
+        sprintf(fileLevel, "%03d", num_refines);
+        sprintf(fileParticles, "%06d", num_particles);
+
+        strcat(plotFileName, fileRank);
+        strcat(plotTimeName, fileParticles);
+        strcat(plotTimeName, "_");
+        strcat(plotTimeName, fileLevel);
+        strcat(plotTimeName, "_");
+        strcat(plotTimeName, fileRank);
         strcat(plotFileName, ".plot");
-        pchase_output = fopen(plotFileName, "w");
+        strcat(plotTimeName, ".log");
+        /* pchase_output = fopen(plotFileName, "w"); */
+        pchase_output_time = fopen(plotTimeName, "w");
 #endif
         /* reserve some space for send lists */
         for (i = 0; i < W->p4est->mpisize; i++)
@@ -67,12 +83,13 @@ pchase_world_init_p4est(pchase_world_t * W, p4est_t * p4est)
 void
 pchase_world_simulate(pchase_world_t * W)
 {
-        int                 i = 0;
+        int                 i = 0, j=0;
         FILE               *vtk_timeseries = fopen("pchase_particle_simulation.pvd", "w");
+        double             times[8] = {};
 
-        fprintf(vtk_timeseries, "<?xml version=\"1.0\"?>\n");
-        fprintf(vtk_timeseries, "<VTKFile type=\"Collection\" version=\"0.1\" byte_order=\"LittleEndian\">\n");
-        fprintf(vtk_timeseries, "      <Collection>\n");
+        /* fprintf(vtk_timeseries, "<?xml version=\"1.0\"?>\n"); */
+        /* fprintf(vtk_timeseries, "<VTKFile type=\"Collection\" version=\"0.1\" byte_order=\"LittleEndian\">\n"); */
+        /* fprintf(vtk_timeseries, "      <Collection>\n"); */
 
         char                fileName1[100] = "pchase_with_particles_";
         char                fileName[100] = "";
@@ -83,6 +100,11 @@ pchase_world_simulate(pchase_world_t * W)
         char                fileNumber[10];
 
         printf("[pchase %i simulate] start new simulation\n", W->p4est->mpirank);
+        p4est_iterate(W->p4est, NULL, W, W->viter_fn, NULL, NULL);
+        printf("Num Particles: %i - on this proc(%i), num_refines: %i, num_procs: %i\n",
+                        num_particles, particle_count, num_refines,W->p4est->mpisize);
+        fprintf(pchase_output_time, "Overall Particles: %i\nParticles on this proc: %i\nLevel: %i\nProcs: %i\n",
+                num_particles, particle_count, num_refines,W->p4est->mpisize);
         /* p4est_iterate(W->p4est, NULL, W, W->print_fn, NULL, NULL); */
         /* simulate until the end has come */
         while (W->t <= W->t_end) {
@@ -95,8 +117,10 @@ pchase_world_simulate(pchase_world_t * W)
 #ifdef DEBUG
                 printf("[pchase %i simulate] into update_x\n", W->p4est->mpirank);
 #endif
+                times[0] = -MPI_Wtime();
                 /* update the position of all particles on all quads */
                 p4est_iterate(W->p4est, NULL, W, W->update_x_fn, NULL, NULL);
+                times[1] = times[0] + MPI_Wtime();
 #ifdef DEBUG
                 printf("[pchase %i simulate] update_x done - starting insertion of particle\n", W->p4est->mpirank);
 #endif
@@ -106,47 +130,59 @@ pchase_world_simulate(pchase_world_t * W)
                  */
                 /* insert all particles which left into their new quad */
                 pchase_world_insert_particles(W);
+                times[2] = times[0] + MPI_Wtime();
                 /* insert all communicated particles into the world */
                 pchase_world_insert_particles(W);
+                times[3] = times[0] + MPI_Wtime();
                 /* refine every quad containing more than 5 particles */
                 p4est_refine_ext(W->p4est, 0, -1, W->refine_fn, W->init_fn, W->replace_fn);
+                times[4] = times[0] + MPI_Wtime();
                 /* coarsen non recursively */
                 p4est_coarsen_ext(W->p4est, 0, W->coarsen_fn, W->init_fn, W->replace_fn);
+                times[5] = times[0] + MPI_Wtime();
                 /* balancing the tree */
                 p4est_balance_ext(W->p4est, P4EST_CONNECT_FULL, W->init_fn, W->replace_fn);
+                times[6] = times[0] + MPI_Wtime();
                 /* partition quadrants evenly to all procs */
                 p4est_partition_ext(W->p4est, 1, NULL);
+                times[7] = times[0] + MPI_Wtime();
+                times[0]+= MPI_Wtime();
+                for(j=0; j<8; j++)
+                        fprintf(pchase_output_time, "%lf\t",times[j]);
+                fprintf(pchase_output_time, "\n");
+                
 
                 /*
                  * convert current step to filename and write VTK Data entry
                  */
-                if (W->step % 50000 == 0) {
-                        sprintf(fileNumber, "%03d", i);
-                        strcat(VTKData, VTKData1);
-                        strcat(VTKData, fileNumber);
-                        strcat(VTKData, VTKData2);
-                        strcat(fileName, fileName1);
-                        strcat(fileName, fileNumber);
-                        strcat(VTKData, fileName);
-                        strcat(VTKData, VTKData3);
-                        fprintf(vtk_timeseries, "%s", VTKData);
-                        p4est_vtk_write_file(W->p4est, NULL, fileName);
+                /* if ((W->step+1) % 50000 == 0) { */
+                /*         sprintf(fileNumber, "%03d", i); */
+                /*         strcat(VTKData, VTKData1); */
+                /*         strcat(VTKData, fileNumber); */
+                /*         strcat(VTKData, VTKData2); */
+                /*         strcat(fileName, fileName1); */
+                /*         strcat(fileName, fileNumber); */
+                /*         strcat(VTKData, fileName); */
+                /*         strcat(VTKData, VTKData3); */
+                /*         fprintf(vtk_timeseries, "%s", VTKData); */
+                /*         p4est_vtk_write_file(W->p4est, NULL, fileName); */
 
-                        i++;
-                        /* reset filenames */
-                        VTKData[0] = '\0';
-                        fileName[0] = '\0';
-                }
+                /*         i++; */
+                /*         /1* reset filenames *1/ */
+                /*         VTKData[0] = '\0'; */
+                /*         fileName[0] = '\0'; */
+                /* } */
                 W->t += W->delta_t;
                 W->step++;
                 world_time = W->t;
         }
         printf("[pchase %i simulate] simulation over\n", W->p4est->mpirank);
         /* p4est_iterate(W->p4est, NULL, W, W->print_fn, NULL, NULL); */
-        fprintf(vtk_timeseries, "      </Collection>\n");
-        fprintf(vtk_timeseries, "</VTKFile>\n");
-        fclose(vtk_timeseries);
-        fclose(pchase_output);
+        /* fprintf(vtk_timeseries, "      </Collection>\n"); */
+        /* fprintf(vtk_timeseries, "</VTKFile>\n"); */
+        /* fclose(vtk_timeseries); */
+        /* fclose(pchase_output); */
+        fclose(pchase_output_time);
 }
 
 pchase_particle_t  *
@@ -240,8 +276,10 @@ pchase_world_insert_particles(pchase_world_t * W)
                         }
                         /* too many particles in quad */
                         else {
+#ifdef DEBUG
                                 printf("[pchase %i insertPart] Too many (%i) particles ",
                                 W->p4est->mpirank, enclQuadData->nParticles);
+#endif
                                 if (0) {
                                         printf("- refining enclQuad and inserting particle afterwards\n");
                                         p4est_refine_ext(W->p4est, 0, -1, W->refine_fn, W->init_fn, W->replace_fn);
@@ -253,7 +291,9 @@ pchase_world_insert_particles(pchase_world_t * W)
                                          */
                                         sc_list_append(W->particle_push_list, p);
                                 } else {
+#ifdef DEBUG
                                         printf("- we have to dissmiss this particle\n");
+#endif
                                         P4EST_FREE(p);
                                 }
                         }
@@ -548,9 +588,13 @@ static void
 viter_fn(p4est_iter_volume_info_t * info, void *user_data)
 {
         pchase_quadrant_data_t *quadData = (pchase_quadrant_data_t *) info->quad->p.user_data;
-        if (quadData->nParticles > 0)
+        if (quadData->nParticles > 0){
+                particle_count+=quadData->nParticles;
+#ifdef DEBUG
                 printf("[pchase %i main iterate] quad(0x%08X,0x%08X) has %i particles \n",
                        info->p4est->mpirank, info->quad->x, info->quad->y, quadData->nParticles);
+#endif
+        }
         return;
 }
 static void
@@ -679,7 +723,7 @@ update_x_fn(p4est_iter_volume_info_t * info, void *user_data)
 #endif
 
                 /* update particles' velocity */
-                if (pchase_world_RK(W, &quadData->p[i])) {
+                if (pchase_world_heun(W, &quadData->p[i])) {
                         /* substitute this particle by the last in the array */
                         quadData->p[i] = quadData->p[quadData->nParticles - 1];
                         /* set iterator accordingly */
@@ -698,7 +742,7 @@ update_x_fn(p4est_iter_volume_info_t * info, void *user_data)
 #ifdef PRINTXYZ
                 fprintf(pchase_output, "H\t%lf\t%lf\t0\n", quadData->p[i]->x[0], quadData->p[i]->x[1]);
 #elif defined(PRINTGNUPLOT)
-                fprintf(pchase_output, "%lf\t%lf\t%lf\n", world_time / 10, quadData->p[i].x[0], quadData->p[i].x[1]);
+                /* fprintf(pchase_output, "%lf\t%lf\t%lf\n", world_time / 10, quadData->p[i].x[0], quadData->p[i].x[1]); */
 #endif
                 /* move particle if it has left the quad */
                 if (!pchase_particle_lies_in_quad(&quadData->p[i], info->quad)) {
