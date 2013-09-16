@@ -677,6 +677,11 @@ update_x_fn(p4est_iter_volume_info_t * info, void *user_data)
                 printf("P(%lf,%lf)->",
                        quadData->p[i].x[0], quadData->p[i].x[1]);
 #endif
+#ifdef PRINTXYZ
+                fprintf(pchase_output, "H\t%lf\t%lf\t0\n", quadData->p[i]->x[0], quadData->p[i]->x[1]);
+#elif defined(PRINTGNUPLOT)
+                fprintf(pchase_output, "%lf\t%lf\t%lf\n", world_time / 10, quadData->p[i].x[0], quadData->p[i].x[1]);
+#endif
 
                 /* update particles' velocity */
                 if (pchase_world_RK(W, &quadData->p[i])) {
@@ -694,11 +699,6 @@ update_x_fn(p4est_iter_volume_info_t * info, void *user_data)
                 /* and new position */
                 printf("(%lf,%lf) ",
                        quadData->p[i].x[0], quadData->p[i].x[1]);
-#endif
-#ifdef PRINTXYZ
-                fprintf(pchase_output, "H\t%lf\t%lf\t0\n", quadData->p[i]->x[0], quadData->p[i]->x[1]);
-#elif defined(PRINTGNUPLOT)
-                fprintf(pchase_output, "%lf\t%lf\t%lf\n", world_time / 10, quadData->p[i].x[0], quadData->p[i].x[1]);
 #endif
                 /* move particle if it has left the quad */
                 if (!pchase_particle_lies_in_quad(&quadData->p[i], info->quad)) {
