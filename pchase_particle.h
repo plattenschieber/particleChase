@@ -13,6 +13,11 @@ typedef struct {
  * nParticles	the number of all particles in this quadrant
  * p[25] 	place for 25 particles - more than 5 particles will not be
  * 		placed on purpose. This could happen only on particle movement
+ * 
+ *              Update: it never happened to exceed this bound, even not  in
+ *              "big" simulations with 10^20, since the adaptive refinement
+ *              (and accompanied by that the 2:1 relationship of the octants) 
+ *              secures a partition fine enough to hold all particles.
  */
 typedef struct {
         int                 nParticles;
