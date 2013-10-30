@@ -1,3 +1,2 @@
-- move particle to proc to which enclQuad belongs
 - handle particle ID in parallel - until now every proc is asigning his own bunch of IDs -> this could result in confusion when sending particle to other procs
 - try other flow fields (e.g. sinus curve)
